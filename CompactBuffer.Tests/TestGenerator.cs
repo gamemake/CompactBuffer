@@ -7,25 +7,44 @@ namespace CompactBuffer.Tests;
 
 public class TestGenerator
 {
+    public static string GetDirName()
+    {
+#pragma warning disable IL3000
+        var dirName = Assembly.GetEntryAssembly().Location;
+#pragma warning restore IL3000
+        if (string.IsNullOrWhiteSpace(dirName))
+            dirName = Process.GetCurrentProcess().MainModule.FileName;
+        for (; ; )
+        {
+            if (Path.GetFileName(dirName) == "CompactBuffer") break;
+            dirName = Path.GetDirectoryName(dirName);
+        }
+        return dirName;
+    }
+
     [Fact]
-    public void Generator()
+    public void GenCompactBuffer()
     {
         var generator = new SerializerGenerator();
         generator.AddAssembly(typeof(Test.AAA).Assembly);
         CompactBuffer.Reset();
-        var result = generator.GenCode();
 
-#pragma warning disable IL3000
-        var fileName = Assembly.GetEntryAssembly().Location;
-#pragma warning restore IL3000
-        if (string.IsNullOrWhiteSpace(fileName))
-            fileName = Process.GetCurrentProcess().MainModule.FileName;
-        for (; ; )
-        {
-            if (Path.GetFileName(fileName) == "CompactBuffer") break;
-            fileName = Path.GetDirectoryName(fileName);
-        }
-        fileName = Path.Join(fileName, "CompactBuffer.Tests", "CompactBuffer.CodeGen.cs");
-        File.WriteAllText(fileName, result);
+        generator.GenCode();
+    }
+
+    [Fact]
+    public void GenProtocol()
+    {
+        var serializerGenerator = new SerializerGenerator();
+        var protocolGenerator = new ProtocolGenerator(serializerGenerator);
+        serializerGenerator.AddAssembly(typeof(Test.AAA).Assembly);
+        protocolGenerator.AddAssembly(typeof(Test.AAA).Assembly);
+        CompactBuffer.Reset();
+
+        var resultProtocol = protocolGenerator.GenCode();
+        File.WriteAllText(Path.Join(GetDirName(), "CompactBuffer.Tests", "Protocol.CodeGen.cs"), resultProtocol);
+
+        var resultSerializer = serializerGenerator.GenCode();
+        File.WriteAllText(Path.Join(GetDirName(), "CompactBuffer.Tests", "CompactBuffer.CodeGen.cs"), resultSerializer);
     }
 }

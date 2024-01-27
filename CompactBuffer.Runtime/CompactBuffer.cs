@@ -12,8 +12,11 @@ namespace CompactBuffer
 
         private CompactBuffer()
         {
-            foreach (var type in CompactBufferUtils.EnumAllClass(typeof(ICompactBufferSerializer)))
+            foreach (var type in CompactBufferUtils.EnumAllTypes(typeof(ICompactBufferSerializer)))
             {
+                if (type.IsInterface) continue;
+                if (type.IsAbstract) continue;
+
                 var attribute = type.GetCustomAttribute<CompactBufferAttribute>();
                 if (attribute != null)
                 {
@@ -65,23 +68,6 @@ namespace CompactBuffer
         public static void Reset()
         {
             m_Singleton = new CompactBuffer();
-        }
-
-        public static bool IsBaseType(Type type)
-        {
-            if (type == typeof(sbyte)) return true;
-            if (type == typeof(short)) return true;
-            if (type == typeof(int)) return true;
-            if (type == typeof(long)) return true;
-            if (type == typeof(byte)) return true;
-            if (type == typeof(ushort)) return true;
-            if (type == typeof(uint)) return true;
-            if (type == typeof(ulong)) return true;
-            if (type == typeof(float)) return true;
-            if (type == typeof(double)) return true;
-            if (type == typeof(bool)) return true;
-            if (type == typeof(string)) return true;
-            return false;
         }
 
         public static ICompactBufferSerializer GetSerializer(Type type)

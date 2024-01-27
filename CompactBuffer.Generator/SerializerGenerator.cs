@@ -6,10 +6,11 @@ using System.Collections.Generic;
 
 namespace CompactBuffer
 {
-    public class SerializerGenerator
+    public class SerializerGenerator : Generator, IAddAddtionType
     {
         private HashSet<Assembly> m_Assemblies = new HashSet<Assembly>();
         private HashSet<Type> m_Types = new HashSet<Type>();
+        private HashSet<Type> m_AdditionTypes = new HashSet<Type>();
 
         public SerializerGenerator()
         {
@@ -20,34 +21,50 @@ namespace CompactBuffer
             m_Assemblies.Add(assembly);
         }
 
+        public void AddAdditionType(Type type)
+        {
+            if (!m_Assemblies.Contains(type.Assembly)) return;
+            if (m_AdditionTypes.Contains(type)) return;
+            m_AdditionTypes.Add(type);
+        }
+
         public string GenCode()
         {
             var builder = new StringBuilder();
-            builder.AppendLine($"// Generate by CompactBuffer.Generator");
+            builder.AppendLine($"// Generate by CompactBuffer.CodeGen");
             builder.AppendLine();
-            builder.AppendLine($"namespace CompactBufferAutoGen");
-            builder.AppendLine($"{{");
             GenCode(builder);
-            builder.AppendLine($"}}");
-            builder.AppendLine();
             return builder.ToString();
         }
 
         public void GenCode(StringBuilder builder)
         {
-            m_Types.Clear();
-            foreach (var type in CompactBufferUtils.EnumAllClass(typeof(object)))
+            builder.AppendLine($"namespace CompactBufferAutoGen");
+            builder.AppendLine($"{{");
+
+            foreach (var type in CompactBufferUtils.EnumAllTypes(typeof(object)))
             {
+                if (!m_Assemblies.Contains(type.Assembly)) continue;
+                if (type.IsInterface) continue;
+                if (type.IsAbstract) continue;
+
                 var attribute = type.GetCustomAttribute<CompactBufferGenCodeAttribute>();
                 if (attribute == null) continue;
 
                 GenCode(builder, type);
             }
+
+            foreach (var type in m_AdditionTypes)
+            {
+                GenCode(builder, type);
+            }
+
+            builder.AppendLine($"}}");
+            builder.AppendLine();
         }
 
         private void GenCode(StringBuilder builder, Type type)
         {
-            if (!m_Assemblies.Contains(type.Assembly)) return;
             if (m_Types.Contains(type)) return;
             if (m_Types.Count > 0)
             {
@@ -58,8 +75,41 @@ namespace CompactBuffer
             var fields = new List<FieldInfo>();
             foreach (var field in type.GetFields(BindingFlags.Instance | BindingFlags.Public))
             {
-                GenCode(builder, field.FieldType);
                 fields.Add(field);
+
+                if (!m_Assemblies.Contains(field.FieldType.Assembly)) continue;
+
+                if (field.FieldType.IsArray)
+                {
+                    var elementType = field.FieldType.GetElementType();
+                    if (m_Assemblies.Contains(elementType.Assembly)) GenCode(builder, elementType);
+                    continue;
+                }
+
+                if (field.FieldType.IsGenericType)
+                {
+                    if (field.FieldType.GetGenericTypeDefinition() == typeof(List<>))
+                    {
+                        var args = field.FieldType.GetGenericArguments();
+                        if (m_Assemblies.Contains(args[0].Assembly)) GenCode(builder, args[0]);
+                        continue;
+                    }
+                    if (field.FieldType.GetGenericTypeDefinition() == typeof(HashSet<>))
+                    {
+                        var args = field.FieldType.GetGenericArguments();
+                        if (m_Assemblies.Contains(args[0].Assembly)) GenCode(builder, args[0]);
+                        continue;
+                    }
+                    if (field.FieldType.GetGenericTypeDefinition() == typeof(Dictionary<,>))
+                    {
+                        var args = field.FieldType.GetGenericArguments();
+                        if (m_Assemblies.Contains(args[0].Assembly)) GenCode(builder, args[0]);
+                        if (m_Assemblies.Contains(args[1].Assembly)) GenCode(builder, args[1]);
+                        continue;
+                    }
+                }
+
+                GenCode(builder, field.FieldType);
             }
 
             builder.AppendLine($"    [CompactBuffer.CompactBuffer(typeof({type.FullName}))]");
@@ -124,14 +174,13 @@ namespace CompactBuffer
             builder.AppendLine($"        {{");
             builder.AppendLine($"            Copy(ref src, ref dst);");
             builder.AppendLine($"        }}");
-
             builder.AppendLine($"    }}");
         }
 
         private void GenReadField(StringBuilder builder, FieldInfo field)
         {
             var attribute = field.GetCustomAttribute<CustomSerializerAttribute>();
-            if (attribute == null && CompactBuffer.IsBaseType(field.FieldType))
+            if (attribute == null && IsBaseType(field.FieldType))
             {
                 builder.AppendLine($"            target.{field.Name} = reader.Read{field.FieldType.Name}();");
                 return;
@@ -143,7 +192,7 @@ namespace CompactBuffer
         private void GenWriteField(StringBuilder builder, FieldInfo field)
         {
             var attribute = field.GetCustomAttribute<CustomSerializerAttribute>();
-            if (attribute == null && CompactBuffer.IsBaseType(field.FieldType))
+            if (attribute == null && IsBaseType(field.FieldType))
             {
                 builder.AppendLine($"            writer.Write(target.{field.Name});");
                 return;
@@ -154,7 +203,7 @@ namespace CompactBuffer
         private void GenCopyField(StringBuilder builder, FieldInfo field)
         {
             var attribute = field.GetCustomAttribute<CustomSerializerAttribute>();
-            if (attribute == null && CompactBuffer.IsBaseType(field.FieldType))
+            if (attribute == null && IsBaseType(field.FieldType))
             {
                 builder.AppendLine($"            dst.{field.Name} = src.{field.Name};");
                 return;
@@ -200,22 +249,23 @@ namespace CompactBuffer
 
             if (field.FieldType.IsArray)
             {
-                return $"CompactBuffer.CompactBuffer.GetArraySerializer<{field.FieldType.GetElementType()}>()";
+                return $"CompactBuffer.CompactBuffer.GetArraySerializer<{GetTypeName(field.FieldType.GetElementType())}>()";
             }
 
             if (field.FieldType.IsGenericType)
             {
+                var args = field.FieldType.GetGenericArguments();
                 if (field.FieldType.GetGenericTypeDefinition() == typeof(List<>))
                 {
-                    return $"CompactBuffer.CompactBuffer.GetListSerializer<{field.FieldType.GetGenericArguments()[0].FullName}>()";
+                    return $"CompactBuffer.CompactBuffer.GetListSerializer<{GetTypeName(args[0])}>()";
                 }
                 if (field.FieldType.GetGenericTypeDefinition() == typeof(HashSet<>))
                 {
-                    return $"CompactBuffer.CompactBuffer.GetHashSetSerializer<{field.FieldType.GetGenericArguments()[0].FullName}>()";
+                    return $"CompactBuffer.CompactBuffer.GetHashSetSerializer<{GetTypeName(args[0])}>()";
                 }
                 if (field.FieldType.GetGenericTypeDefinition() == typeof(Dictionary<,>))
                 {
-                    return $"CompactBuffer.CompactBuffer.GetDictionarySerializer<{field.FieldType.GetGenericArguments()[0].FullName}, {field.FieldType.GetGenericArguments()[1].FullName}>()";
+                    return $"CompactBuffer.CompactBuffer.GetDictionarySerializer<{GetTypeName(args[0])}, {GetTypeName(args[1])}>()";
                 }
             }
 

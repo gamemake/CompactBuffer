@@ -1,0 +1,123 @@
+// Generate by CompactBuffer.CodeGen
+
+namespace CompactBufferAutoGen
+{
+    [CompactBuffer.CompactBuffer(typeof(Test.AAA))]
+    public class Test_AAA_Serializer : CompactBuffer.ICompactBufferSerializer<Test.AAA>
+    {
+        public static void Read(System.IO.BinaryReader reader, ref Test.AAA target)
+        {
+            var length = CompactBuffer.CompactBufferUtils.ReadLength(reader);
+            if (length == 0) { target = null; return; }
+            if (length != 1) { throw new System.Exception("aaaa"); }
+            if (target == null) { target = new Test.AAA(); }
+        }
+
+        public static void Write(System.IO.BinaryWriter writer, ref Test.AAA target)
+        {
+            if (target == null)
+            {
+                CompactBuffer.CompactBufferUtils.WriteLength(writer, 0);
+                return;
+            }
+            CompactBuffer.CompactBufferUtils.WriteLength(writer, 1);
+        }
+
+        public static void Copy(ref Test.AAA src, ref Test.AAA dst)
+        {
+            if (src == null) { dst = null; return; }
+            if (dst == null) dst = new Test.AAA();
+        }
+
+        void CompactBuffer.ICompactBufferSerializer<Test.AAA>.Read(System.IO.BinaryReader reader, ref Test.AAA target)
+        {
+            Read(reader, ref target);
+        }
+
+        void CompactBuffer.ICompactBufferSerializer<Test.AAA>.Write(System.IO.BinaryWriter writer, ref Test.AAA target)
+        {
+            Write(writer, ref target);
+        }
+
+        void CompactBuffer.ICompactBufferSerializer<Test.AAA>.Copy(ref Test.AAA src, ref Test.AAA dst)
+        {
+            Copy(ref src, ref dst);
+        }
+    }
+
+    [CompactBuffer.CompactBuffer(typeof(Test.BBB))]
+    public class Test_BBB_Serializer : CompactBuffer.ICompactBufferSerializer<Test.BBB>
+    {
+        public static void Read(System.IO.BinaryReader reader, ref Test.BBB target)
+        {
+            var length = CompactBuffer.CompactBufferUtils.ReadLength(reader);
+            if (length == 0) { target = null; return; }
+            if (length != 1) { throw new System.Exception("aaaa"); }
+            if (target == null) { target = new Test.BBB(); }
+        }
+
+        public static void Write(System.IO.BinaryWriter writer, ref Test.BBB target)
+        {
+            if (target == null)
+            {
+                CompactBuffer.CompactBufferUtils.WriteLength(writer, 0);
+                return;
+            }
+            CompactBuffer.CompactBufferUtils.WriteLength(writer, 1);
+        }
+
+        public static void Copy(ref Test.BBB src, ref Test.BBB dst)
+        {
+            if (src == null) { dst = null; return; }
+            if (dst == null) dst = new Test.BBB();
+        }
+
+        void CompactBuffer.ICompactBufferSerializer<Test.BBB>.Read(System.IO.BinaryReader reader, ref Test.BBB target)
+        {
+            Read(reader, ref target);
+        }
+
+        void CompactBuffer.ICompactBufferSerializer<Test.BBB>.Write(System.IO.BinaryWriter writer, ref Test.BBB target)
+        {
+            Write(writer, ref target);
+        }
+
+        void CompactBuffer.ICompactBufferSerializer<Test.BBB>.Copy(ref Test.BBB src, ref Test.BBB dst)
+        {
+            Copy(ref src, ref dst);
+        }
+    }
+
+    [CompactBuffer.CompactBuffer(typeof(Test.CCC))]
+    public class Test_CCC_Serializer : CompactBuffer.ICompactBufferSerializer<Test.CCC>
+    {
+        public static void Read(System.IO.BinaryReader reader, ref Test.CCC target)
+        {
+        }
+
+        public static void Write(System.IO.BinaryWriter writer, ref Test.CCC target)
+        {
+            CompactBuffer.CompactBufferUtils.WriteLength(writer, 1);
+        }
+
+        public static void Copy(ref Test.CCC src, ref Test.CCC dst)
+        {
+        }
+
+        void CompactBuffer.ICompactBufferSerializer<Test.CCC>.Read(System.IO.BinaryReader reader, ref Test.CCC target)
+        {
+            Read(reader, ref target);
+        }
+
+        void CompactBuffer.ICompactBufferSerializer<Test.CCC>.Write(System.IO.BinaryWriter writer, ref Test.CCC target)
+        {
+            Write(writer, ref target);
+        }
+
+        void CompactBuffer.ICompactBufferSerializer<Test.CCC>.Copy(ref Test.CCC src, ref Test.CCC dst)
+        {
+            Copy(ref src, ref dst);
+        }
+    }
+}
+

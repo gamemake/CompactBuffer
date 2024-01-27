@@ -8,7 +8,7 @@ namespace CompactBuffer
 {
     public static class CompactBufferUtils
     {
-        public static IEnumerable<Type> EnumAllClass(Type parentType, bool instance = true)
+        public static IEnumerable<Type> EnumAllTypes(Type parentType)
         {
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
@@ -26,11 +26,6 @@ namespace CompactBuffer
                 {
                     foreach (var type in types)
                     {
-                        if (type.IsAbstract && instance)
-                        {
-                            continue;
-                        }
-
                         if (parentType.IsInterface)
                         {
                             foreach (var itype in type.GetInterfaces())
