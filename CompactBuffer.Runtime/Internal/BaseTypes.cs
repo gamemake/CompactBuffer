@@ -4,8 +4,12 @@ using System.IO;
 
 namespace CompactBuffer.Internal
 {
+    public abstract class BaseTypeSerializer
+    {
+    }
+
     [CompactBuffer(typeof(sbyte))]
-    public class SByteSerializer : ICompactBufferSerializer<sbyte>
+    public class SByteSerializer : BaseTypeSerializer, ICompactBufferSerializer<sbyte>
     {
         public void Read(BinaryReader reader, ref sbyte target)
         {
@@ -24,7 +28,7 @@ namespace CompactBuffer.Internal
     }
 
     [CompactBuffer(typeof(short))]
-    public class ShortSerializer : ICompactBufferSerializer<short>
+    public class ShortSerializer : BaseTypeSerializer, ICompactBufferSerializer<short>
     {
         public void Read(BinaryReader reader, ref short target)
         {
@@ -43,7 +47,7 @@ namespace CompactBuffer.Internal
     }
 
     [CompactBuffer(typeof(int))]
-    public class IntSerializer : ICompactBufferSerializer<int>
+    public class IntSerializer : BaseTypeSerializer, ICompactBufferSerializer<int>
     {
         public void Read(BinaryReader reader, ref int target)
         {
@@ -62,7 +66,7 @@ namespace CompactBuffer.Internal
     }
 
     [CompactBuffer(typeof(long))]
-    public class LongSerializer : ICompactBufferSerializer<long>
+    public class LongSerializer : BaseTypeSerializer, ICompactBufferSerializer<long>
     {
         public void Read(BinaryReader reader, ref long target)
         {
@@ -81,7 +85,7 @@ namespace CompactBuffer.Internal
     }
 
     [CompactBuffer(typeof(byte))]
-    public class ByteSerializer : ICompactBufferSerializer<byte>
+    public class ByteSerializer : BaseTypeSerializer, ICompactBufferSerializer<byte>
     {
         public void Read(BinaryReader reader, ref byte target)
         {
@@ -100,7 +104,7 @@ namespace CompactBuffer.Internal
     }
 
     [CompactBuffer(typeof(ushort))]
-    public class UShortSerializer : ICompactBufferSerializer<ushort>
+    public class UShortSerializer : BaseTypeSerializer, ICompactBufferSerializer<ushort>
     {
         public void Read(BinaryReader reader, ref ushort target)
         {
@@ -119,7 +123,7 @@ namespace CompactBuffer.Internal
     }
 
     [CompactBuffer(typeof(uint))]
-    public class UIntSerializer : ICompactBufferSerializer<uint>
+    public class UIntSerializer : BaseTypeSerializer, ICompactBufferSerializer<uint>
     {
         public void Read(BinaryReader reader, ref uint target)
         {
@@ -138,7 +142,7 @@ namespace CompactBuffer.Internal
     }
 
     [CompactBuffer(typeof(ulong))]
-    public class ULongSerializer : ICompactBufferSerializer<ulong>
+    public class ULongSerializer : BaseTypeSerializer, ICompactBufferSerializer<ulong>
     {
         public void Read(BinaryReader reader, ref ulong target)
         {
@@ -157,7 +161,7 @@ namespace CompactBuffer.Internal
     }
 
     [CompactBuffer(typeof(float))]
-    public class FloatSerializer : ICompactBufferSerializer<float>
+    public class FloatSerializer : BaseTypeSerializer, ICompactBufferSerializer<float>
     {
         public void Read(BinaryReader reader, ref float target)
         {
@@ -176,7 +180,7 @@ namespace CompactBuffer.Internal
     }
 
     [CompactBuffer(typeof(double))]
-    public class DoubleSerializer : ICompactBufferSerializer<double>
+    public class DoubleSerializer : BaseTypeSerializer, ICompactBufferSerializer<double>
     {
         public void Read(BinaryReader reader, ref double target)
         {
@@ -195,7 +199,7 @@ namespace CompactBuffer.Internal
     }
 
     [CompactBuffer(typeof(bool))]
-    public class BoolSerializer : ICompactBufferSerializer<bool>
+    public class BoolSerializer : BaseTypeSerializer, ICompactBufferSerializer<bool>
     {
         public void Read(BinaryReader reader, ref bool target)
         {
@@ -213,8 +217,8 @@ namespace CompactBuffer.Internal
         }
     }
 
-   [CompactBuffer(typeof(string))]
-    public class StringSerializer : ICompactBufferSerializer<string>
+    [CompactBuffer(typeof(string))]
+    public class StringSerializer : BaseTypeSerializer, ICompactBufferSerializer<string>
     {
         public void Read(BinaryReader reader, ref string target)
         {

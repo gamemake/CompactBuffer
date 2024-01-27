@@ -11,6 +11,6 @@ public class TestGenerator
         var generator = new Generator();
         generator.AddAssembly(typeof(Test.AAA).Assembly);
         var result = generator.GenCode();
-        File.WriteAllText("/Users/deepblue/aaaa.cs", result);
+        File.WriteAllText("D:\\aaaa.cs", result);
     }
 }

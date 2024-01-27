@@ -82,7 +82,7 @@ namespace CompactBuffer
             }
             foreach (var field in fields)
             {
-                builder.AppendLine($"            {GetSerializerName(field)}.Read(reader, ref target.{field.Name});");
+                GenReadField(builder, field);
             }
             builder.AppendLine($"        }}");
             builder.AppendLine($"");
@@ -99,7 +99,7 @@ namespace CompactBuffer
             builder.AppendLine($"            CompactBuffer.CompactBufferUtils.WriteLength(writer, {fields.Count + 1});");
             foreach (var field in fields)
             {
-                builder.AppendLine($"            {GetSerializerName(field)}.Write(writer, ref target.{field.Name});");
+                GenWriteField(builder, field);
             }
             builder.AppendLine($"        }}");
             builder.AppendLine($"");
@@ -112,10 +112,40 @@ namespace CompactBuffer
             }
             foreach (var field in fields)
             {
-                builder.AppendLine($"            {GetSerializerName(field)}.Copy(ref src.{field.Name}, ref dst.{field.Name});");
+                GenCopyField(builder, field);
             }
             builder.AppendLine($"        }}");
             builder.AppendLine($"    }}");
+        }
+
+        private void GenReadField(StringBuilder builder, FieldInfo field)
+        {
+            if (field.GetCustomAttribute<CustomSerializerAttribute>() == null && CompactBuffer.IsBaseType(field.FieldType))
+            {
+                builder.AppendLine($"            target.{field.Name} = reader.Read{field.FieldType.Name}();");
+                return;
+            }
+            builder.AppendLine($"            {GetSerializerName(field)}.Read(reader, ref target.{field.Name});");
+        }
+
+        private void GenWriteField(StringBuilder builder, FieldInfo field)
+        {
+            if (field.GetCustomAttribute<CustomSerializerAttribute>() == null && CompactBuffer.IsBaseType(field.FieldType))
+            {
+                builder.AppendLine($"            writer.Write(target.{field.Name});");
+                return;
+            }
+            builder.AppendLine($"            {GetSerializerName(field)}.Write(writer, ref target.{field.Name});");
+        }
+
+        private void GenCopyField(StringBuilder builder, FieldInfo field)
+        {
+            if (field.GetCustomAttribute<CustomSerializerAttribute>() == null && CompactBuffer.IsBaseType(field.FieldType))
+            {
+                builder.AppendLine($"            dst.{field.Name} = src.{field.Name};");
+                return;
+            }
+            builder.AppendLine($"            {GetSerializerName(field)}.Copy(ref src.{field.Name}, ref dst.{field.Name});");
         }
 
         private string GetSerializerName(FieldInfo field)

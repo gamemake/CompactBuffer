@@ -6,7 +6,7 @@ namespace CompactBuffer.Internal
 {
     public class ArraySerializer<TElement> : ICompactBufferSerializer<TElement[]>
     {
-        private ICompactBufferSerializer<TElement> m_ElementSerializer = CompactBuffer.GetSerializer<TElement>();
+        private static ICompactBufferSerializer<TElement> m_ElementSerializer = CompactBuffer.GetSerializer<TElement>();
 
         public void Read(BinaryReader reader, ref TElement[] target)
         {
@@ -17,7 +17,8 @@ namespace CompactBuffer.Internal
                 return;
             }
 
-            if (target.Length != --length)
+            length -= 1;
+            if (target == null || target.Length != length)
             {
                 target = new TElement[length];
             }

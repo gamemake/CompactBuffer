@@ -62,6 +62,23 @@ namespace CompactBuffer
             public static TSerializer m_Serializer = new TSerializer();
         }
 
+        public static bool IsBaseType(Type type)
+        {
+            if (type == typeof(sbyte)) return true;
+            if (type == typeof(short)) return true;
+            if (type == typeof(int)) return true;
+            if (type == typeof(long)) return true;
+            if (type == typeof(byte)) return true;
+            if (type == typeof(ushort)) return true;
+            if (type == typeof(uint)) return true;
+            if (type == typeof(ulong)) return true;
+            if (type == typeof(float)) return true;
+            if (type == typeof(double)) return true;
+            if (type == typeof(bool)) return true;
+            if (type == typeof(string)) return true;
+            return false;
+        }
+
         public static ICompactBufferSerializer<T> GetSerializer<T>()
         {
             return SerializerGetter<T>.Serializer;

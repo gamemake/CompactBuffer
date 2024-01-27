@@ -23,7 +23,24 @@ public class TestSerializer
     [Fact]
     public void Test1()
     {
-        var src = new Test.AAA();
+        var src = new Test.AAA()
+        {
+            _sbyte = 12,
+            _short = 15,
+            _int = 17,
+            _long = 19,
+            _byte = 21,
+            _ushort = 23,
+            _uint = 27,
+            _ulong = 29,
+            _bool = true,
+            _string = "",
+            i = 1999,
+            vvv = null,
+            vvv0 = new int[0],
+            vvv1 = new int[1],
+            vvv10 = new int[10],
+        };
         var dst = default(Test.AAA);
         CompactBuffer.GetSerializer<Test.AAA>().Write(m_Writer, ref src);
         CompactBuffer.GetSerializer<Test.AAA>().Read(m_Reader, ref dst);

@@ -7,8 +7,21 @@ namespace Test
     [CompactBufferGenCode]
     public class AAA
     {
+        public sbyte _sbyte;
+        public short _short;
+        public int _int;
+        public long _long;
+        public byte _byte;
+        public ushort _ushort;
+        public uint _uint;
+        public ulong _ulong;
+        public bool _bool;
+        public string _string;
         public int i = 0;
         public int[] vvv = null;
+        public int[] vvv0 = null;
+        public int[] vvv1 = null;
+        public int[] vvv10 = null;
     }
 
     [CompactBufferGenCode]
