@@ -62,6 +62,11 @@ namespace CompactBuffer
             public static TSerializer m_Serializer = new TSerializer();
         }
 
+        public static void Reset()
+        {
+            m_Singleton = new CompactBuffer();
+        }
+
         public static bool IsBaseType(Type type)
         {
             if (type == typeof(sbyte)) return true;
@@ -77,6 +82,12 @@ namespace CompactBuffer
             if (type == typeof(bool)) return true;
             if (type == typeof(string)) return true;
             return false;
+        }
+
+        public static ICompactBufferSerializer GetSerializer(Type type)
+        {
+            m_Singleton.m_Serializers.TryGetValue(type, out var serializer);
+            return serializer;
         }
 
         public static ICompactBufferSerializer<T> GetSerializer<T>()

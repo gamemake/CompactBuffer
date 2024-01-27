@@ -6,12 +6,12 @@ using System.Collections.Generic;
 
 namespace CompactBuffer
 {
-    public class Generator
+    public class SerializerGenerator
     {
         private HashSet<Assembly> m_Assemblies = new HashSet<Assembly>();
         private HashSet<Type> m_Types = new HashSet<Type>();
 
-        public Generator()
+        public SerializerGenerator()
         {
         }
 
@@ -20,24 +20,21 @@ namespace CompactBuffer
             m_Assemblies.Add(assembly);
         }
 
-        public void GenCode(string filename)
-        {
-        }
-
         public string GenCode()
         {
             var builder = new StringBuilder();
+            builder.AppendLine($"// Generate by CompactBuffer.Generator");
+            builder.AppendLine();
+            builder.AppendLine($"namespace CompactBufferAutoGen");
+            builder.AppendLine($"{{");
             GenCode(builder);
+            builder.AppendLine($"}}");
+            builder.AppendLine();
             return builder.ToString();
         }
 
         public void GenCode(StringBuilder builder)
         {
-            builder.AppendLine($"// Generate by CompactBuffer.Generator");
-            builder.AppendLine();
-            builder.AppendLine($"namespace CompactBufferAutoGen");
-            builder.AppendLine($"{{");
-
             m_Types.Clear();
             foreach (var type in CompactBufferUtils.EnumAllClass(typeof(object)))
             {
@@ -46,9 +43,6 @@ namespace CompactBuffer
 
                 GenCode(builder, type);
             }
-
-            builder.AppendLine($"}}");
-            builder.AppendLine();
         }
 
         private void GenCode(StringBuilder builder, Type type)
@@ -71,7 +65,7 @@ namespace CompactBuffer
             builder.AppendLine($"    [CompactBuffer.CompactBuffer(typeof({type.FullName}))]");
             builder.AppendLine($"    public class {type.FullName.Replace(".", "_")}_Serializer : CompactBuffer.ICompactBufferSerializer<{type.FullName}>");
             builder.AppendLine($"    {{");
-            builder.AppendLine($"        public void Read(System.IO.BinaryReader reader, ref {type.FullName} target)");
+            builder.AppendLine($"        public static void Read(System.IO.BinaryReader reader, ref {type.FullName} target)");
             builder.AppendLine($"        {{");
             if (!type.IsValueType)
             {
@@ -86,7 +80,7 @@ namespace CompactBuffer
             }
             builder.AppendLine($"        }}");
             builder.AppendLine($"");
-            builder.AppendLine($"        public void Write(System.IO.BinaryWriter writer, ref {type.FullName} target)");
+            builder.AppendLine($"        public static void Write(System.IO.BinaryWriter writer, ref {type.FullName} target)");
             builder.AppendLine($"        {{");
             if (!type.IsValueType)
             {
@@ -103,7 +97,7 @@ namespace CompactBuffer
             }
             builder.AppendLine($"        }}");
             builder.AppendLine($"");
-            builder.AppendLine($"        public void Copy(ref {type.FullName} src, ref {type.FullName} dst)");
+            builder.AppendLine($"        public static void Copy(ref {type.FullName} src, ref {type.FullName} dst)");
             builder.AppendLine($"        {{");
             if (!type.IsValueType)
             {
@@ -115,22 +109,41 @@ namespace CompactBuffer
                 GenCopyField(builder, field);
             }
             builder.AppendLine($"        }}");
+            builder.AppendLine($"");
+            builder.AppendLine($"        void CompactBuffer.ICompactBufferSerializer<{type.FullName}>.Read(System.IO.BinaryReader reader, ref {type.FullName} target)");
+            builder.AppendLine($"        {{");
+            builder.AppendLine($"            Read(reader, ref target);");
+            builder.AppendLine($"        }}");
+            builder.AppendLine($"");
+            builder.AppendLine($"        void CompactBuffer.ICompactBufferSerializer<{type.FullName}>.Write(System.IO.BinaryWriter writer, ref {type.FullName} target)");
+            builder.AppendLine($"        {{");
+            builder.AppendLine($"            Write(writer, ref target);");
+            builder.AppendLine($"        }}");
+            builder.AppendLine($"");
+            builder.AppendLine($"        void CompactBuffer.ICompactBufferSerializer<{type.FullName}>.Copy(ref {type.FullName} src, ref {type.FullName} dst)");
+            builder.AppendLine($"        {{");
+            builder.AppendLine($"            Copy(ref src, ref dst);");
+            builder.AppendLine($"        }}");
+
             builder.AppendLine($"    }}");
         }
 
         private void GenReadField(StringBuilder builder, FieldInfo field)
         {
-            if (field.GetCustomAttribute<CustomSerializerAttribute>() == null && CompactBuffer.IsBaseType(field.FieldType))
+            var attribute = field.GetCustomAttribute<CustomSerializerAttribute>();
+            if (attribute == null && CompactBuffer.IsBaseType(field.FieldType))
             {
                 builder.AppendLine($"            target.{field.Name} = reader.Read{field.FieldType.Name}();");
                 return;
             }
+
             builder.AppendLine($"            {GetSerializerName(field)}.Read(reader, ref target.{field.Name});");
         }
 
         private void GenWriteField(StringBuilder builder, FieldInfo field)
         {
-            if (field.GetCustomAttribute<CustomSerializerAttribute>() == null && CompactBuffer.IsBaseType(field.FieldType))
+            var attribute = field.GetCustomAttribute<CustomSerializerAttribute>();
+            if (attribute == null && CompactBuffer.IsBaseType(field.FieldType))
             {
                 builder.AppendLine($"            writer.Write(target.{field.Name});");
                 return;
@@ -140,7 +153,8 @@ namespace CompactBuffer
 
         private void GenCopyField(StringBuilder builder, FieldInfo field)
         {
-            if (field.GetCustomAttribute<CustomSerializerAttribute>() == null && CompactBuffer.IsBaseType(field.FieldType))
+            var attribute = field.GetCustomAttribute<CustomSerializerAttribute>();
+            if (attribute == null && CompactBuffer.IsBaseType(field.FieldType))
             {
                 builder.AppendLine($"            dst.{field.Name} = src.{field.Name};");
                 return;
@@ -153,6 +167,34 @@ namespace CompactBuffer
             var attribute = field.GetCustomAttribute<CustomSerializerAttribute>();
             if (attribute != null)
             {
+                var type = attribute.SerializerType;
+                if (type.IsGenericType)
+                {
+                    var className = "";
+                    foreach (var ttype in type.GetGenericArguments())
+                    {
+                        if (!string.IsNullOrEmpty(className)) className += ", ";
+                        className += ttype.FullName;
+                    }
+                    className = $"{type.GetGenericTypeDefinition().FullName}<{className}>";
+                    return className;
+                }
+                else
+                {
+                    return attribute.SerializerType.FullName;
+                }
+            }
+            else
+            {
+                var serializer = CompactBuffer.GetSerializer(field.FieldType);
+                if (serializer != null)
+                {
+                    return serializer.GetType().FullName;
+                }
+            }
+
+            if (attribute != null)
+            {
                 return $"CompactBuffer.CompactBuffer.GetCustomSerializer<{attribute.SerializerType.FullName}, {field.FieldType.FullName}>()";
             }
 
@@ -160,6 +202,7 @@ namespace CompactBuffer
             {
                 return $"CompactBuffer.CompactBuffer.GetArraySerializer<{field.FieldType.GetElementType()}>()";
             }
+
             if (field.FieldType.IsGenericType)
             {
                 if (field.FieldType.GetGenericTypeDefinition() == typeof(List<>))
@@ -175,7 +218,8 @@ namespace CompactBuffer
                     return $"CompactBuffer.CompactBuffer.GetDictionarySerializer<{field.FieldType.GetGenericArguments()[0].FullName}, {field.FieldType.GetGenericArguments()[1].FullName}>()";
                 }
             }
-            return $"CompactBuffer.CompactBuffer.GetSerializer<{field.FieldType.FullName}>()";
+
+            return $"CompactBufferAutoGen.{field.FieldType.FullName.Replace(".", "_")}_Serializer";
         }
     }
 }

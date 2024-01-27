@@ -1,6 +1,8 @@
 
 using System.IO;
 using System.Text.Json;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CompactBuffer.Tests;
 
@@ -40,6 +42,10 @@ public class TestSerializer
             vvv0 = new int[0],
             vvv1 = new int[1],
             vvv10 = new int[10],
+            list = null,
+            list0 = new List<int>(),
+            list1 = new List<int>(Enumerable.Repeat(10, 1)),
+            list10 = new List<int>(Enumerable.Repeat(66, 10)),
         };
         var dst = default(Test.AAA);
         CompactBuffer.GetSerializer<Test.AAA>().Write(m_Writer, ref src);

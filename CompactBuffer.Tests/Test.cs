@@ -1,4 +1,5 @@
 
+using System.Collections.Generic;
 using System.IO;
 using CompactBuffer;
 
@@ -22,6 +23,10 @@ namespace Test
         public int[] vvv0 = null;
         public int[] vvv1 = null;
         public int[] vvv10 = null;
+        public List<int> list = null;
+        public List<int> list0 = null;
+        public List<int> list1 = null;
+        public List<int> list10 = null;
     }
 
     [CompactBufferGenCode]
@@ -41,17 +46,32 @@ namespace Test
 
     public class CustomFloatSerializer : ICompactBufferSerializer<float>
     {
-        public void Read(BinaryReader reader, ref float target)
+        public static void Read(BinaryReader reader, ref float target)
         {
             target = (float)reader.ReadInt32();
         }
 
-        public void Write(BinaryWriter writer, ref float target)
+        public static void Write(BinaryWriter writer, ref float target)
         {
             writer.Write((int)target);
         }
 
-        public void Copy(ref float src, ref float dst)
+        public static void Copy(ref float src, ref float dst)
+        {
+            dst = src;
+        }
+
+        void ICompactBufferSerializer<float>.Read(BinaryReader reader, ref float target)
+        {
+            target = (float)reader.ReadInt32();
+        }
+
+        void ICompactBufferSerializer<float>.Write(BinaryWriter writer, ref float target)
+        {
+            writer.Write((int)target);
+        }
+
+        void ICompactBufferSerializer<float>.Copy(ref float src, ref float dst)
         {
             dst = src;
         }
