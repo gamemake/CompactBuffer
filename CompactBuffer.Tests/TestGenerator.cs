@@ -1,6 +1,6 @@
 
-using System.Reflection;
 using System.IO;
+using System.Reflection;
 using System.Diagnostics;
 
 namespace CompactBuffer.Tests;
@@ -42,9 +42,9 @@ public class TestGenerator
         CompactBuffer.Reset();
 
         var resultProtocol = protocolGenerator.GenCode();
-        File.WriteAllText(Path.Join(GetDirName(), "CompactBuffer.Tests", "Protocol.CodeGen.cs"), resultProtocol);
+        File.WriteAllText(Path.Join(GetDirName(), "CompactBuffer.Tests", "CodeGen.Protocol.cs"), resultProtocol);
 
         var resultSerializer = serializerGenerator.GenCode();
-        File.WriteAllText(Path.Join(GetDirName(), "CompactBuffer.Tests", "CompactBuffer.CodeGen.cs"), resultSerializer);
+        File.WriteAllText(Path.Join(GetDirName(), "CompactBuffer.Tests", "CodeGen.CompactBuffer.cs"), resultSerializer);
     }
 }

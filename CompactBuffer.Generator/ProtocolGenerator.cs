@@ -186,9 +186,7 @@ namespace CompactBuffer
                         defaultText = " = default";
                     }
                     builder.AppendLine($"                {GetTypeName(param.ParameterType)} ___{param.Name}{defaultText};");
-                }
-                foreach (var param in method.GetParameters())
-                {
+
                     var attribute = param.ParameterType.GetCustomAttribute<CustomSerializerAttribute>();
                     if (attribute == null && IsBaseType(param.ParameterType))
                     {

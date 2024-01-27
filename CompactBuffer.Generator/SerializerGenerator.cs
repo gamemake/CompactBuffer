@@ -238,7 +238,7 @@ namespace CompactBuffer
                 var serializer = CompactBuffer.GetSerializer(field.FieldType);
                 if (serializer != null)
                 {
-                    return serializer.GetType().FullName;
+                    return GetTypeName(serializer.GetType());
                 }
             }
 

@@ -46,18 +46,15 @@ namespace CompactBuffer
 
             if (type.IsGenericType)
             {
-                if (type.GetGenericTypeDefinition() == typeof(List<>))
+                var paramsName = string.Join(", ", Array.ConvertAll(type.GetGenericArguments(), string (x) =>
                 {
-                    return $"System.Collections.Generic.List<{GetTypeName(type.GetGenericArguments()[0])}>()";
-                }
-                if (type.GetGenericTypeDefinition() == typeof(HashSet<>))
-                {
-                    return $"System.Collections.Generic.HashSet<{GetTypeName(type.GetGenericArguments()[0])}>()";
-                }
-                if (type.GetGenericTypeDefinition() == typeof(Dictionary<,>))
-                {
-                    return $"System.Collections.Generic.Dictionary<{GetTypeName(type.GetGenericArguments()[0])}, {GetTypeName(type.GetGenericArguments()[1])}>()";
-                }
+                    return GetTypeName(x);
+
+                }));
+                var className = type.GetGenericTypeDefinition().FullName;
+                className = className.Substring(0, className.IndexOf("`"));
+                className = $"{className}<{paramsName}>";
+                return className;
             }
 
             return type.FullName;

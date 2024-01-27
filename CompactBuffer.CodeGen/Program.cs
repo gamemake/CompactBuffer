@@ -1,7 +1,6 @@
 ﻿
 using System;
 using System.IO;
-using System.Text;
 using System.Reflection;
 
 namespace CompactBuffer.CodeGen
@@ -16,24 +15,22 @@ namespace CompactBuffer.CodeGen
                 Environment.Exit(-1);
             }
 
-            var generator = new SerializerGenerator();
+            var serializerGenerator = new SerializerGenerator();
+            var protocolGenerator = new ProtocolGenerator(serializerGenerator);
+            CompactBuffer.Reset();
 
             for (var i = 1; i < arg.Length; i++)
             {
                 var assembly = Assembly.LoadFrom(arg[i]);
-                generator.AddAssembly(assembly);
+                serializerGenerator.AddAssembly(assembly);
+                protocolGenerator.AddAssembly(assembly);
             }
 
-            var newText = generator.GenCode();
-            var orgText = string.Empty;
-            if (File.Exists(arg[0]))
-            {
-                File.ReadAllText(arg[0], UTF8Encoding.UTF8);
-            }
-            if (newText != orgText)
-            {
-                File.WriteAllText(arg[0], newText);
-            }
+            var resultProtocol = protocolGenerator.GenCode();
+            File.WriteAllText(Path.Join(arg[0], "CodeGen.Protocol.cs"), resultProtocol);
+
+            var resultSerializer = serializerGenerator.GenCode();
+            File.WriteAllText(Path.Join(arg[0], "CodeGen.CompactBuffer.cs"), resultSerializer);
         }
     }
 }
