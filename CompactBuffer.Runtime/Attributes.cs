@@ -30,14 +30,23 @@ namespace CompactBuffer
         }
     }
 
+    public enum ProtocolType
+    {
+        None,
+        Client,
+        Server,
+    }
+
     public class ProtocolAttribute : Attribute
     {
         public readonly int ProtocolId;
+        public readonly ProtocolType ProtocolType;
         public readonly bool Dispatch;
 
-        public ProtocolAttribute(int protocolId, bool dispatch = false)
+        public ProtocolAttribute(int protocolId, ProtocolType protocolType = ProtocolType.None, bool dispatch = false)
         {
             ProtocolId = protocolId;
+            ProtocolType = protocolType;
             Dispatch = dispatch;
         }
     }

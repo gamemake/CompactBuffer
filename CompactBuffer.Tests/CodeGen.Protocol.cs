@@ -1,5 +1,10 @@
 // Generate by CompactBuffer.CodeGen
 
+#if !PROTOCOL_CLIENT && !PROTOCOL_SERVER
+#define PROTOCOL_CLIENT
+#define PROTOCOL_SERVER
+#endif
+
 namespace ProtocolAutoGen
 {
     public class Test_IServerApi_Proxy : Test.IServerApi
@@ -56,8 +61,7 @@ namespace ProtocolAutoGen
             }
             if (index == 1)
             {
-                int ___a;
-                ___a = reader.ReadInt32();
+                var ___a = reader.ReadInt32();
                 m_Target?.CallInt(___a);
                 return;
             }

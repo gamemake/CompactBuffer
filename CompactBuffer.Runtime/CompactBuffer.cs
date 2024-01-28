@@ -109,7 +109,7 @@ namespace CompactBuffer
             }
         }
 
-        public static ICompactBufferSerializer<HashSet<T>> GetHashSerializer<T>()
+        public static ICompactBufferSerializer<HashSet<T>> GetHashSetSerializer<T>()
         {
             if (m_Singleton.m_Serializers.TryGetValue(typeof(HashSet<T>), out var serializer))
             {
@@ -123,7 +123,7 @@ namespace CompactBuffer
             }
         }
 
-        public static ICompactBufferSerializer<Dictionary<TKey, TValue>> GetHashSerializer<TKey, TValue>()
+        public static ICompactBufferSerializer<Dictionary<TKey, TValue>> GetDictionarySerializer<TKey, TValue>()
         {
             if (m_Singleton.m_Serializers.TryGetValue(typeof(Dictionary<TKey, TValue>), out var serializer))
             {

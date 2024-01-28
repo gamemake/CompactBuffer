@@ -193,9 +193,12 @@ namespace CompactBufferAutoGen
         {
             var length = CompactBuffer.CompactBufferUtils.ReadLength(reader);
             if (length == 0) { target = null; return; }
-            if (length != 2) { throw new System.Exception("aaaa"); }
+            if (length != 5) { throw new System.Exception("aaaa"); }
             if (target == null) { target = new Test.PA(); }
             target.kkk = reader.ReadInt32();
+            CompactBuffer.CompactBuffer.GetListSerializer<int>().Read(reader, ref target.list);
+            CompactBuffer.CompactBuffer.GetHashSetSerializer<int>().Read(reader, ref target.hashset);
+            CompactBuffer.CompactBuffer.GetDictionarySerializer<string, int>().Read(reader, ref target.dict);
         }
 
         public static void Write(System.IO.BinaryWriter writer, ref Test.PA target)
@@ -205,8 +208,11 @@ namespace CompactBufferAutoGen
                 CompactBuffer.CompactBufferUtils.WriteLength(writer, 0);
                 return;
             }
-            CompactBuffer.CompactBufferUtils.WriteLength(writer, 2);
+            CompactBuffer.CompactBufferUtils.WriteLength(writer, 5);
             writer.Write(target.kkk);
+            CompactBuffer.CompactBuffer.GetListSerializer<int>().Write(writer, ref target.list);
+            CompactBuffer.CompactBuffer.GetHashSetSerializer<int>().Write(writer, ref target.hashset);
+            CompactBuffer.CompactBuffer.GetDictionarySerializer<string, int>().Write(writer, ref target.dict);
         }
 
         public static void Copy(ref Test.PA src, ref Test.PA dst)
@@ -214,6 +220,9 @@ namespace CompactBufferAutoGen
             if (src == null) { dst = null; return; }
             if (dst == null) dst = new Test.PA();
             dst.kkk = src.kkk;
+            CompactBuffer.CompactBuffer.GetListSerializer<int>().Copy(ref src.list, ref dst.list);
+            CompactBuffer.CompactBuffer.GetHashSetSerializer<int>().Copy(ref src.hashset, ref dst.hashset);
+            CompactBuffer.CompactBuffer.GetDictionarySerializer<string, int>().Copy(ref src.dict, ref dst.dict);
         }
 
         void CompactBuffer.ICompactBufferSerializer<Test.PA>.Read(System.IO.BinaryReader reader, ref Test.PA target)

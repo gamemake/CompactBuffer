@@ -37,6 +37,12 @@ namespace CompactBuffer
 
         public void GenCode(StringBuilder builder)
         {
+            builder.AppendLine($"#if !PROTOCOL_CLIENT && !PROTOCOL_SERVER");
+            builder.AppendLine($"#define PROTOCOL_CLIENT");
+            builder.AppendLine($"#define PROTOCOL_SERVER");
+            builder.AppendLine($"#endif");
+            builder.AppendLine();
+
             foreach (var type in CompactBufferUtils.EnumAllTypes(typeof(IProtocol)))
             {
                 if (!type.IsInterface) continue;
@@ -115,6 +121,16 @@ namespace CompactBuffer
 
         private void GenProxy(StringBuilder builder, Type type, List<MethodInfo> methods)
         {
+            var protoAttr = type.GetCustomAttribute<ProtocolAttribute>();
+            if (protoAttr.ProtocolType == ProtocolType.Client)
+            {
+                builder.AppendLine($"#if PROTOCOL_SERVER");
+            }
+            if (protoAttr.ProtocolType == ProtocolType.Server)
+            {
+                builder.AppendLine($"#if PROTOCOL_CLIENT");
+            }
+
             builder.AppendLine($"namespace ProtocolAutoGen");
             builder.AppendLine($"{{");
             builder.AppendLine($"    public class {type.FullName.Replace(".", "_")}_Proxy : {type.FullName}");
@@ -140,8 +156,8 @@ namespace CompactBuffer
                 builder.AppendLine($"            writer.Write((ushort){i});");
                 foreach (var param in method.GetParameters())
                 {
-                    var attribute = param.ParameterType.GetCustomAttribute<CustomSerializerAttribute>();
-                    if (attribute == null && IsBaseType(param.ParameterType))
+                    var paramAttr = param.ParameterType.GetCustomAttribute<CustomSerializerAttribute>();
+                    if (paramAttr == null && IsBaseType(param.ParameterType))
                     {
                         builder.AppendLine($"            writer.Write(___{param.Name});");
                     }
@@ -155,10 +171,25 @@ namespace CompactBuffer
             }
             builder.AppendLine($"    }}");
             builder.AppendLine($"}}");
+
+            if (protoAttr.ProtocolType == ProtocolType.Client || protoAttr.ProtocolType == ProtocolType.Server)
+            {
+                builder.AppendLine($"#endif");
+            }
         }
 
         private void GenStub(StringBuilder builder, Type type, List<MethodInfo> methods)
         {
+            var protoAttr = type.GetCustomAttribute<ProtocolAttribute>();
+            if (protoAttr.ProtocolType == ProtocolType.Client)
+            {
+                builder.AppendLine($"#if PROTOCOL_CLIENT");
+            }
+            if (protoAttr.ProtocolType == ProtocolType.Server)
+            {
+                builder.AppendLine($"#if PROTOCOL_SERVER");
+            }
+
             builder.AppendLine($"namespace ProtocolAutoGen");
             builder.AppendLine($"{{");
             builder.AppendLine($"    public class {type.FullName.Replace(".", "_")}_Stub : CompactBuffer.IProtocolStub");
@@ -180,22 +211,7 @@ namespace CompactBuffer
                 builder.AppendLine($"            {{");
                 foreach (var param in method.GetParameters())
                 {
-                    var defaultText = "";
-                    if (!param.ParameterType.IsValueType)
-                    {
-                        defaultText = " = default";
-                    }
-                    builder.AppendLine($"                {GetTypeName(param.ParameterType)} ___{param.Name}{defaultText};");
-
-                    var attribute = param.ParameterType.GetCustomAttribute<CustomSerializerAttribute>();
-                    if (attribute == null && IsBaseType(param.ParameterType))
-                    {
-                        builder.AppendLine($"                ___{param.Name} = reader.Read{param.ParameterType.Name}();");
-                    }
-                    else
-                    {
-                        builder.AppendLine($"                {GetSerializerName(param)}.Read(reader, ref ___{param.Name});");
-                    }
+                    GenStubField(builder, type, method, param);
                 }
                 var paramsText = string.Join(", ", Array.ConvertAll(method.GetParameters(), string (x) =>
                 {
@@ -209,6 +225,30 @@ namespace CompactBuffer
             builder.AppendLine($"        }}");
             builder.AppendLine($"    }}");
             builder.AppendLine($"}}");
+
+            if (protoAttr.ProtocolType == ProtocolType.Client || protoAttr.ProtocolType == ProtocolType.Server)
+            {
+                builder.AppendLine($"#endif");
+            }
+        }
+
+        private void GenStubField(StringBuilder builder, Type type, MethodInfo method, ParameterInfo param)
+        {
+            var attribute = param.ParameterType.GetCustomAttribute<CustomSerializerAttribute>();
+            if (attribute == null && IsBaseType(param.ParameterType))
+            {
+                builder.AppendLine($"                var ___{param.Name} = reader.Read{param.ParameterType.Name}();");
+            }
+            else
+            {
+                var defaultText = "";
+                if (!param.ParameterType.IsValueType)
+                {
+                    defaultText = " = default";
+                }
+                builder.AppendLine($"                {GetTypeName(param.ParameterType)} ___{param.Name}{defaultText};");
+                builder.AppendLine($"                {GetSerializerName(param)}.Read(reader, ref ___{param.Name});");
+            }
         }
 
         private void GenDispach(StringBuilder builder, Type type, List<MethodInfo> methods)

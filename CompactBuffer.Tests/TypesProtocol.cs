@@ -1,11 +1,15 @@
 
 using CompactBuffer;
+using System.Collections.Generic;
 
 namespace Test
 {
     public class PA
     {
         public int kkk;
+        public List<int> list;
+        public HashSet<int> hashset;
+        public Dictionary<string, int> dict;
     }
 
     [Protocol(0)]
