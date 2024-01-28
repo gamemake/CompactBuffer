@@ -27,6 +27,12 @@ namespace Test
         public List<int> list0 = null;
         public List<int> list1 = null;
         public List<int> list10 = null;
+        [Variant]
+        public int variantInt = 0;
+        [Variant]
+        public long variantLong = 10;
+        [Variant]
+        public uint variantUInt = 999;
     }
 
     [CompactBufferGenCode]

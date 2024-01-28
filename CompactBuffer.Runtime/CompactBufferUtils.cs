@@ -48,49 +48,6 @@ namespace CompactBuffer
             }
         }
 
-        public static int ReadLength(this BinaryReader reader)
-        {
-            var b0 = reader.ReadByte();
-            if (b0 < 0x80) return b0;
-            var b1 = reader.ReadByte();
-            if (b1 < 0x80) return (b1 << 7) | (b0 & 0x7f);
-            var b2 = reader.ReadByte();
-            if (b2 < 0x80) return (b2 << 14) | (b1 & 0x7f) << 7 | (b0 & 0x7f);
-            var b3 = reader.ReadByte();
-            return b3 << 21 | (b2 & 0x7f) << 14 | (b1 & 0x7f) << 7 | (b0 & 0x7f);
-        }
-
-        public static void WriteLength(this BinaryWriter writer, int length)
-        {
-            if (length < 0 || length >= (1 << 29))
-            {
-                throw new ArgumentException("length");
-            }
-
-            if (length < (1 << 7))
-            {
-                writer.Write((byte)length);
-            }
-            else if (length < (1 << 14))
-            {
-                writer.Write((byte)((length & 0x7f) | 0x80));
-                writer.Write((byte)(length >> 7));
-            }
-            else if (length < (1 << 21))
-            {
-                writer.Write((byte)((length & 0x7f) | 0x80));
-                writer.Write((byte)(((length >> 7) & 0x7f) | 0x80));
-                writer.Write((byte)(length >> 14));
-            }
-            else
-            {
-                writer.Write((byte)((length & 0x7f) | 0x80));
-                writer.Write((byte)(((length >> 7) & 0x7f) | 0x80));
-                writer.Write((byte)(((length >> 14) & 0x7f) | 0x80));
-                writer.Write((byte)(length >> 21));
-            }
-        }
-
         public static void Resize<T>(this List<T> list, int sz, T c)
         {
             int cur = list.Count;

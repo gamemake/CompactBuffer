@@ -3,6 +3,10 @@ using System;
 
 namespace CompactBuffer
 {
+    public class VariantAttribute : Attribute
+    {
+    }
+
     public class CompactBufferAttribute : Attribute
     {
         public readonly Type SerializerType;

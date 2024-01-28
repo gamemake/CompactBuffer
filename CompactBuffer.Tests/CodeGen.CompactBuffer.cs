@@ -7,9 +7,9 @@ namespace CompactBufferAutoGen
     {
         public static void Read(System.IO.BinaryReader reader, ref Test.AAA target)
         {
-            var length = CompactBuffer.CompactBufferUtils.ReadLength(reader);
+            var length = reader.Read7BitEncodedInt();
             if (length == 0) { target = null; return; }
-            if (length != 20) { throw new System.Exception("aaaa"); }
+            if (length != 23) { throw new System.Exception("aaaa"); }
             if (target == null) { target = new Test.AAA(); }
             target._sbyte = reader.ReadSByte();
             target._short = reader.ReadInt16();
@@ -30,16 +30,19 @@ namespace CompactBufferAutoGen
             CompactBuffer.CompactBuffer.GetListSerializer<int>().Read(reader, ref target.list0);
             CompactBuffer.CompactBuffer.GetListSerializer<int>().Read(reader, ref target.list1);
             CompactBuffer.CompactBuffer.GetListSerializer<int>().Read(reader, ref target.list10);
+            target.variantInt = reader.Read7BitEncodedInt();
+            target.variantLong = reader.Read7BitEncodedInt64();
+            target.variantUInt = reader.ReadUInt32();
         }
 
         public static void Write(System.IO.BinaryWriter writer, ref Test.AAA target)
         {
             if (target == null)
             {
-                CompactBuffer.CompactBufferUtils.WriteLength(writer, 0);
+                writer.Write7BitEncodedInt(0);
                 return;
             }
-            CompactBuffer.CompactBufferUtils.WriteLength(writer, 20);
+            writer.Write7BitEncodedInt(23);
             writer.Write(target._sbyte);
             writer.Write(target._short);
             writer.Write(target._int);
@@ -59,6 +62,9 @@ namespace CompactBufferAutoGen
             CompactBuffer.CompactBuffer.GetListSerializer<int>().Write(writer, ref target.list0);
             CompactBuffer.CompactBuffer.GetListSerializer<int>().Write(writer, ref target.list1);
             CompactBuffer.CompactBuffer.GetListSerializer<int>().Write(writer, ref target.list10);
+            writer.Write7BitEncodedInt(target.variantInt);
+            writer.Write7BitEncodedInt64(target.variantLong);
+            writer.Write(target.variantUInt);
         }
 
         public static void Copy(ref Test.AAA src, ref Test.AAA dst)
@@ -84,6 +90,9 @@ namespace CompactBufferAutoGen
             CompactBuffer.CompactBuffer.GetListSerializer<int>().Copy(ref src.list0, ref dst.list0);
             CompactBuffer.CompactBuffer.GetListSerializer<int>().Copy(ref src.list1, ref dst.list1);
             CompactBuffer.CompactBuffer.GetListSerializer<int>().Copy(ref src.list10, ref dst.list10);
+            dst.variantInt = src.variantInt;
+            dst.variantLong = src.variantLong;
+            dst.variantUInt = src.variantUInt;
         }
 
         void CompactBuffer.ICompactBufferSerializer<Test.AAA>.Read(System.IO.BinaryReader reader, ref Test.AAA target)
@@ -107,7 +116,7 @@ namespace CompactBufferAutoGen
     {
         public static void Read(System.IO.BinaryReader reader, ref Test.BBB target)
         {
-            var length = CompactBuffer.CompactBufferUtils.ReadLength(reader);
+            var length = reader.Read7BitEncodedInt();
             if (length == 0) { target = null; return; }
             if (length != 2) { throw new System.Exception("aaaa"); }
             if (target == null) { target = new Test.BBB(); }
@@ -118,10 +127,10 @@ namespace CompactBufferAutoGen
         {
             if (target == null)
             {
-                CompactBuffer.CompactBufferUtils.WriteLength(writer, 0);
+                writer.Write7BitEncodedInt(0);
                 return;
             }
-            CompactBuffer.CompactBufferUtils.WriteLength(writer, 2);
+            writer.Write7BitEncodedInt(2);
             writer.Write(target.i);
         }
 
@@ -159,7 +168,7 @@ namespace CompactBufferAutoGen
 
         public static void Write(System.IO.BinaryWriter writer, ref Test.CCC target)
         {
-            CompactBuffer.CompactBufferUtils.WriteLength(writer, 3);
+            writer.Write7BitEncodedInt(3);
             writer.Write(target.i);
             Test.CustomFloatSerializer.Write(writer, ref target.customFloat);
         }
@@ -191,7 +200,7 @@ namespace CompactBufferAutoGen
     {
         public static void Read(System.IO.BinaryReader reader, ref Test.PA target)
         {
-            var length = CompactBuffer.CompactBufferUtils.ReadLength(reader);
+            var length = reader.Read7BitEncodedInt();
             if (length == 0) { target = null; return; }
             if (length != 5) { throw new System.Exception("aaaa"); }
             if (target == null) { target = new Test.PA(); }
@@ -205,10 +214,10 @@ namespace CompactBufferAutoGen
         {
             if (target == null)
             {
-                CompactBuffer.CompactBufferUtils.WriteLength(writer, 0);
+                writer.Write7BitEncodedInt(0);
                 return;
             }
-            CompactBuffer.CompactBufferUtils.WriteLength(writer, 5);
+            writer.Write7BitEncodedInt(5);
             writer.Write(target.kkk);
             CompactBuffer.CompactBuffer.GetListSerializer<int>().Write(writer, ref target.list);
             CompactBuffer.CompactBuffer.GetHashSetSerializer<int>().Write(writer, ref target.hashset);

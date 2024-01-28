@@ -159,7 +159,15 @@ namespace CompactBuffer
                     var paramAttr = param.ParameterType.GetCustomAttribute<CustomSerializerAttribute>();
                     if (paramAttr == null && IsBaseType(param.ParameterType))
                     {
-                        builder.AppendLine($"            writer.Write(___{param.Name});");
+                        var variantName = GetVariantName(param.ParameterType);
+                        if (param.GetCustomAttribute<VariantAttribute>() != null && !string.IsNullOrEmpty(variantName))
+                        {
+                            builder.AppendLine($"            writer.Write7BitEncoded{variantName}(___{param.Name});");
+                        }
+                        else
+                        {
+                            builder.AppendLine($"            writer.Write(___{param.Name});");
+                        }
                     }
                     else
                     {
@@ -237,7 +245,15 @@ namespace CompactBuffer
             var attribute = param.ParameterType.GetCustomAttribute<CustomSerializerAttribute>();
             if (attribute == null && IsBaseType(param.ParameterType))
             {
-                builder.AppendLine($"                var ___{param.Name} = reader.Read{param.ParameterType.Name}();");
+                var variantName = GetVariantName(param.ParameterType);
+                if (param.GetCustomAttribute<VariantAttribute>() != null && !string.IsNullOrEmpty(variantName))
+                {
+                    builder.AppendLine($"                var ___{param.Name} = reader.Read7BitEncoded{variantName}();");
+                }
+                else
+                {
+                    builder.AppendLine($"                var ___{param.Name} = reader.Read{param.ParameterType.Name}();");
+                }
             }
             else
             {

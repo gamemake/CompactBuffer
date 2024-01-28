@@ -56,5 +56,12 @@ namespace CompactBuffer
 
             return type.FullName;
         }
+
+        public string GetVariantName(Type type)
+        {
+            if(type==typeof(int)) return "Int";
+            if(type==typeof(long)) return "Int64";
+            return "";
+        }
     }
 }

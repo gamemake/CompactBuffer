@@ -119,7 +119,7 @@ namespace CompactBuffer
             builder.AppendLine($"        {{");
             if (!type.IsValueType)
             {
-                builder.AppendLine($"            var length = CompactBuffer.CompactBufferUtils.ReadLength(reader);");
+                builder.AppendLine($"            var length = reader.Read7BitEncodedInt();");
                 builder.AppendLine($"            if (length == 0) {{ target = null; return; }}");
                 builder.AppendLine($"            if (length != {fields.Count + 1}) {{ throw new System.Exception(\"aaaa\"); }}");
                 builder.AppendLine($"            if (target == null) {{ target = new {type.FullName}(); }}");
@@ -136,11 +136,11 @@ namespace CompactBuffer
             {
                 builder.AppendLine($"            if (target == null)");
                 builder.AppendLine($"            {{");
-                builder.AppendLine($"                CompactBuffer.CompactBufferUtils.WriteLength(writer, 0);");
+                builder.AppendLine($"                writer.Write7BitEncodedInt(0);");
                 builder.AppendLine($"                return;");
                 builder.AppendLine($"            }}");
             }
-            builder.AppendLine($"            CompactBuffer.CompactBufferUtils.WriteLength(writer, {fields.Count + 1});");
+            builder.AppendLine($"            writer.Write7BitEncodedInt({fields.Count + 1});");
             foreach (var field in fields)
             {
                 GenWriteField(builder, field);
@@ -182,7 +182,15 @@ namespace CompactBuffer
             var attribute = field.GetCustomAttribute<CustomSerializerAttribute>();
             if (attribute == null && IsBaseType(field.FieldType))
             {
-                builder.AppendLine($"            target.{field.Name} = reader.Read{field.FieldType.Name}();");
+                var variantName = GetVariantName(field.FieldType);
+                if (field.GetCustomAttribute<VariantAttribute>() != null && !string.IsNullOrEmpty(variantName))
+                {
+                    builder.AppendLine($"            target.{field.Name} = reader.Read7BitEncoded{variantName}();");
+                }
+                else
+                {
+                    builder.AppendLine($"            target.{field.Name} = reader.Read{field.FieldType.Name}();");
+                }
                 return;
             }
 
@@ -194,7 +202,15 @@ namespace CompactBuffer
             var attribute = field.GetCustomAttribute<CustomSerializerAttribute>();
             if (attribute == null && IsBaseType(field.FieldType))
             {
-                builder.AppendLine($"            writer.Write(target.{field.Name});");
+                var variantName = GetVariantName(field.FieldType);
+                if (field.GetCustomAttribute<VariantAttribute>() != null && !string.IsNullOrEmpty(variantName))
+                {
+                    builder.AppendLine($"            writer.Write7BitEncoded{variantName}(target.{field.Name});");
+                }
+                else
+                {
+                    builder.AppendLine($"            writer.Write(target.{field.Name});");
+                }
                 return;
             }
             builder.AppendLine($"            {GetSerializerName(field)}.Write(writer, ref target.{field.Name});");

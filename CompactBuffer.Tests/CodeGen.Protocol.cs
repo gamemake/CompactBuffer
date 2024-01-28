@@ -38,6 +38,18 @@ namespace ProtocolAutoGen
             CompactBufferAutoGen.Test_PA_Serializer.Write(writer, ref ___pa);
             m_Sender.Send(writer);
         }
+
+        void Test.IServerApi.CallVariant(int ___v1, long ___v2, uint ___v3, int ___v4, int ___v5)
+        {
+            var writer = m_Sender.GetStreamWriter();
+            writer.Write((ushort)3);
+            writer.Write7BitEncodedInt(___v1);
+            writer.Write7BitEncodedInt64(___v2);
+            writer.Write(___v3);
+            writer.Write(___v4);
+            writer.Write(___v5);
+            m_Sender.Send(writer);
+        }
     }
 }
 namespace ProtocolAutoGen
@@ -70,6 +82,16 @@ namespace ProtocolAutoGen
                 Test.PA ___pa = default;
                 CompactBufferAutoGen.Test_PA_Serializer.Read(reader, ref ___pa);
                 m_Target?.CallPA(___pa);
+                return;
+            }
+            if (index == 3)
+            {
+                var ___v1 = reader.Read7BitEncodedInt();
+                var ___v2 = reader.Read7BitEncodedInt64();
+                var ___v3 = reader.ReadUInt32();
+                var ___v4 = reader.ReadInt32();
+                var ___v5 = reader.ReadInt32();
+                m_Target?.CallVariant(___v1, ___v2, ___v3, ___v4, ___v5);
                 return;
             }
             throw new System.Exception("Test.IServerApi invalid method index" + index);

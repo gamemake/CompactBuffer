@@ -10,7 +10,7 @@ namespace CompactBuffer.Internal
 
         public static void Read(BinaryReader reader, ref TElement[] target)
         {
-            var length = reader.ReadLength();
+            var length = reader.Read7BitEncodedInt();
             if (length <= 0)
             {
                 target = null;
@@ -33,11 +33,11 @@ namespace CompactBuffer.Internal
         {
             if (target == null)
             {
-                writer.WriteLength(0);
+                writer.Write7BitEncodedInt(0);
                 return;
             }
 
-            writer.WriteLength(target.Length + 1);
+            writer.Write7BitEncodedInt(target.Length + 1);
             for (var i = 0; i < target.Length; i++)
             {
                 m_ElementSerializer.Write(writer, ref target[i]);
@@ -83,7 +83,7 @@ namespace CompactBuffer.Internal
 
         public static void Read(BinaryReader reader, ref List<TElement> target)
         {
-            var length = reader.ReadLength();
+            var length = reader.Read7BitEncodedInt();
             if (length <= 0)
             {
                 target = null;
@@ -111,11 +111,11 @@ namespace CompactBuffer.Internal
         {
             if (target == null)
             {
-                writer.WriteLength(0);
+                writer.Write7BitEncodedInt(0);
                 return;
             }
 
-            writer.WriteLength(target.Count + 1);
+            writer.Write7BitEncodedInt(target.Count + 1);
             for (var i = 0; i < target.Count; i++)
             {
                 var element = target[i];
@@ -171,7 +171,7 @@ namespace CompactBuffer.Internal
 
         public static void Read(BinaryReader reader, ref HashSet<TElement> target)
         {
-            var length = reader.ReadLength();
+            var length = reader.Read7BitEncodedInt();
             if (length-- <= 0)
             {
                 target = null;
@@ -199,11 +199,11 @@ namespace CompactBuffer.Internal
         {
             if (target == null)
             {
-                writer.WriteLength(0);
+                writer.Write7BitEncodedInt(0);
                 return;
             }
 
-            writer.WriteLength(target.Count + 1);
+            writer.Write7BitEncodedInt(target.Count + 1);
             foreach (var element in target)
             {
                 var _element = element;
@@ -259,7 +259,7 @@ namespace CompactBuffer.Internal
 
         public static void Read(BinaryReader reader, ref Dictionary<TKey, TValue> target)
         {
-            var length = reader.ReadLength();
+            var length = reader.Read7BitEncodedInt();
             if (length-- <= 0)
             {
                 target = null;
@@ -289,10 +289,10 @@ namespace CompactBuffer.Internal
         {
             if (target == null)
             {
-                writer.WriteLength(0);
+                writer.Write7BitEncodedInt(0);
             }
 
-            writer.WriteLength(target.Count + 1);
+            writer.Write7BitEncodedInt(target.Count + 1);
             foreach (var item in target)
             {
                 var _key = item.Key;
