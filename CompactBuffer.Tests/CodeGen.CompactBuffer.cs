@@ -9,7 +9,7 @@ namespace CompactBufferAutoGen
         {
             var length = reader.Read7BitEncodedInt();
             if (length == 0) { target = null; return; }
-            if (length != 23) { throw new System.Exception("aaaa"); }
+            if (length != 24) { throw new System.Exception("aaaa"); }
             if (target == null) { target = new Test.AAA(); }
             target._sbyte = reader.ReadSByte();
             target._short = reader.ReadInt16();
@@ -33,6 +33,7 @@ namespace CompactBufferAutoGen
             target.variantInt = reader.Read7BitEncodedInt();
             target.variantLong = reader.Read7BitEncodedInt64();
             target.variantUInt = reader.ReadUInt32();
+            target.floatTwoByte = CompactBuffer.CompactBufferUtils.ReadFloatTwoByte(reader.ReadInt16(), 10);
         }
 
         public static void Write(System.IO.BinaryWriter writer, ref Test.AAA target)
@@ -42,7 +43,7 @@ namespace CompactBufferAutoGen
                 writer.Write7BitEncodedInt(0);
                 return;
             }
-            writer.Write7BitEncodedInt(23);
+            writer.Write7BitEncodedInt(24);
             writer.Write(target._sbyte);
             writer.Write(target._short);
             writer.Write(target._int);
@@ -65,6 +66,7 @@ namespace CompactBufferAutoGen
             writer.Write7BitEncodedInt(target.variantInt);
             writer.Write7BitEncodedInt64(target.variantLong);
             writer.Write(target.variantUInt);
+            writer.Write(CompactBuffer.CompactBufferUtils.WriteFloatTwoByte(target.floatTwoByte, 10));
         }
 
         public static void Copy(ref Test.AAA src, ref Test.AAA dst)
@@ -93,6 +95,7 @@ namespace CompactBufferAutoGen
             dst.variantInt = src.variantInt;
             dst.variantLong = src.variantLong;
             dst.variantUInt = src.variantUInt;
+            dst.floatTwoByte = src.floatTwoByte;
         }
 
         void CompactBuffer.ICompactBufferSerializer<Test.AAA>.Read(System.IO.BinaryReader reader, ref Test.AAA target)

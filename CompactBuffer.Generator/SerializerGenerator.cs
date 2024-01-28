@@ -48,8 +48,8 @@ namespace CompactBuffer
                 if (type.IsInterface) continue;
                 if (type.IsAbstract) continue;
 
-                var attribute = type.GetCustomAttribute<CompactBufferGenCodeAttribute>();
-                if (attribute == null) continue;
+                var customSerializer = type.GetCustomAttribute<CompactBufferGenCodeAttribute>();
+                if (customSerializer == null) continue;
 
                 GenCode(builder, type);
             }
@@ -126,7 +126,7 @@ namespace CompactBuffer
             }
             foreach (var field in fields)
             {
-                GenReadField(builder, field);
+                GenReadField(builder, type, field);
             }
             builder.AppendLine($"        }}");
             builder.AppendLine($"");
@@ -143,7 +143,7 @@ namespace CompactBuffer
             builder.AppendLine($"            writer.Write7BitEncodedInt({fields.Count + 1});");
             foreach (var field in fields)
             {
-                GenWriteField(builder, field);
+                GenWriteField(builder, type, field);
             }
             builder.AppendLine($"        }}");
             builder.AppendLine($"");
@@ -177,15 +177,25 @@ namespace CompactBuffer
             builder.AppendLine($"    }}");
         }
 
-        private void GenReadField(StringBuilder builder, FieldInfo field)
+        private void GenReadField(StringBuilder builder, Type type, FieldInfo field)
         {
-            var attribute = field.GetCustomAttribute<CustomSerializerAttribute>();
-            if (attribute == null && IsBaseType(field.FieldType))
+            var customSerializer = field.GetCustomAttribute<CustomSerializerAttribute>();
+            if (customSerializer == null && IsBaseType(field.FieldType))
             {
-                var variantName = GetVariantName(field.FieldType);
-                if (field.GetCustomAttribute<VariantAttribute>() != null && !string.IsNullOrEmpty(variantName))
+                var float16 = field.GetCustomAttribute<Float16Attribute>();
+                if (float16 == null)
+                {
+                    float16 = type.GetCustomAttribute<Float16Attribute>();
+                }
+
+                var variantName = GetVariantIntName(field.FieldType);
+                if (field.GetCustomAttribute<VariantIntAttribute>() != null && !string.IsNullOrEmpty(variantName))
                 {
                     builder.AppendLine($"            target.{field.Name} = reader.Read7BitEncoded{variantName}();");
+                }
+                else if (float16 != null && field.FieldType == typeof(float))
+                {
+                    builder.AppendLine($"            target.{field.Name} = CompactBuffer.CompactBufferUtils.ReadFloatTwoByte(reader.ReadInt16(), {float16.IntegerMax});");
                 }
                 else
                 {
@@ -197,15 +207,25 @@ namespace CompactBuffer
             builder.AppendLine($"            {GetSerializerName(field)}.Read(reader, ref target.{field.Name});");
         }
 
-        private void GenWriteField(StringBuilder builder, FieldInfo field)
+        private void GenWriteField(StringBuilder builder, Type type, FieldInfo field)
         {
-            var attribute = field.GetCustomAttribute<CustomSerializerAttribute>();
-            if (attribute == null && IsBaseType(field.FieldType))
+            var customSerializer = field.GetCustomAttribute<CustomSerializerAttribute>();
+            if (customSerializer == null && IsBaseType(field.FieldType))
             {
-                var variantName = GetVariantName(field.FieldType);
-                if (field.GetCustomAttribute<VariantAttribute>() != null && !string.IsNullOrEmpty(variantName))
+                var variantName = GetVariantIntName(field.FieldType);
+                var float16 = field.GetCustomAttribute<Float16Attribute>();
+                if (float16 == null)
+                {
+                    float16 = type.GetCustomAttribute<Float16Attribute>();
+                }
+
+                if (field.GetCustomAttribute<VariantIntAttribute>() != null && !string.IsNullOrEmpty(variantName))
                 {
                     builder.AppendLine($"            writer.Write7BitEncoded{variantName}(target.{field.Name});");
+                }
+                else if (float16 != null && field.FieldType == typeof(float))
+                {
+                    builder.AppendLine($"            writer.Write(CompactBuffer.CompactBufferUtils.WriteFloatTwoByte(target.{field.Name}, {float16.IntegerMax}));");
                 }
                 else
                 {
@@ -218,8 +238,8 @@ namespace CompactBuffer
 
         private void GenCopyField(StringBuilder builder, FieldInfo field)
         {
-            var attribute = field.GetCustomAttribute<CustomSerializerAttribute>();
-            if (attribute == null && IsBaseType(field.FieldType))
+            var customSerializer = field.GetCustomAttribute<CustomSerializerAttribute>();
+            if (customSerializer == null && IsBaseType(field.FieldType))
             {
                 builder.AppendLine($"            dst.{field.Name} = src.{field.Name};");
                 return;
@@ -229,10 +249,10 @@ namespace CompactBuffer
 
         private string GetSerializerName(FieldInfo field)
         {
-            var attribute = field.GetCustomAttribute<CustomSerializerAttribute>();
-            if (attribute != null)
+            var customSerializer = field.GetCustomAttribute<CustomSerializerAttribute>();
+            if (customSerializer != null)
             {
-                var type = attribute.SerializerType;
+                var type = customSerializer.SerializerType;
                 if (type.IsGenericType)
                 {
                     var className = "";
@@ -246,7 +266,7 @@ namespace CompactBuffer
                 }
                 else
                 {
-                    return attribute.SerializerType.FullName;
+                    return customSerializer.SerializerType.FullName;
                 }
             }
             else
@@ -258,9 +278,9 @@ namespace CompactBuffer
                 }
             }
 
-            if (attribute != null)
+            if (customSerializer != null)
             {
-                return $"CompactBuffer.CompactBuffer.GetCustomSerializer<{attribute.SerializerType.FullName}, {field.FieldType.FullName}>()";
+                return $"CompactBuffer.CompactBuffer.GetCustomSerializer<{customSerializer.SerializerType.FullName}, {field.FieldType.FullName}>()";
             }
 
             if (field.FieldType.IsArray)

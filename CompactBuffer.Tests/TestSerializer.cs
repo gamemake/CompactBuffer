@@ -3,6 +3,8 @@ using System.IO;
 using System.Text.Json;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System;
 
 namespace CompactBuffer.Tests;
 
@@ -23,7 +25,7 @@ public class TestSerializer
     }
 
     [Fact]
-    public void Test1()
+    public void ClassSerializer()
     {
         var src = new Test.AAA()
         {
@@ -55,5 +57,22 @@ public class TestSerializer
         var srcJson = JsonSerializer.Serialize(src);
         var dstJson = JsonSerializer.Serialize(dst);
         Assert.Equal(srcJson, dstJson);
+    }
+
+    [Fact]
+    public void FloatTwoByte()
+    {
+        float[] srcs = { 0.1f, 1f, 0.5f, -1f, -0.5f };
+        foreach (var src in srcs)
+        {
+            for (var integerMax = 1; integerMax < 1000; integerMax++)
+            {
+                var _short = CompactBufferUtils.WriteFloatTwoByte(src, integerMax);
+                var dst = CompactBufferUtils.ReadFloatTwoByte(_short, integerMax);
+                var diff = Math.Abs(dst - src);
+                var diffMax = 0.0001f * integerMax;
+                Assert.True(diff < diffMax);
+            }
+        }
     }
 }

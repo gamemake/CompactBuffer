@@ -3,8 +3,18 @@ using System;
 
 namespace CompactBuffer
 {
-    public class VariantAttribute : Attribute
+    public class VariantIntAttribute : Attribute
     {
+    }
+
+    public class Float16Attribute : Attribute
+    {
+        public readonly int IntegerMax;
+
+        public Float16Attribute(int integerMax)
+        {
+            IntegerMax = integerMax;
+        }
     }
 
     public class CompactBufferAttribute : Attribute

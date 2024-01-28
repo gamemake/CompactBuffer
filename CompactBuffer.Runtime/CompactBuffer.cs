@@ -17,13 +17,13 @@ namespace CompactBuffer
                 if (type.IsInterface) continue;
                 if (type.IsAbstract) continue;
 
-                var attribute = type.GetCustomAttribute<CompactBufferAttribute>();
-                if (attribute != null)
+                var compactBuffer = type.GetCustomAttribute<CompactBufferAttribute>();
+                if (compactBuffer != null)
                 {
                     var serializer = (ICompactBufferSerializer)Activator.CreateInstance(type);
-                    if (!m_Serializers.TryAdd(attribute.SerializerType, serializer))
+                    if (!m_Serializers.TryAdd(compactBuffer.SerializerType, serializer))
                     {
-                        if (m_Serializers[attribute.SerializerType].GetType() != type)
+                        if (m_Serializers[compactBuffer.SerializerType].GetType() != type)
                         {
                             throw new Exception("duplicate");
                         }
