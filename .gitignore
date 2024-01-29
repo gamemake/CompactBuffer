@@ -4,3 +4,4 @@ Build/**
 **/.DS_Store
 **/*.meta
 Unity/Output/**
+**/CodeGen.*
