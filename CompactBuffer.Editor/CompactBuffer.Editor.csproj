@@ -5,13 +5,9 @@
     <ProjectReference Include="..\CompactBuffer.Runtime\CompactBuffer.Runtime.csproj" />
   </ItemGroup>
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-  </PropertyGroup>
-
   <ItemGroup>
-    <Reference Include="$(ProjectDir)..\UnityDlls\UnityEditor.dll" />
-    <Reference Include="$(ProjectDir)..\UnityDlls\UnityEngine.dll" />
+    <Reference Include="$(ProjectDir)..\Unity\Dlls\UnityEditor.dll" />
+    <Reference Include="$(ProjectDir)..\Unity\Dlls\UnityEngine.dll" />
   </ItemGroup>
 
 </Project>
