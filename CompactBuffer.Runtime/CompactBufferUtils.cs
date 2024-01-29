@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.IO;
 
 namespace CompactBuffer
 {
@@ -64,18 +65,6 @@ namespace CompactBuffer
         public static void Resize<T>(this List<T> list, int sz) where T : new()
         {
             Resize(list, sz, new T());
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static short WriteFloatTwoByte(float floatValue, int integerMax)
-        {
-            return (short)(floatValue / integerMax * short.MaxValue);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float ReadFloatTwoByte(short shortValue, int integerMax)
-        {
-            return shortValue / (float)short.MaxValue * integerMax;
         }
     }
 }

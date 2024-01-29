@@ -8,9 +8,9 @@ namespace CompactBuffer.Internal
     {
         private static ICompactBufferSerializer<TElement> m_ElementSerializer = CompactBuffer.GetSerializer<TElement>();
 
-        public static void Read(BinaryReader reader, ref TElement[] target)
+        public static void Read(BufferReader reader, ref TElement[] target)
         {
-            var length = reader.Read7BitEncodedInt();
+            var length = reader.ReadVariantInt32();
             if (length <= 0)
             {
                 target = null;
@@ -29,15 +29,15 @@ namespace CompactBuffer.Internal
             }
         }
 
-        public static void Write(BinaryWriter writer, ref TElement[] target)
+        public static void Write(BufferWriter writer, ref TElement[] target)
         {
             if (target == null)
             {
-                writer.Write7BitEncodedInt(0);
+                writer.WriteVariantInt32(0);
                 return;
             }
 
-            writer.Write7BitEncodedInt(target.Length + 1);
+            writer.WriteVariantInt32(target.Length + 1);
             for (var i = 0; i < target.Length; i++)
             {
                 m_ElementSerializer.Write(writer, ref target[i]);
@@ -60,12 +60,12 @@ namespace CompactBuffer.Internal
             }
         }
 
-        void ICompactBufferSerializer<TElement[]>.Read(BinaryReader reader, ref TElement[] target)
+        void ICompactBufferSerializer<TElement[]>.Read(BufferReader reader, ref TElement[] target)
         {
             Read(reader, ref target);
         }
 
-        void ICompactBufferSerializer<TElement[]>.Write(BinaryWriter writer, ref TElement[] target)
+        void ICompactBufferSerializer<TElement[]>.Write(BufferWriter writer, ref TElement[] target)
         {
             Write(writer, ref target);
         }
@@ -81,9 +81,9 @@ namespace CompactBuffer.Internal
         private static ICompactBufferSerializer<TElement> m_ElementSerializer = CompactBuffer.GetSerializer<TElement>();
         private static bool m_IsValueType = typeof(TElement).IsValueType;
 
-        public static void Read(BinaryReader reader, ref List<TElement> target)
+        public static void Read(BufferReader reader, ref List<TElement> target)
         {
-            var length = reader.Read7BitEncodedInt();
+            var length = reader.ReadVariantInt32();
             if (length <= 0)
             {
                 target = null;
@@ -107,15 +107,15 @@ namespace CompactBuffer.Internal
             }
         }
 
-        public static void Write(BinaryWriter writer, ref List<TElement> target)
+        public static void Write(BufferWriter writer, ref List<TElement> target)
         {
             if (target == null)
             {
-                writer.Write7BitEncodedInt(0);
+                writer.WriteVariantInt32(0);
                 return;
             }
 
-            writer.Write7BitEncodedInt(target.Count + 1);
+            writer.WriteVariantInt32(target.Count + 1);
             for (var i = 0; i < target.Count; i++)
             {
                 var element = target[i];
@@ -149,12 +149,12 @@ namespace CompactBuffer.Internal
             }
         }
 
-        void ICompactBufferSerializer<List<TElement>>.Read(BinaryReader reader, ref List<TElement> target)
+        void ICompactBufferSerializer<List<TElement>>.Read(BufferReader reader, ref List<TElement> target)
         {
             Read(reader, ref target);
         }
 
-        void ICompactBufferSerializer<List<TElement>>.Write(BinaryWriter writer, ref List<TElement> target)
+        void ICompactBufferSerializer<List<TElement>>.Write(BufferWriter writer, ref List<TElement> target)
         {
             Write(writer, ref target);
         }
@@ -169,9 +169,9 @@ namespace CompactBuffer.Internal
     {
         private static ICompactBufferSerializer<TElement> m_ElementSerializer = CompactBuffer.GetSerializer<TElement>();
 
-        public static void Read(BinaryReader reader, ref HashSet<TElement> target)
+        public static void Read(BufferReader reader, ref HashSet<TElement> target)
         {
-            var length = reader.Read7BitEncodedInt();
+            var length = reader.ReadVariantInt32();
             if (length-- <= 0)
             {
                 target = null;
@@ -195,15 +195,15 @@ namespace CompactBuffer.Internal
             }
         }
 
-        public static void Write(BinaryWriter writer, ref HashSet<TElement> target)
+        public static void Write(BufferWriter writer, ref HashSet<TElement> target)
         {
             if (target == null)
             {
-                writer.Write7BitEncodedInt(0);
+                writer.WriteVariantInt32(0);
                 return;
             }
 
-            writer.Write7BitEncodedInt(target.Count + 1);
+            writer.WriteVariantInt32(target.Count + 1);
             foreach (var element in target)
             {
                 var _element = element;
@@ -236,12 +236,12 @@ namespace CompactBuffer.Internal
             }
         }
 
-        void ICompactBufferSerializer<HashSet<TElement>>.Read(BinaryReader reader, ref HashSet<TElement> target)
+        void ICompactBufferSerializer<HashSet<TElement>>.Read(BufferReader reader, ref HashSet<TElement> target)
         {
             Read(reader, ref target);
         }
 
-        void ICompactBufferSerializer<HashSet<TElement>>.Write(BinaryWriter writer, ref HashSet<TElement> target)
+        void ICompactBufferSerializer<HashSet<TElement>>.Write(BufferWriter writer, ref HashSet<TElement> target)
         {
             Write(writer, ref target);
         }
@@ -257,9 +257,9 @@ namespace CompactBuffer.Internal
         private static ICompactBufferSerializer<TKey> m_KeySerializer = CompactBuffer.GetSerializer<TKey>();
         private static ICompactBufferSerializer<TValue> m_ValueSerializer = CompactBuffer.GetSerializer<TValue>();
 
-        public static void Read(BinaryReader reader, ref Dictionary<TKey, TValue> target)
+        public static void Read(BufferReader reader, ref Dictionary<TKey, TValue> target)
         {
-            var length = reader.Read7BitEncodedInt();
+            var length = reader.ReadVariantInt32();
             if (length-- <= 0)
             {
                 target = null;
@@ -285,14 +285,14 @@ namespace CompactBuffer.Internal
             }
         }
 
-        public static void Write(BinaryWriter writer, ref Dictionary<TKey, TValue> target)
+        public static void Write(BufferWriter writer, ref Dictionary<TKey, TValue> target)
         {
             if (target == null)
             {
-                writer.Write7BitEncodedInt(0);
+                writer.WriteVariantInt32(0);
             }
 
-            writer.Write7BitEncodedInt(target.Count + 1);
+            writer.WriteVariantInt32(target.Count + 1);
             foreach (var item in target)
             {
                 var _key = item.Key;
@@ -331,12 +331,12 @@ namespace CompactBuffer.Internal
             }
         }
 
-        void ICompactBufferSerializer<Dictionary<TKey, TValue>>.Read(BinaryReader reader, ref Dictionary<TKey, TValue> target)
+        void ICompactBufferSerializer<Dictionary<TKey, TValue>>.Read(BufferReader reader, ref Dictionary<TKey, TValue> target)
         {
             Read(reader, ref target);
         }
 
-        void ICompactBufferSerializer<Dictionary<TKey, TValue>>.Write(BinaryWriter writer, ref Dictionary<TKey, TValue> target)
+        void ICompactBufferSerializer<Dictionary<TKey, TValue>>.Write(BufferWriter writer, ref Dictionary<TKey, TValue> target)
         {
             Write(writer, ref target);
         }

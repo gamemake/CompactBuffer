@@ -43,9 +43,18 @@ namespace CompactBuffer
             builder.AppendLine($"#endif");
             builder.AppendLine();
 
-            foreach (var type in CompactBufferUtils.EnumAllTypes(typeof(IProtocol)))
+            foreach(var assembly in m_Assemblies)
+            {
+                GenCode(builder, assembly);
+            }
+        }
+
+        private void GenCode(StringBuilder builder, Assembly assembly)
+        {
+            foreach (var type in assembly.GetTypes())
             {
                 if (!type.IsInterface) continue;
+                if (!typeof(IProtocol).IsAssignableFrom(type)) continue;
 
                 var customSerializer = type.GetCustomAttribute<ProtocolAttribute>();
                 if (customSerializer == null) continue;
@@ -146,7 +155,7 @@ namespace CompactBuffer
                 var method = methods[i];
 
                 builder.AppendLine($"");
-                var paramsText = string.Join(", ", Array.ConvertAll(method.GetParameters(), string (x) =>
+                var paramsText = string.Join(", ", Array.ConvertAll(method.GetParameters(), (x) =>
                 {
                     return $"{GetTypeName(x.ParameterType)} ___{x.Name}";
                 }));
@@ -159,10 +168,9 @@ namespace CompactBuffer
                     var customSerializer = param.ParameterType.GetCustomAttribute<CustomSerializerAttribute>();
                     if (customSerializer == null && IsBaseType(param.ParameterType))
                     {
-                        var variantName = GetVariantIntName(param.ParameterType);
-                        if (param.GetCustomAttribute<VariantIntAttribute>() != null && !string.IsNullOrEmpty(variantName))
+                        if (param.GetCustomAttribute<VariantIntAttribute>() != null && Variantable(param.ParameterType))
                         {
-                            builder.AppendLine($"            writer.Write7BitEncoded{variantName}(___{param.Name});");
+                            builder.AppendLine($"            writer.WriteVariant{param.ParameterType.Name}(___{param.Name});");
                         }
                         else
                         {
@@ -204,12 +212,12 @@ namespace CompactBuffer
             builder.AppendLine($"    {{");
             builder.AppendLine($"        protected readonly {type.FullName} m_Target;");
             builder.AppendLine($"");
-            builder.AppendLine($"        public {type.FullName.Replace(".", "_")}_Stub(Test.IServerApi target = null)");
+            builder.AppendLine($"        public {type.FullName.Replace(".", "_")}_Stub({type.FullName} target = null)");
             builder.AppendLine($"        {{");
             builder.AppendLine($"            m_Target = target;");
             builder.AppendLine($"        }}");
             builder.AppendLine($"");
-            builder.AppendLine($"        void CompactBuffer.IProtocolStub.Dispatch(System.IO.BinaryReader reader)");
+            builder.AppendLine($"        void CompactBuffer.IProtocolStub.Dispatch(CompactBuffer.BufferReader reader)");
             builder.AppendLine($"        {{");
             builder.AppendLine($"            var index = reader.ReadUInt32();");
             for (var i = 0; i < methods.Count; i++)
@@ -221,7 +229,7 @@ namespace CompactBuffer
                 {
                     GenStubField(builder, type, method, param);
                 }
-                var paramsText = string.Join(", ", Array.ConvertAll(method.GetParameters(), string (x) =>
+                var paramsText = string.Join(", ", Array.ConvertAll(method.GetParameters(), (x) =>
                 {
                     return $"___{x.Name}";
                 }));
@@ -245,10 +253,9 @@ namespace CompactBuffer
             var customSerializer = param.ParameterType.GetCustomAttribute<CustomSerializerAttribute>();
             if (customSerializer == null && IsBaseType(param.ParameterType))
             {
-                var variantName = GetVariantIntName(param.ParameterType);
-                if (param.GetCustomAttribute<VariantIntAttribute>() != null && !string.IsNullOrEmpty(variantName))
+                if (param.GetCustomAttribute<VariantIntAttribute>() != null && Variantable(param.ParameterType))
                 {
-                    builder.AppendLine($"                var ___{param.Name} = reader.Read7BitEncoded{variantName}();");
+                    builder.AppendLine($"                var ___{param.Name} = reader.ReadVariant{param.ParameterType.Name}();");
                 }
                 else
                 {

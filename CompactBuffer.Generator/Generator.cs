@@ -43,7 +43,7 @@ namespace CompactBuffer
 
             if (type.IsGenericType)
             {
-                var paramsName = string.Join(", ", Array.ConvertAll(type.GetGenericArguments(), string (x) =>
+                var paramsName = string.Join(", ", Array.ConvertAll(type.GetGenericArguments(), (x) =>
                 {
                     return GetTypeName(x);
 
@@ -57,11 +57,11 @@ namespace CompactBuffer
             return type.FullName;
         }
 
-        public string GetVariantIntName(Type type)
+        public bool Variantable(Type type)
         {
-            if(type==typeof(int)) return "Int";
-            if(type==typeof(long)) return "Int64";
-            return "";
+            if(type==typeof(int)) return true;
+            if(type==typeof(long)) return true;
+            return false;
         }
     }
 }

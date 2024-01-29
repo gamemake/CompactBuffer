@@ -9,13 +9,13 @@ namespace CompactBuffer
 
     public interface IProtocolSender
     {
-        BinaryWriter GetStreamWriter();
-        void Send(BinaryWriter writer);
+        BufferWriter GetStreamWriter();
+        void Send(BufferWriter writer);
     }
 
     public interface IProtocolStub
     {
-        void Dispatch(BinaryReader reader);
+        void Dispatch(BufferReader reader);
     }
 
     public interface IProtocolStub<T> : IProtocolStub

@@ -7,12 +7,12 @@ namespace CompactBuffer.Internal
     [CompactBuffer(typeof(sbyte))]
     public class SByteSerializer : ICompactBufferSerializer<sbyte>
     {
-        public static void Read(BinaryReader reader, ref sbyte target)
+        public static void Read(BufferReader reader, ref sbyte target)
         {
             target = reader.ReadSByte();
         }
 
-        public static void Write(BinaryWriter writer, ref sbyte target)
+        public static void Write(BufferWriter writer, ref sbyte target)
         {
             writer.Write(target);
         }
@@ -22,12 +22,12 @@ namespace CompactBuffer.Internal
             dst = src;
         }
 
-        void ICompactBufferSerializer<sbyte>.Read(BinaryReader reader, ref sbyte target)
+        void ICompactBufferSerializer<sbyte>.Read(BufferReader reader, ref sbyte target)
         {
             target = reader.ReadSByte();
         }
 
-        void ICompactBufferSerializer<sbyte>.Write(BinaryWriter writer, ref sbyte target)
+        void ICompactBufferSerializer<sbyte>.Write(BufferWriter writer, ref sbyte target)
         {
             writer.Write(target);
         }
@@ -41,12 +41,12 @@ namespace CompactBuffer.Internal
     [CompactBuffer(typeof(short))]
     public class ShortSerializer : ICompactBufferSerializer<short>
     {
-        public static void Read(BinaryReader reader, ref short target)
+        public static void Read(BufferReader reader, ref short target)
         {
             target = reader.ReadInt16();
         }
 
-        public static void Write(BinaryWriter writer, ref short target)
+        public static void Write(BufferWriter writer, ref short target)
         {
             writer.Write(target);
         }
@@ -56,12 +56,12 @@ namespace CompactBuffer.Internal
             dst = src;
         }
 
-        void ICompactBufferSerializer<short>.Read(BinaryReader reader, ref short target)
+        void ICompactBufferSerializer<short>.Read(BufferReader reader, ref short target)
         {
             target = reader.ReadInt16();
         }
 
-        void ICompactBufferSerializer<short>.Write(BinaryWriter writer, ref short target)
+        void ICompactBufferSerializer<short>.Write(BufferWriter writer, ref short target)
         {
             writer.Write(target);
         }
@@ -75,12 +75,12 @@ namespace CompactBuffer.Internal
     [CompactBuffer(typeof(int))]
     public class IntSerializer : ICompactBufferSerializer<int>
     {
-        public static void Read(BinaryReader reader, ref int target)
+        public static void Read(BufferReader reader, ref int target)
         {
             target = reader.ReadInt32();
         }
 
-        public static void Write(BinaryWriter writer, ref int target)
+        public static void Write(BufferWriter writer, ref int target)
         {
             writer.Write(target);
         }
@@ -90,12 +90,12 @@ namespace CompactBuffer.Internal
             dst = src;
         }
 
-        void ICompactBufferSerializer<int>.Read(BinaryReader reader, ref int target)
+        void ICompactBufferSerializer<int>.Read(BufferReader reader, ref int target)
         {
             target = reader.ReadInt32();
         }
 
-        void ICompactBufferSerializer<int>.Write(BinaryWriter writer, ref int target)
+        void ICompactBufferSerializer<int>.Write(BufferWriter writer, ref int target)
         {
             writer.Write(target);
         }
@@ -109,12 +109,12 @@ namespace CompactBuffer.Internal
     [CompactBuffer(typeof(long))]
     public class LongSerializer : ICompactBufferSerializer<long>
     {
-        public static void Read(BinaryReader reader, ref long target)
+        public static void Read(BufferReader reader, ref long target)
         {
             target = reader.ReadInt64();
         }
 
-        public static void Write(BinaryWriter writer, ref long target)
+        public static void Write(BufferWriter writer, ref long target)
         {
             writer.Write(target);
         }
@@ -124,12 +124,12 @@ namespace CompactBuffer.Internal
             dst = src;
         }
 
-        void ICompactBufferSerializer<long>.Read(BinaryReader reader, ref long target)
+        void ICompactBufferSerializer<long>.Read(BufferReader reader, ref long target)
         {
             target = reader.ReadInt64();
         }
 
-        void ICompactBufferSerializer<long>.Write(BinaryWriter writer, ref long target)
+        void ICompactBufferSerializer<long>.Write(BufferWriter writer, ref long target)
         {
             writer.Write(target);
         }
@@ -143,12 +143,12 @@ namespace CompactBuffer.Internal
     [CompactBuffer(typeof(byte))]
     public class ByteSerializer : ICompactBufferSerializer<byte>
     {
-        public static void Read(BinaryReader reader, ref byte target)
+        public static void Read(BufferReader reader, ref byte target)
         {
             target = reader.ReadByte();
         }
 
-        public static void Write(BinaryWriter writer, ref byte target)
+        public static void Write(BufferWriter writer, ref byte target)
         {
             writer.Write(target);
         }
@@ -158,12 +158,12 @@ namespace CompactBuffer.Internal
             dst = src;
         }
 
-        void ICompactBufferSerializer<byte>.Read(BinaryReader reader, ref byte target)
+        void ICompactBufferSerializer<byte>.Read(BufferReader reader, ref byte target)
         {
             target = reader.ReadByte();
         }
 
-        void ICompactBufferSerializer<byte>.Write(BinaryWriter writer, ref byte target)
+        void ICompactBufferSerializer<byte>.Write(BufferWriter writer, ref byte target)
         {
             writer.Write(target);
         }
@@ -177,12 +177,12 @@ namespace CompactBuffer.Internal
     [CompactBuffer(typeof(ushort))]
     public class UShortSerializer : ICompactBufferSerializer<ushort>
     {
-        public static void Read(BinaryReader reader, ref ushort target)
+        public static void Read(BufferReader reader, ref ushort target)
         {
             target = reader.ReadUInt16();
         }
 
-        public static void Write(BinaryWriter writer, ref ushort target)
+        public static void Write(BufferWriter writer, ref ushort target)
         {
             writer.Write(target);
         }
@@ -192,12 +192,12 @@ namespace CompactBuffer.Internal
             dst = src;
         }
 
-        void ICompactBufferSerializer<ushort>.Read(BinaryReader reader, ref ushort target)
+        void ICompactBufferSerializer<ushort>.Read(BufferReader reader, ref ushort target)
         {
             target = reader.ReadUInt16();
         }
 
-        void ICompactBufferSerializer<ushort>.Write(BinaryWriter writer, ref ushort target)
+        void ICompactBufferSerializer<ushort>.Write(BufferWriter writer, ref ushort target)
         {
             writer.Write(target);
         }
@@ -211,12 +211,12 @@ namespace CompactBuffer.Internal
     [CompactBuffer(typeof(uint))]
     public class UIntSerializer : ICompactBufferSerializer<uint>
     {
-        public static void Read(BinaryReader reader, ref uint target)
+        public static void Read(BufferReader reader, ref uint target)
         {
             target = reader.ReadUInt32();
         }
 
-        public static void Write(BinaryWriter writer, ref uint target)
+        public static void Write(BufferWriter writer, ref uint target)
         {
             writer.Write(target);
         }
@@ -226,12 +226,12 @@ namespace CompactBuffer.Internal
             dst = src;
         }
 
-        void ICompactBufferSerializer<uint>.Read(BinaryReader reader, ref uint target)
+        void ICompactBufferSerializer<uint>.Read(BufferReader reader, ref uint target)
         {
             target = reader.ReadUInt32();
         }
 
-        void ICompactBufferSerializer<uint>.Write(BinaryWriter writer, ref uint target)
+        void ICompactBufferSerializer<uint>.Write(BufferWriter writer, ref uint target)
         {
             writer.Write(target);
         }
@@ -245,12 +245,12 @@ namespace CompactBuffer.Internal
     [CompactBuffer(typeof(ulong))]
     public class ULongSerializer : ICompactBufferSerializer<ulong>
     {
-        public static void Read(BinaryReader reader, ref ulong target)
+        public static void Read(BufferReader reader, ref ulong target)
         {
             target = reader.ReadUInt64();
         }
 
-        public static void Write(BinaryWriter writer, ref ulong target)
+        public static void Write(BufferWriter writer, ref ulong target)
         {
             writer.Write(target);
         }
@@ -260,12 +260,12 @@ namespace CompactBuffer.Internal
             dst = src;
         }
 
-        void ICompactBufferSerializer<ulong>.Read(BinaryReader reader, ref ulong target)
+        void ICompactBufferSerializer<ulong>.Read(BufferReader reader, ref ulong target)
         {
             target = reader.ReadUInt64();
         }
 
-        void ICompactBufferSerializer<ulong>.Write(BinaryWriter writer, ref ulong target)
+        void ICompactBufferSerializer<ulong>.Write(BufferWriter writer, ref ulong target)
         {
             writer.Write(target);
         }
@@ -279,12 +279,12 @@ namespace CompactBuffer.Internal
     [CompactBuffer(typeof(float))]
     public class FloatSerializer : ICompactBufferSerializer<float>
     {
-        public static void Read(BinaryReader reader, ref float target)
+        public static void Read(BufferReader reader, ref float target)
         {
             target = reader.ReadSingle();
         }
 
-        public static void Write(BinaryWriter writer, ref float target)
+        public static void Write(BufferWriter writer, ref float target)
         {
             writer.Write(target);
         }
@@ -294,13 +294,13 @@ namespace CompactBuffer.Internal
             dst = src;
         }
 
-        void ICompactBufferSerializer<float>.Read(BinaryReader reader, ref float target)
+        void ICompactBufferSerializer<float>.Read(BufferReader reader, ref float target)
         {
             target = reader.ReadSingle();
         }
 
 
-        void ICompactBufferSerializer<float>.Write(BinaryWriter writer, ref float target)
+        void ICompactBufferSerializer<float>.Write(BufferWriter writer, ref float target)
         {
             writer.Write(target);
         }
@@ -314,12 +314,12 @@ namespace CompactBuffer.Internal
     [CompactBuffer(typeof(double))]
     public class DoubleSerializer : ICompactBufferSerializer<double>
     {
-        public static void Read(BinaryReader reader, ref double target)
+        public static void Read(BufferReader reader, ref double target)
         {
             target = reader.ReadDouble();
         }
 
-        public static void Write(BinaryWriter writer, ref double target)
+        public static void Write(BufferWriter writer, ref double target)
         {
             writer.Write(target);
         }
@@ -329,12 +329,12 @@ namespace CompactBuffer.Internal
             dst = src;
         }
 
-        void ICompactBufferSerializer<double>.Read(BinaryReader reader, ref double target)
+        void ICompactBufferSerializer<double>.Read(BufferReader reader, ref double target)
         {
             target = reader.ReadDouble();
         }
 
-        void ICompactBufferSerializer<double>.Write(BinaryWriter writer, ref double target)
+        void ICompactBufferSerializer<double>.Write(BufferWriter writer, ref double target)
         {
             writer.Write(target);
         }
@@ -348,12 +348,12 @@ namespace CompactBuffer.Internal
     [CompactBuffer(typeof(bool))]
     public class BoolSerializer : ICompactBufferSerializer<bool>
     {
-        public static void Read(BinaryReader reader, ref bool target)
+        public static void Read(BufferReader reader, ref bool target)
         {
             target = reader.ReadBoolean();
         }
 
-        public static void Write(BinaryWriter writer, ref bool target)
+        public static void Write(BufferWriter writer, ref bool target)
         {
             writer.Write(target);
         }
@@ -363,12 +363,12 @@ namespace CompactBuffer.Internal
             dst = src;
         }
 
-        void ICompactBufferSerializer<bool>.Read(BinaryReader reader, ref bool target)
+        void ICompactBufferSerializer<bool>.Read(BufferReader reader, ref bool target)
         {
             target = reader.ReadBoolean();
         }
 
-        void ICompactBufferSerializer<bool>.Write(BinaryWriter writer, ref bool target)
+        void ICompactBufferSerializer<bool>.Write(BufferWriter writer, ref bool target)
         {
             writer.Write(target);
         }
@@ -382,12 +382,12 @@ namespace CompactBuffer.Internal
     [CompactBuffer(typeof(string))]
     public class StringSerializer : ICompactBufferSerializer<string>
     {
-        public static void Read(BinaryReader reader, ref string target)
+        public static void Read(BufferReader reader, ref string target)
         {
             target = reader.ReadString();
         }
 
-        public static void Write(BinaryWriter writer, ref string target)
+        public static void Write(BufferWriter writer, ref string target)
         {
             writer.Write(target);
         }
@@ -397,12 +397,12 @@ namespace CompactBuffer.Internal
             dst = src;
         }
 
-        void ICompactBufferSerializer<string>.Read(BinaryReader reader, ref string target)
+        void ICompactBufferSerializer<string>.Read(BufferReader reader, ref string target)
         {
             target = reader.ReadString();
         }
 
-        void ICompactBufferSerializer<string>.Write(BinaryWriter writer, ref string target)
+        void ICompactBufferSerializer<string>.Write(BufferWriter writer, ref string target)
         {
             writer.Write(target);
         }
@@ -416,7 +416,7 @@ namespace CompactBuffer.Internal
     [CompactBuffer(typeof(Guid))]
     public class GuidSerializer : ICompactBufferSerializer<Guid>
     {
-        public static void Read(BinaryReader reader, ref Guid target)
+        public static void Read(BufferReader reader, ref Guid target)
         {
             var bytes = new byte[]
             {
@@ -440,7 +440,7 @@ namespace CompactBuffer.Internal
             target = new Guid(bytes);
         }
 
-        public static void Write(BinaryWriter writer, ref Guid target)
+        public static void Write(BufferWriter writer, ref Guid target)
         {
             foreach (var v in target.ToByteArray())
             {
@@ -453,12 +453,12 @@ namespace CompactBuffer.Internal
             dst = src;
         }
 
-        void ICompactBufferSerializer<Guid>.Read(BinaryReader reader, ref Guid target)
+        void ICompactBufferSerializer<Guid>.Read(BufferReader reader, ref Guid target)
         {
             Read(reader, ref target);
         }
 
-        void ICompactBufferSerializer<Guid>.Write(BinaryWriter writer, ref Guid target)
+        void ICompactBufferSerializer<Guid>.Write(BufferWriter writer, ref Guid target)
         {
             Write(writer, ref target);
         }

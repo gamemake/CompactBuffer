@@ -1,10 +1,9 @@
 
+using System;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System;
 
 namespace CompactBuffer.Tests;
 
@@ -12,16 +11,16 @@ public class TestSerializer
 {
     private readonly MemoryStream m_ReaderStream;
     private readonly MemoryStream m_WriterStream;
-    private readonly BinaryReader m_Reader;
-    private readonly BinaryWriter m_Writer;
+    private readonly BufferReader m_Reader;
+    private readonly BufferWriter m_Writer;
 
     public TestSerializer()
     {
         var buffer = new byte[400 * 1024];
         m_ReaderStream = new MemoryStream(buffer);
         m_WriterStream = new MemoryStream(buffer);
-        m_Reader = new BinaryReader(m_ReaderStream);
-        m_Writer = new BinaryWriter(m_WriterStream);
+        m_Reader = new BufferReader(m_ReaderStream);
+        m_Writer = new BufferWriter(m_WriterStream);
     }
 
     [Fact]
@@ -59,6 +58,16 @@ public class TestSerializer
         Assert.Equal(srcJson, dstJson);
     }
 
+    public static short WriteFloatTwoByte(float floatValue, int integerMax)
+    {
+        return (short)(floatValue / integerMax * short.MaxValue);
+    }
+
+    public static float ReadFloatTwoByte(short shortValue, int integerMax)
+    {
+        return shortValue / (float)short.MaxValue * integerMax;
+    }
+
     [Fact]
     public void FloatTwoByte()
     {
@@ -67,8 +76,8 @@ public class TestSerializer
         {
             for (var integerMax = 1; integerMax < 1000; integerMax++)
             {
-                var _short = CompactBufferUtils.WriteFloatTwoByte(src, integerMax);
-                var dst = CompactBufferUtils.ReadFloatTwoByte(_short, integerMax);
+                var _short = WriteFloatTwoByte(src, integerMax);
+                var dst = ReadFloatTwoByte(_short, integerMax);
                 var diff = Math.Abs(dst - src);
                 var diffMax = 0.0001f * integerMax;
                 Assert.True(diff < diffMax);

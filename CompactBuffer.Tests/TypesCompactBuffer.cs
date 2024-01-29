@@ -69,12 +69,12 @@ namespace Test
             dst = src;
         }
 
-        void ICompactBufferSerializer<float>.Read(BinaryReader reader, ref float target)
+        void ICompactBufferSerializer<float>.Read(BufferReader reader, ref float target)
         {
             target = (float)reader.ReadInt32();
         }
 
-        void ICompactBufferSerializer<float>.Write(BinaryWriter writer, ref float target)
+        void ICompactBufferSerializer<float>.Write(BufferWriter writer, ref float target)
         {
             writer.Write((int)target);
         }

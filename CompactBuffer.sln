@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompactBuffer.Generator", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompactBuffer.CodeGen", "CompactBuffer.CodeGen\CompactBuffer.CodeGen.csproj", "{21107CFD-896D-47F8-8A0B-F8A5651C3535}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompactBuffer.Editor", "CompactBuffer.Editor\CompactBuffer.Editor.csproj", "{53CC892D-CEFD-41F7-BE41-78EF24868A0A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{21107CFD-896D-47F8-8A0B-F8A5651C3535}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{21107CFD-896D-47F8-8A0B-F8A5651C3535}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{21107CFD-896D-47F8-8A0B-F8A5651C3535}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53CC892D-CEFD-41F7-BE41-78EF24868A0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53CC892D-CEFD-41F7-BE41-78EF24868A0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53CC892D-CEFD-41F7-BE41-78EF24868A0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53CC892D-CEFD-41F7-BE41-78EF24868A0A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

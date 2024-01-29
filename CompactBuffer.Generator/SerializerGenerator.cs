@@ -3,6 +3,8 @@ using System;
 using System.Text;
 using System.Reflection;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.IO;
 
 namespace CompactBuffer
 {
@@ -42,9 +44,27 @@ namespace CompactBuffer
             builder.AppendLine($"namespace CompactBufferAutoGen");
             builder.AppendLine($"{{");
 
-            foreach (var type in CompactBufferUtils.EnumAllTypes(typeof(object)))
+            foreach (var assembly in m_Assemblies)
             {
-                if (!m_Assemblies.Contains(type.Assembly)) continue;
+                GenCode(builder, assembly);
+            }
+
+            foreach (var type in m_AdditionTypes)
+            {
+                if (m_Assemblies.Contains(type.Assembly))
+                {
+                    GenCode(builder, type);
+                }
+            }
+
+            builder.AppendLine($"}}");
+            builder.AppendLine();
+        }
+
+        private void GenCode(StringBuilder builder, Assembly assembly)
+        {
+            foreach (var type in assembly.GetTypes())
+            {
                 if (type.IsInterface) continue;
                 if (type.IsAbstract) continue;
 
@@ -53,14 +73,6 @@ namespace CompactBuffer
 
                 GenCode(builder, type);
             }
-
-            foreach (var type in m_AdditionTypes)
-            {
-                GenCode(builder, type);
-            }
-
-            builder.AppendLine($"}}");
-            builder.AppendLine();
         }
 
         private void GenCode(StringBuilder builder, Type type)
@@ -115,11 +127,11 @@ namespace CompactBuffer
             builder.AppendLine($"    [CompactBuffer.CompactBuffer(typeof({type.FullName}))]");
             builder.AppendLine($"    public class {type.FullName.Replace(".", "_")}_Serializer : CompactBuffer.ICompactBufferSerializer<{type.FullName}>");
             builder.AppendLine($"    {{");
-            builder.AppendLine($"        public static void Read(System.IO.BinaryReader reader, ref {type.FullName} target)");
+            builder.AppendLine($"        public static void Read(CompactBuffer.BufferReader reader, ref {type.FullName} target)");
             builder.AppendLine($"        {{");
             if (!type.IsValueType)
             {
-                builder.AppendLine($"            var length = reader.Read7BitEncodedInt();");
+                builder.AppendLine($"            var length = reader.ReadVariantInt32();");
                 builder.AppendLine($"            if (length == 0) {{ target = null; return; }}");
                 builder.AppendLine($"            if (length != {fields.Count + 1}) {{ throw new System.Exception(\"aaaa\"); }}");
                 builder.AppendLine($"            if (target == null) {{ target = new {type.FullName}(); }}");
@@ -130,17 +142,17 @@ namespace CompactBuffer
             }
             builder.AppendLine($"        }}");
             builder.AppendLine($"");
-            builder.AppendLine($"        public static void Write(System.IO.BinaryWriter writer, ref {type.FullName} target)");
+            builder.AppendLine($"        public static void Write(CompactBuffer.BufferWriter writer, ref {type.FullName} target)");
             builder.AppendLine($"        {{");
             if (!type.IsValueType)
             {
                 builder.AppendLine($"            if (target == null)");
                 builder.AppendLine($"            {{");
-                builder.AppendLine($"                writer.Write7BitEncodedInt(0);");
+                builder.AppendLine($"                writer.WriteVariantInt32(0);");
                 builder.AppendLine($"                return;");
                 builder.AppendLine($"            }}");
             }
-            builder.AppendLine($"            writer.Write7BitEncodedInt({fields.Count + 1});");
+            builder.AppendLine($"            writer.WriteVariantInt32({fields.Count + 1});");
             foreach (var field in fields)
             {
                 GenWriteField(builder, type, field);
@@ -160,12 +172,12 @@ namespace CompactBuffer
             }
             builder.AppendLine($"        }}");
             builder.AppendLine($"");
-            builder.AppendLine($"        void CompactBuffer.ICompactBufferSerializer<{type.FullName}>.Read(System.IO.BinaryReader reader, ref {type.FullName} target)");
+            builder.AppendLine($"        void CompactBuffer.ICompactBufferSerializer<{type.FullName}>.Read(CompactBuffer.BufferReader reader, ref {type.FullName} target)");
             builder.AppendLine($"        {{");
             builder.AppendLine($"            Read(reader, ref target);");
             builder.AppendLine($"        }}");
             builder.AppendLine($"");
-            builder.AppendLine($"        void CompactBuffer.ICompactBufferSerializer<{type.FullName}>.Write(System.IO.BinaryWriter writer, ref {type.FullName} target)");
+            builder.AppendLine($"        void CompactBuffer.ICompactBufferSerializer<{type.FullName}>.Write(CompactBuffer.BufferWriter writer, ref {type.FullName} target)");
             builder.AppendLine($"        {{");
             builder.AppendLine($"            Write(writer, ref target);");
             builder.AppendLine($"        }}");
@@ -188,14 +200,13 @@ namespace CompactBuffer
                     float16 = type.GetCustomAttribute<Float16Attribute>();
                 }
 
-                var variantName = GetVariantIntName(field.FieldType);
-                if (field.GetCustomAttribute<VariantIntAttribute>() != null && !string.IsNullOrEmpty(variantName))
+                if (field.GetCustomAttribute<VariantIntAttribute>() != null && Variantable(field.FieldType))
                 {
-                    builder.AppendLine($"            target.{field.Name} = reader.Read7BitEncoded{variantName}();");
+                    builder.AppendLine($"            target.{field.Name} = reader.ReadVariant{field.FieldType.Name}();");
                 }
                 else if (float16 != null && field.FieldType == typeof(float))
                 {
-                    builder.AppendLine($"            target.{field.Name} = CompactBuffer.CompactBufferUtils.ReadFloatTwoByte(reader.ReadInt16(), {float16.IntegerMax});");
+                    builder.AppendLine($"            target.{field.Name} = reader.ReadFloatTwoByte({float16.IntegerMax});");
                 }
                 else
                 {
@@ -212,20 +223,19 @@ namespace CompactBuffer
             var customSerializer = field.GetCustomAttribute<CustomSerializerAttribute>();
             if (customSerializer == null && IsBaseType(field.FieldType))
             {
-                var variantName = GetVariantIntName(field.FieldType);
                 var float16 = field.GetCustomAttribute<Float16Attribute>();
                 if (float16 == null)
                 {
                     float16 = type.GetCustomAttribute<Float16Attribute>();
                 }
 
-                if (field.GetCustomAttribute<VariantIntAttribute>() != null && !string.IsNullOrEmpty(variantName))
+                if (field.GetCustomAttribute<VariantIntAttribute>() != null && Variantable(field.FieldType))
                 {
-                    builder.AppendLine($"            writer.Write7BitEncoded{variantName}(target.{field.Name});");
+                    builder.AppendLine($"            writer.WriteVariant{field.FieldType.Name}(target.{field.Name});");
                 }
                 else if (float16 != null && field.FieldType == typeof(float))
                 {
-                    builder.AppendLine($"            writer.Write(CompactBuffer.CompactBufferUtils.WriteFloatTwoByte(target.{field.Name}, {float16.IntegerMax}));");
+                    builder.AppendLine($"            writer.WriteFloatTwoByte(target.{field.Name}, {float16.IntegerMax});");
                 }
                 else
                 {
