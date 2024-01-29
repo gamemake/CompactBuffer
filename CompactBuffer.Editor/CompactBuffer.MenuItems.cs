@@ -28,7 +28,7 @@ namespace CompactBuffer.UnityEditor
                 return line;
             }
             Debug.LogWarning($"Parse {file} failed");
-            return null;
+            return "";
         }
 
         private static void FindAssemblyDefines(string path, Dictionary<string, string> result)

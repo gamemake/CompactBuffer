@@ -43,7 +43,7 @@ namespace CompactBuffer
             builder.AppendLine($"#endif");
             builder.AppendLine();
 
-            foreach(var assembly in m_Assemblies)
+            foreach (var assembly in m_Assemblies)
             {
                 GenCode(builder, assembly);
             }

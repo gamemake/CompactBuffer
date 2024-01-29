@@ -1,6 +1,4 @@
 
-using System.IO;
-
 namespace CompactBuffer
 {
     public interface ICompactBufferSerializer
