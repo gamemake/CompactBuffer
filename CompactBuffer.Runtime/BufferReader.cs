@@ -7,18 +7,9 @@ namespace CompactBuffer
 {
     public class BufferReader : BinaryReader
     {
-        public BufferReader(Stream input) : base(input)
-        {
-        }
-
-        public BufferReader(Stream input, Encoding encoding) : base(input, encoding)
-        {
-
-        }
-
-        public BufferReader(Stream input, Encoding encoding, bool leaveOpen) : base(input, encoding, leaveOpen)
-        {
-        }
+        public BufferReader(Stream input) : base(input) {}
+        public BufferReader(Stream input, Encoding encoding) : base(input, encoding) {}
+        public BufferReader(Stream input, Encoding encoding, bool leaveOpen) : base(input, encoding, leaveOpen) {}
 
         private static readonly string Format_Bad7BitInt = "Too many bytes in what should have been a 7-bit encoded integer.";
 
@@ -106,11 +97,10 @@ namespace CompactBuffer
             return (long)result;
         }
 
-        public float ReadFloatTwoByte(int integerMax)
+        public float ReadFloat16(int integerMax)
         {
             var shortValue = ReadInt16();
             return shortValue / (float)short.MaxValue * integerMax;
         }
-
     }
 }

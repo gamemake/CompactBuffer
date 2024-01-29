@@ -25,7 +25,7 @@ namespace CompactBuffer
                     {
                         if (m_Serializers[compactBuffer.SerializerType].GetType() != type)
                         {
-                            throw new Exception("duplicate");
+                            throw new CompactBufferExeption("duplicate");
                         }
                     }
                 }
@@ -51,7 +51,7 @@ namespace CompactBuffer
                         else
                         {
                             var name = $"{typeof(T).FullName}";
-                            throw new Exception($"{typeof(T).FullName}");
+                            throw new CompactBufferExeption($"{typeof(T).FullName}");
                         }
                     }
                     return m_Serializer;

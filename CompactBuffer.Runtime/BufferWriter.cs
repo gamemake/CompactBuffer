@@ -57,7 +57,7 @@ namespace CompactBuffer
             Write((byte)uValue);
         }
 
-        public void WriteFloatTwoByte(float floatValue, int integerMax)
+        public void WriteFloat16(float floatValue, int integerMax)
         {
             Write((short)(floatValue / integerMax * short.MaxValue));
         }

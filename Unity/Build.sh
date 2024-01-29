@@ -9,7 +9,6 @@ export UNITY_BUILD=0
 
 mkdir Output
 cp Publish/CompactBuffer.*.dll Output
-cp Metas/*.meta Output
+cp Files/*.meta Output
 
 rm -rf Publish
-

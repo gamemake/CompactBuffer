@@ -131,7 +131,7 @@ namespace CompactBuffer
             {
                 builder.AppendLine($"            var length = reader.ReadVariantInt32();");
                 builder.AppendLine($"            if (length == 0) {{ target = null; return; }}");
-                builder.AppendLine($"            if (length != {fields.Count + 1}) {{ throw new System.Exception(\"aaaa\"); }}");
+                builder.AppendLine($"            if (length != {fields.Count + 1}) {{ throw new CompactBuffer.CompactBufferExeption(\"data version not match\"); }}");
                 builder.AppendLine($"            if (target == null) {{ target = new {type.FullName}(); }}");
             }
             foreach (var field in fields)
@@ -204,7 +204,7 @@ namespace CompactBuffer
                 }
                 else if (float16 != null && field.FieldType == typeof(float))
                 {
-                    builder.AppendLine($"            target.{field.Name} = reader.ReadFloatTwoByte({float16.IntegerMax});");
+                    builder.AppendLine($"            target.{field.Name} = reader.ReadFloat16({float16.IntegerMax});");
                 }
                 else
                 {
@@ -233,7 +233,7 @@ namespace CompactBuffer
                 }
                 else if (float16 != null && field.FieldType == typeof(float))
                 {
-                    builder.AppendLine($"            writer.WriteFloatTwoByte(target.{field.Name}, {float16.IntegerMax});");
+                    builder.AppendLine($"            writer.WriteFloat16(target.{field.Name}, {float16.IntegerMax});");
                 }
                 else
                 {

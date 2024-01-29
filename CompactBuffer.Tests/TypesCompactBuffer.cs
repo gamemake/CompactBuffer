@@ -1,9 +1,9 @@
 
-using System.Collections.Generic;
 using System.IO;
+using System.Collections.Generic;
 using CompactBuffer;
 
-namespace Test
+namespace Tests
 {
     [CompactBufferGenCode]
     public class AAA

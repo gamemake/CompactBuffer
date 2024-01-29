@@ -2,7 +2,7 @@
 using CompactBuffer;
 using System.Collections.Generic;
 
-namespace Test
+namespace Tests
 {
     public class PA
     {

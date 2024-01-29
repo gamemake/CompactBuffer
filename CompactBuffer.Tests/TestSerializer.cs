@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Collections.Generic;
+using Tests;
 
 namespace CompactBuffer.Tests;
 
@@ -26,7 +27,7 @@ public class TestSerializer
     [Fact]
     public void ClassSerializer()
     {
-        var src = new Test.AAA()
+        var src = new AAA()
         {
             _sbyte = 12,
             _short = 15,
@@ -48,9 +49,9 @@ public class TestSerializer
             list1 = new List<int>(Enumerable.Repeat(10, 1)),
             list10 = new List<int>(Enumerable.Repeat(66, 10)),
         };
-        var dst = default(Test.AAA);
-        CompactBuffer.GetSerializer<Test.AAA>().Write(m_Writer, ref src);
-        CompactBuffer.GetSerializer<Test.AAA>().Read(m_Reader, ref dst);
+        var dst = default(AAA);
+        CompactBuffer.GetSerializer<AAA>().Write(m_Writer, ref src);
+        CompactBuffer.GetSerializer<AAA>().Read(m_Reader, ref dst);
         Assert.Equal(m_ReaderStream.Position, m_WriterStream.Position);
 
         var srcJson = JsonSerializer.Serialize(src);
@@ -58,12 +59,12 @@ public class TestSerializer
         Assert.Equal(srcJson, dstJson);
     }
 
-    public static short WriteFloatTwoByte(float floatValue, int integerMax)
+    public static short WriteFloat16(float floatValue, int integerMax)
     {
         return (short)(floatValue / integerMax * short.MaxValue);
     }
 
-    public static float ReadFloatTwoByte(short shortValue, int integerMax)
+    public static float ReadFloat16(short shortValue, int integerMax)
     {
         return shortValue / (float)short.MaxValue * integerMax;
     }
@@ -76,8 +77,8 @@ public class TestSerializer
         {
             for (var integerMax = 1; integerMax < 1000; integerMax++)
             {
-                var _short = WriteFloatTwoByte(src, integerMax);
-                var dst = ReadFloatTwoByte(_short, integerMax);
+                var _short = WriteFloat16(src, integerMax);
+                var dst = ReadFloat16(_short, integerMax);
                 var diff = Math.Abs(dst - src);
                 var diffMax = 0.0001f * integerMax;
                 Assert.True(diff < diffMax);

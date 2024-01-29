@@ -6,8 +6,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="$(ProjectDir)..\Unity\Dlls\UnityEditor.dll" />
-    <Reference Include="$(ProjectDir)..\Unity\Dlls\UnityEngine.dll" />
+    <Reference Include="$(ProjectDir)..\Unity\Files\UnityEditor.dll" />
+    <Reference Include="$(ProjectDir)..\Unity\Files\UnityEngine.dll" />
   </ItemGroup>
 
 </Project>

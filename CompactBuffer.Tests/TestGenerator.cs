@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using System.Diagnostics;
+using Tests;
 
 namespace CompactBuffer.Tests;
 
@@ -26,7 +27,7 @@ public class TestGenerator
     public void GenCompactBuffer()
     {
         var generator = new SerializerGenerator();
-        generator.AddAssembly(typeof(Test.AAA).Assembly);
+        generator.AddAssembly(typeof(AAA).Assembly);
         CompactBuffer.Reset();
 
         generator.GenCode();
@@ -37,8 +38,8 @@ public class TestGenerator
     {
         var serializerGenerator = new SerializerGenerator();
         var protocolGenerator = new ProtocolGenerator(serializerGenerator);
-        serializerGenerator.AddAssembly(typeof(Test.AAA).Assembly);
-        protocolGenerator.AddAssembly(typeof(Test.AAA).Assembly);
+        serializerGenerator.AddAssembly(typeof(AAA).Assembly);
+        protocolGenerator.AddAssembly(typeof(AAA).Assembly);
         CompactBuffer.Reset();
 
         var resultProtocol = protocolGenerator.GenCode();

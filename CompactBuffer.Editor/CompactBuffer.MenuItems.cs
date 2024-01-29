@@ -27,7 +27,6 @@ namespace CompactBuffer.UnityEditor
                 line = line.Substring(0, pos);
                 return line;
             }
-            Debug.LogWarning($"Parse {file} failed");
             return "";
         }
 
@@ -42,7 +41,6 @@ namespace CompactBuffer.UnityEditor
                     var name = ReadAssemblyDefineName(file.FullName);
                     if (!string.IsNullOrEmpty(name))
                     {
-                        Debug.Log($"{name} : {file.DirectoryName}");
                         result.Add(name, file.Directory.FullName);
                     }
                 }
@@ -98,6 +96,7 @@ namespace CompactBuffer.UnityEditor
         {
             foreach (var path in GetCompactBufferGroups().Values)
             {
+                Debug.Log($"CompactBuffer.CodeGen : Clean {path}");
                 File.Delete(Path.Join(path, CompactBufferFileName));
                 File.Delete(Path.Join(path, ProtocolFileName));
             }
@@ -108,6 +107,8 @@ namespace CompactBuffer.UnityEditor
         {
             foreach (var (group, path) in GetCompactBufferGroups())
             {
+                Debug.Log($"CompactBuffer.CodeGen : Generate {path}");
+
                 var serializerGenerator = new SerializerGenerator();
                 var protocolGenerator = new ProtocolGenerator(serializerGenerator);
                 foreach (var assembly in group.GetAssemblies())

@@ -70,11 +70,11 @@ namespace CompactBuffer
             {
                 if (method.IsGenericMethod)
                 {
-                    throw new Exception($"{type.FullName}.{method.Name} cannot Generic Method");
+                    throw new CompactBufferExeption($"{type.FullName}.{method.Name} cannot Generic Method");
                 }
                 if (method.ReturnType != typeof(void))
                 {
-                    throw new Exception($"{type.FullName}.{method.Name} must return void");
+                    throw new CompactBufferExeption($"{type.FullName}.{method.Name} must return void");
                 }
 
                 foreach (var p in method.GetParameters())
@@ -237,7 +237,7 @@ namespace CompactBuffer
                 builder.AppendLine($"                return;");
                 builder.AppendLine($"            }}");
             }
-            builder.AppendLine($"            throw new System.Exception(\"{type.FullName} invalid method index\" + index);");
+            builder.AppendLine($"            throw new CompactBuffer.CompactBufferExeption(\"{type.FullName} invalid method index\" + index);");
             builder.AppendLine($"        }}");
             builder.AppendLine($"    }}");
             builder.AppendLine($"}}");
