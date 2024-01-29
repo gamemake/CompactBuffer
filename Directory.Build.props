@@ -1,12 +1,15 @@
 <Project>
-    <PropertyGroup>
-      <TargetFramework>net8.0</TargetFramework>
-    </PropertyGroup>
-    <PropertyGroup>
-      <BaseOutputPath>$(MSBuildThisFileDirectory)\Build\bin\$(MSBuildProjectName)\</BaseOutputPath>
-      <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)\Build\obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
-      <OutputPath>$(MSBuildThisFileDirectory)\Build\bin\$(MSBuildProjectName)\</OutputPath>
-      <IntermediateOutputPath>$(MSBuildThisFileDirectory)\Build\obj\$(MSBuildProjectName)\</IntermediateOutputPath>
-      <MSBUildProjectExtensionsPath>$(MSBuildThisFileDirectory)\Build\obj\$(MSBuildProjectName)\</MSBUildProjectExtensionsPath>
-    </PropertyGroup>
-  </Project>
+  <PropertyGroup Condition="$([System.Environment]::GetEnvironmentVariable('UNITY_BUILD')) == '1'">
+    <TargetFramework>netstandard2.1</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup Condition="$([System.Environment]::GetEnvironmentVariable('UNITY_BUILD')) != '1'">
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup>
+    <BaseOutputPath>$(MSBuildThisFileDirectory)\Build\bin\$(MSBuildProjectName)\</BaseOutputPath>
+    <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)\Build\obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+    <OutputPath>$(MSBuildThisFileDirectory)\Build\bin\$(MSBuildProjectName)\</OutputPath>
+    <IntermediateOutputPath>$(MSBuildThisFileDirectory)\Build\obj\$(MSBuildProjectName)\</IntermediateOutputPath>
+    <MSBUildProjectExtensionsPath>$(MSBuildThisFileDirectory)\Build\obj\$(MSBuildProjectName)\</MSBUildProjectExtensionsPath>
+  </PropertyGroup>
+</Project>
