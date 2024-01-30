@@ -1,6 +1,7 @@
 
-using CompactBuffer;
+using System;
 using System.Collections.Generic;
+using CompactBuffer;
 
 namespace Tests
 {
@@ -19,5 +20,6 @@ namespace Tests
         void CallInt(int a);
         void CallPA(PA pa);
         void CallVariant([VariantInt] int v1, [VariantInt] long v2, [VariantInt] uint v3, int v4, int v5);
+        void CallGuid(Guid _guid);
     }
 }
