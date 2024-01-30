@@ -116,6 +116,10 @@ namespace CompactBuffer.UnityEditor
                     serializerGenerator.AddAssembly(assembly);
                     protocolGenerator.AddAssembly(assembly);
                 }
+                foreach (var type in group.GetAdditionTypes())
+                {
+                    serializerGenerator.AddAdditionType(type);
+                }
                 CompactBuffer.Reset();
 
                 var resultProtocol = protocolGenerator.GenCode();
