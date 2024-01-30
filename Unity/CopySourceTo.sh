@@ -6,12 +6,15 @@ fi
 
 TARGET_DIR="$1"
 
-if [ ! -d "${TARGET_DIR}" ]; then mkdir "${TARGET_DIR}"; fi
-rm -rf "${TARGET_DIR}/CompactBuffer.Runtime"
-rm -rf "${TARGET_DIR}/CompactBuffer.Runtime/Internal"
-rm -rf "${TARGET_DIR}/CompactBuffer.Generator"
-rm -rf "${TARGET_DIR}/CompactBuffer.Editor"
-rm -rf "${TARGET_DIR}/CompactBuffer.Tests"
+if [ ! -d "${TARGET_DIR}" ]; then
+    mkdir "${TARGET_DIR}"
+else
+    rm -rf "${TARGET_DIR}/CompactBuffer.Runtime"
+    rm -rf "${TARGET_DIR}/CompactBuffer.Runtime/Internal"
+    rm -rf "${TARGET_DIR}/CompactBuffer.Generator"
+    rm -rf "${TARGET_DIR}/CompactBuffer.Editor"
+    rm -rf "${TARGET_DIR}/CompactBuffer.Tests"
+fi
 
 mkdir "${TARGET_DIR}/CompactBuffer.Runtime"
 mkdir "${TARGET_DIR}/CompactBuffer.Runtime/Internal"
