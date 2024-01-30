@@ -165,22 +165,7 @@ namespace CompactBuffer
                 builder.AppendLine($"            writer.Write((ushort){i});");
                 foreach (var param in method.GetParameters())
                 {
-                    var customSerializer = param.ParameterType.GetCustomAttribute<CustomSerializerAttribute>();
-                    if (customSerializer == null && IsBaseType(param.ParameterType))
-                    {
-                        if (param.GetCustomAttribute<VariantIntAttribute>() != null && Variantable(param.ParameterType))
-                        {
-                            builder.AppendLine($"            writer.WriteVariant{param.ParameterType.Name}(___{param.Name});");
-                        }
-                        else
-                        {
-                            builder.AppendLine($"            writer.Write(___{param.Name});");
-                        }
-                    }
-                    else
-                    {
-                        builder.AppendLine($"            {GetSerializerName(param)}.Write(writer, ref ___{param.Name});");
-                    }
+                    GenProxyField(builder, type, method, param);
                 }
                 builder.AppendLine($"            m_Sender.Send(writer);");
                 builder.AppendLine($"        }}");
@@ -191,6 +176,44 @@ namespace CompactBuffer
             if (protocol.ProtocolType == ProtocolType.Client || protocol.ProtocolType == ProtocolType.Server)
             {
                 builder.AppendLine($"#endif");
+            }
+        }
+
+        private void GenProxyField(StringBuilder builder, Type type, MethodInfo method, ParameterInfo param)
+        {
+            var customSerializer = param.ParameterType.GetCustomAttribute<CustomSerializerAttribute>();
+            if (customSerializer == null && param.ParameterType.IsEnum)
+            {
+                builder.AppendLine($"            writer.WriteVariantInt32((int)___{param.Name});");
+            }
+            else if (customSerializer == null && IsBaseType(param.ParameterType))
+            {
+                var float16 = param.GetCustomAttribute<Float16Attribute>();
+                if (float16 == null)
+                {
+                    float16 = method.GetCustomAttribute<Float16Attribute>();
+                    if (float16 == null)
+                    {
+                        float16 = type.GetCustomAttribute<Float16Attribute>();
+                    }
+                }
+
+                if (param.GetCustomAttribute<VariantIntAttribute>() != null && Variantable(param.ParameterType))
+                {
+                    builder.AppendLine($"            writer.WriteVariant{param.ParameterType.Name}(___{param.Name});");
+                }
+                else if (float16 != null && param.ParameterType == typeof(float))
+                {
+                    builder.AppendLine($"            writer.WriteFloat16(___{param.Name}, {float16.IntegerMax});");
+                }
+                else
+                {
+                    builder.AppendLine($"            writer.Write(___{param.Name});");
+                }
+            }
+            else
+            {
+                builder.AppendLine($"            {GetSerializerName(param)}.Write(writer, ref ___{param.Name});");
             }
         }
 
@@ -251,11 +274,29 @@ namespace CompactBuffer
         private void GenStubField(StringBuilder builder, Type type, MethodInfo method, ParameterInfo param)
         {
             var customSerializer = param.ParameterType.GetCustomAttribute<CustomSerializerAttribute>();
-            if (customSerializer == null && IsBaseType(param.ParameterType))
+            if (customSerializer == null && param.ParameterType.IsEnum)
             {
+                builder.AppendLine($"                var ___{param.Name} = ({param.ParameterType.FullName})reader.ReadVariantInt32();");
+            }
+            else if (customSerializer == null && IsBaseType(param.ParameterType))
+            {
+                var float16 = param.GetCustomAttribute<Float16Attribute>();
+                if (float16 == null)
+                {
+                    float16 = method.GetCustomAttribute<Float16Attribute>();
+                    if (float16 == null)
+                    {
+                        float16 = type.GetCustomAttribute<Float16Attribute>();
+                    }
+                }
+
                 if (param.GetCustomAttribute<VariantIntAttribute>() != null && Variantable(param.ParameterType))
                 {
                     builder.AppendLine($"                var ___{param.Name} = reader.ReadVariant{param.ParameterType.Name}();");
+                }
+                else if (float16 != null && param.ParameterType == typeof(float))
+                {
+                    builder.AppendLine($"                var ___{param.Name} = reader.ReadFloat16({float16.IntegerMax});");
                 }
                 else
                 {

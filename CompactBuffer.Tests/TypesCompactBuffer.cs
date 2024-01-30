@@ -2,9 +2,16 @@
 using System.IO;
 using System.Collections.Generic;
 using CompactBuffer;
+using System;
 
 namespace Tests
 {
+    public enum EnumTypes
+    {
+        Int,
+        Long,
+    }
+
     [CompactBufferGenCode]
     public class AAA
     {
@@ -35,6 +42,8 @@ namespace Tests
         public uint variantUInt = 999;
         [Float16(10)]
         public float floatTwoByte = 0f;
+        public Guid guid;
+        public EnumTypes enum0;
     }
 
     [CompactBufferGenCode]

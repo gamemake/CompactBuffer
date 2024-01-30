@@ -23,6 +23,7 @@ namespace CompactBuffer
 
         public void AddAdditionType(Type type)
         {
+            if (type.IsEnum) return;
             if (!m_Assemblies.Contains(type.Assembly)) return;
             if (m_AdditionTypes.Contains(type)) return;
             m_AdditionTypes.Add(type);
@@ -65,6 +66,7 @@ namespace CompactBuffer
             {
                 if (type.IsInterface) continue;
                 if (type.IsAbstract) continue;
+                if (type.IsEnum) continue;
 
                 var customSerializer = type.GetCustomAttribute<CompactBufferGenCodeAttribute>();
                 if (customSerializer == null) continue;
@@ -75,6 +77,7 @@ namespace CompactBuffer
 
         private void GenCode(StringBuilder builder, Type type)
         {
+            if (type.IsEnum) return;
             if (m_Types.Contains(type)) return;
             if (m_Types.Count > 0)
             {
@@ -190,7 +193,12 @@ namespace CompactBuffer
         private void GenReadField(StringBuilder builder, Type type, FieldInfo field)
         {
             var customSerializer = field.GetCustomAttribute<CustomSerializerAttribute>();
-            if (customSerializer == null && IsBaseType(field.FieldType))
+            if (customSerializer == null && field.FieldType.IsEnum)
+            {
+                builder.AppendLine($"            target.{field.Name} = ({field.FieldType.FullName})reader.ReadVariantInt32();");
+                return;
+            }
+            else if (customSerializer == null && IsBaseType(field.FieldType))
             {
                 var float16 = field.GetCustomAttribute<Float16Attribute>();
                 if (float16 == null)
@@ -219,7 +227,12 @@ namespace CompactBuffer
         private void GenWriteField(StringBuilder builder, Type type, FieldInfo field)
         {
             var customSerializer = field.GetCustomAttribute<CustomSerializerAttribute>();
-            if (customSerializer == null && IsBaseType(field.FieldType))
+            if (customSerializer == null && field.FieldType.IsEnum)
+            {
+                builder.AppendLine($"            writer.WriteVariantInt32((int)target.{field.Name});");
+                return;
+            }
+            else if (customSerializer == null && IsBaseType(field.FieldType))
             {
                 var float16 = field.GetCustomAttribute<Float16Attribute>();
                 if (float16 == null)
@@ -246,8 +259,7 @@ namespace CompactBuffer
 
         private void GenCopyField(StringBuilder builder, FieldInfo field)
         {
-            var customSerializer = field.GetCustomAttribute<CustomSerializerAttribute>();
-            if (customSerializer == null && IsBaseType(field.FieldType))
+            if (IsBaseType(field.FieldType) || field.FieldType.IsEnum)
             {
                 builder.AppendLine($"            dst.{field.Name} = src.{field.Name};");
                 return;
