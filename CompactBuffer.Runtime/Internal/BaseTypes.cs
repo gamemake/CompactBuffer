@@ -417,34 +417,12 @@ namespace CompactBuffer.Internal
     {
         public static void Read(BufferReader reader, ref Guid target)
         {
-            var bytes = new byte[]
-            {
-                reader.ReadByte(),
-                reader.ReadByte(),
-                reader.ReadByte(),
-                reader.ReadByte(),
-                reader.ReadByte(),
-                reader.ReadByte(),
-                reader.ReadByte(),
-                reader.ReadByte(),
-                reader.ReadByte(),
-                reader.ReadByte(),
-                reader.ReadByte(),
-                reader.ReadByte(),
-                reader.ReadByte(),
-                reader.ReadByte(),
-                reader.ReadByte(),
-                reader.ReadByte(),
-            };
-            target = new Guid(bytes);
+            target = reader.ReadGuid();
         }
 
         public static void Write(BufferWriter writer, ref Guid target)
         {
-            foreach (var v in target.ToByteArray())
-            {
-                writer.Write(v);
-            }
+            writer.Write(target);
         }
 
         public static void Copy(ref Guid src, ref Guid dst)
@@ -454,12 +432,12 @@ namespace CompactBuffer.Internal
 
         void ICompactBufferSerializer<Guid>.Read(BufferReader reader, ref Guid target)
         {
-            Read(reader, ref target);
+            target = reader.ReadGuid();
         }
 
         void ICompactBufferSerializer<Guid>.Write(BufferWriter writer, ref Guid target)
         {
-            Write(writer, ref target);
+            writer.Write(target);
         }
 
         void ICompactBufferSerializer<Guid>.Copy(ref Guid src, ref Guid dst)

@@ -1,4 +1,5 @@
 
+using System;
 using System.IO;
 using System.Text;
 
@@ -60,6 +61,20 @@ namespace CompactBuffer
         public void WriteFloat16(float floatValue, int integerMax)
         {
             Write((short)(floatValue / integerMax * short.MaxValue));
+        }
+
+        private byte[] m_GuidBytes = null;
+
+        public void Write(Guid value)
+        {
+            if (m_GuidBytes == null)
+            {
+                m_GuidBytes = new byte[16];
+            }
+
+            var span = new Span<byte>(m_GuidBytes, 0, 16);
+            value.TryWriteBytes(span);
+            Write(m_GuidBytes); ;
         }
     }
 }

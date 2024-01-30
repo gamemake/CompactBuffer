@@ -22,6 +22,7 @@ namespace CompactBuffer
             m_TypesShortName.Add(typeof(double), "double");
             m_TypesShortName.Add(typeof(bool), "bool");
             m_TypesShortName.Add(typeof(string), "string");
+            m_TypesShortName.Add(typeof(Guid), "System.Guid");
         }
 
         public bool IsBaseType(Type type)
