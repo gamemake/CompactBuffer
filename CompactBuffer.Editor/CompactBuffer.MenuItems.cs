@@ -6,28 +6,28 @@ using UnityEditor;
 
 namespace CompactBuffer.UnityEditor
 {
+    public class AssemblyDefine
+    {
+        public string name;
+        public string[] references;
+        public string[] includePlatforms;
+        public string[] excludePlatforms;
+        public bool allowUnsafeCode;
+        public bool overrideReferences;
+        public string[] precompiledReferences;
+        public bool autoReferenced;
+        public string[] defineConstraints;
+        public string[] versionDefines;
+        public bool noEngineReferences;
+    }
+
     public static class MenuItems
     {
         private static string ReadAssemblyDefineName(string file)
         {
-            var lines = File.ReadAllLines(file);
-            foreach (var _line in lines)
-            {
-                var line = _line.Trim();
-                if (!line.StartsWith("\"name\"")) continue;
-
-                var pos = line.IndexOf(":");
-                if (pos <= 0) break;
-                line = line.Substring(pos + 1);
-                pos = line.IndexOf("\"");
-                if (pos <= 0) break;
-                line = line.Substring(pos + 1);
-                pos = line.IndexOf("\"");
-                if (pos <= 0) break;
-                line = line.Substring(0, pos);
-                return line;
-            }
-            return "";
+            var json = File.ReadAllText(file);
+            var asmdef = JsonUtility.FromJson<AssemblyDefine>(json);
+            return asmdef.name;
         }
 
         private static void FindAssemblyDefines(string path, Dictionary<string, string> result)
