@@ -1,15 +1,108 @@
 
 using System;
 using System.IO;
+using System.Buffers.Binary;
 using System.Text;
 
 namespace CompactBuffer
 {
-    public class BufferReader : BinaryReader
+    public class BufferReader
     {
-        public BufferReader(Stream input) : base(input) { }
-        public BufferReader(Stream input, Encoding encoding) : base(input, encoding) { }
-        public BufferReader(Stream input, Encoding encoding, bool leaveOpen) : base(input, encoding, leaveOpen) { }
+        private byte[] _buffer;
+        private int _start;
+        private int _position;
+        private int _length;
+        private Encoding _encoding;
+
+        public BufferReader(byte[] buffer, Encoding encoding = null) : this(buffer, 0, buffer.Length, encoding)
+        {
+        }
+
+        public BufferReader(byte[] buffer, int index, int count, Encoding encoding = null)
+        {
+            if (buffer is null)
+                throw new ArgumentNullException("buffer");
+            if (index < 0)
+                throw new ArgumentOutOfRangeException("index", index, $"index '{index}' must be a non-negative and non-zero value.");
+            if (count < 0)
+                throw new ArgumentOutOfRangeException("count", count, $"index '{count}' must be a non-negative and non-zero value.");
+            if (buffer.Length - index < count)
+                throw new ArgumentException("Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection.");
+
+            if (encoding == null)
+                _encoding = Encoding.UTF8;
+            else
+                _encoding = encoding;
+
+            _buffer = buffer;
+            _start = _position = index;
+            _length = index + count;
+        }
+
+        public int Position
+        {
+            get
+            {
+                return _position - _start; ;
+            }
+            set
+            {
+                if (value < 0 || value > _length - _start)
+                    throw new ArgumentOutOfRangeException("value", value, $"value '{value}' must be between 0 and {_length - _start}.");
+
+                _position = value;
+            }
+        }
+        public int Lenght => _length - _position;
+
+        public ReadOnlySpan<byte> ReadBytes(int size)
+        {
+            if (size < 0)
+                throw new ArgumentOutOfRangeException("size", size, $"size '{size}' must be a non-negative and non-zero value.");
+            if (_position + size > _length)
+                throw new EndOfStreamException();
+
+            _position += size;
+            return new ReadOnlySpan<byte>(_buffer, _position, size);
+        }
+
+        public sbyte ReadSByte()
+        {
+            if (_position >= _length)
+                throw new EndOfStreamException();
+
+            return (sbyte)_buffer[_position++];
+        }
+
+        public byte ReadByte()
+        {
+            if (_position >= _length)
+                throw new EndOfStreamException();
+
+            return _buffer[_position++];
+        }
+
+        public short ReadInt16() => BinaryPrimitives.ReadInt16LittleEndian(ReadBytes(2));
+        public int ReadInt32() => BinaryPrimitives.ReadInt32LittleEndian(ReadBytes(4));
+        public long ReadInt64() => BinaryPrimitives.ReadInt64LittleEndian(ReadBytes(8));
+
+        public ushort ReadUInt16() => BinaryPrimitives.ReadUInt16LittleEndian(ReadBytes(2));
+        public uint ReadUInt32() => BinaryPrimitives.ReadUInt32LittleEndian(ReadBytes(4));
+        public ulong ReadUInt64() => BinaryPrimitives.ReadUInt64LittleEndian(ReadBytes(8));
+
+        public float ReadSingle() => BitConverter.ToSingle(ReadBytes(4));
+        public double ReadDouble() => BitConverter.ToDouble(ReadBytes(8));
+
+        public bool ReadBoolean() => ReadByte() != 0;
+
+        public string ReadString()
+        {
+            var stringLength = ReadVariantInt32();
+            if (stringLength < 0)
+                throw new IOException($"BinaryReader encountered an invalid string length of {stringLength} characters.");
+
+            return _encoding.GetString(ReadBytes(stringLength));
+        }
 
         private static readonly string Format_Bad7BitInt = "Too many bytes in what should have been a 7-bit encoded integer.";
 
@@ -103,17 +196,9 @@ namespace CompactBuffer
             return shortValue / (float)short.MaxValue * integerMax;
         }
 
-        private byte[] m_GuidBytes = null;
-
         public Guid ReadGuid()
         {
-            if (m_GuidBytes == null)
-            {
-                m_GuidBytes = new byte[16];
-            }
-
-            Read(m_GuidBytes, 0, 16);
-            return new Guid(m_GuidBytes);
+            return new Guid(ReadBytes(16));
         }
     }
 }

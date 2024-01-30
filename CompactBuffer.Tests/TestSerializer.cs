@@ -10,18 +10,14 @@ namespace CompactBuffer.Tests;
 
 public class TestSerializer
 {
-    private readonly MemoryStream m_ReaderStream;
-    private readonly MemoryStream m_WriterStream;
     private readonly BufferReader m_Reader;
     private readonly BufferWriter m_Writer;
 
     public TestSerializer()
     {
         var buffer = new byte[400 * 1024];
-        m_ReaderStream = new MemoryStream(buffer);
-        m_WriterStream = new MemoryStream(buffer);
-        m_Reader = new BufferReader(m_ReaderStream);
-        m_Writer = new BufferWriter(m_WriterStream);
+        m_Reader = new BufferReader(buffer);
+        m_Writer = new BufferWriter(buffer);
     }
 
     [Fact]
@@ -52,7 +48,7 @@ public class TestSerializer
         var dst = default(AAA);
         CompactBuffer.GetSerializer<AAA>().Write(m_Writer, ref src);
         CompactBuffer.GetSerializer<AAA>().Read(m_Reader, ref dst);
-        Assert.Equal(m_ReaderStream.Position, m_WriterStream.Position);
+        Assert.Equal(m_Reader.Position, m_Writer.Position);
 
         var srcJson = JsonSerializer.Serialize(src);
         var dstJson = JsonSerializer.Serialize(dst);

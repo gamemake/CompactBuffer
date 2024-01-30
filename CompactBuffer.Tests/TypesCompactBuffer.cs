@@ -1,8 +1,7 @@
 
-using System.IO;
+using System;
 using System.Collections.Generic;
 using CompactBuffer;
-using System;
 
 namespace Tests
 {
@@ -63,12 +62,12 @@ namespace Tests
 
     public class CustomFloatSerializer : ICompactBufferSerializer<float>
     {
-        public static void Read(BinaryReader reader, ref float target)
+        public static void Read(BufferReader reader, ref float target)
         {
             target = (float)reader.ReadInt32();
         }
 
-        public static void Write(BinaryWriter writer, ref float target)
+        public static void Write(BufferWriter writer, ref float target)
         {
             writer.Write((int)target);
         }
