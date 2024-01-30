@@ -1,4 +1,5 @@
 
+using System;
 using System.Collections.Generic;
 
 namespace CompactBuffer.Internal
@@ -343,6 +344,51 @@ namespace CompactBuffer.Internal
         void ICompactBufferSerializer<Dictionary<TKey, TValue>>.Copy(ref Dictionary<TKey, TValue> src, ref Dictionary<TKey, TValue> dst)
         {
             Copy(ref src, ref dst);
+        }
+    }
+
+    public class SpanSerializer<TElement> : ICompactBufferSerializer
+    {
+        private static ICompactBufferSerializer<TElement> m_ElementSerializer = CompactBuffer.GetSerializer<TElement>();
+
+        public static void Read(BufferReader reader, ref Span<TElement> target)
+        {
+            var length = reader.ReadVariantInt32();
+            if (length < 0)
+            {
+                throw new FormatException($"Span length ({length}) must be a non-negative");
+            }
+            if (length == 0)
+            {
+                target = Span<TElement>.Empty;
+                return;
+            }
+
+            target = new TElement[length];
+            for (var i = 0; i < length; i++)
+            {
+                m_ElementSerializer.Read(reader, ref target[i]);
+            }
+        }
+
+        public static void Write(BufferWriter writer, ref Span<TElement> target)
+        {
+            if (target == null)
+            {
+                writer.WriteVariantInt32(0);
+                return;
+            }
+
+            writer.WriteVariantInt32(target.Length);
+            for (var i = 0; i < target.Length; i++)
+            {
+                m_ElementSerializer.Write(writer, ref target[i]);
+            }
+        }
+
+        public static void Copy(ref TElement[] src, ref TElement[] dst)
+        {
+            throw new NotImplementedException();
         }
     }
 }

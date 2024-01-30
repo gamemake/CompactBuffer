@@ -305,12 +305,7 @@ namespace CompactBuffer
             }
             else
             {
-                var defaultText = "";
-                if (!param.ParameterType.IsValueType)
-                {
-                    defaultText = " = default";
-                }
-                builder.AppendLine($"                {GetTypeName(param.ParameterType)} ___{param.Name}{defaultText};");
+                builder.AppendLine($"                {GetTypeName(param.ParameterType)} ___{param.Name} = default;");
                 builder.AppendLine($"                {GetSerializerName(param)}.Read(reader, ref ___{param.Name});");
             }
         }

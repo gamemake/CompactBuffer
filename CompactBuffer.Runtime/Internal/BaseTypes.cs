@@ -445,4 +445,25 @@ namespace CompactBuffer.Internal
             dst = src;
         }
     }
+
+    [CompactBuffer(typeof(ReadOnlySpan<byte>))]
+    public class ReadOnlySpanByteSerializer : ICompactBufferSerializer
+    {
+        public static void Read(BufferReader reader, ref ReadOnlySpan<byte> target)
+        {
+            var length = reader.ReadVariantInt32();
+            target = reader.ReadBytes(length);
+        }
+
+        public static void Write(BufferWriter writer, ref ReadOnlySpan<byte> target)
+        {
+            writer.WriteVariantInt32(target.Length);
+            writer.Write(target);
+        }
+
+        public static void Copy(ref Span<byte> src, ref Span<byte> dst)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

@@ -23,5 +23,6 @@ namespace Tests
         void CallGuid(Guid _guid);
         void CallEnum(EnumTypes _enum);
         void CallFloat16([Float16(1)] float v);
+        void CallReadOnlySpan(ReadOnlySpan<byte> aaaaaaaa);
     }
 }
