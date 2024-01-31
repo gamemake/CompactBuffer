@@ -120,7 +120,6 @@ namespace CompactBuffer.UnityEditor
                 {
                     serializerGenerator.AddAdditionType(type);
                 }
-                CompactBuffer.Reset();
 
                 var resultProtocol = protocolGenerator.GenCode();
                 var resultSerializer = serializerGenerator.GenCode();

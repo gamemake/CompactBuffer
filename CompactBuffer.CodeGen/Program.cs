@@ -17,7 +17,6 @@ namespace CompactBuffer.CodeGen
 
             var serializerGenerator = new SerializerGenerator();
             var protocolGenerator = new ProtocolGenerator(serializerGenerator);
-            CompactBuffer.Reset();
 
             for (var i = 1; i < arg.Length; i++)
             {

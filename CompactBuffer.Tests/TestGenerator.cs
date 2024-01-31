@@ -28,7 +28,6 @@ public class TestGenerator
     {
         var generator = new SerializerGenerator();
         generator.AddAssembly(typeof(AAA).Assembly);
-        CompactBuffer.Reset();
 
         generator.GenCode();
     }
@@ -40,7 +39,6 @@ public class TestGenerator
         var protocolGenerator = new ProtocolGenerator(serializerGenerator);
         serializerGenerator.AddAssembly(typeof(AAA).Assembly);
         protocolGenerator.AddAssembly(typeof(AAA).Assembly);
-        CompactBuffer.Reset();
 
         var resultProtocol = protocolGenerator.GenCode();
         File.WriteAllText(Path.Join(GetDirName(), "CompactBuffer.Tests", "CodeGen.Protocol.cs"), resultProtocol);
