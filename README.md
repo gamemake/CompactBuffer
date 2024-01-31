@@ -49,27 +49,78 @@ serializer.Read(reader, ref liveData);
 Protocol
 
 ```cs
+public interface ISyncUserData : IProtocol
+{
+    void Sync(string type, string data);
+}
 ```
 
 Protocol Proxy
 
 ```cs
+
+public class ProtocolSender : IProtocolSender
+{
+    public BufferWriter GetStreamWriter()
+    {
+        var bytes = new byte[10000];
+        return BufferWrite(bytes);
+    }
+    
+    public void Send(BufferWriter writer)
+    {
+        // Send writer.GetWriteBytes()
+    }
+}
+
+var proxy = Protocol.GetProxy<ISyncUserData>(sender)
+proxy.Sync("type", "data");
 ```
 
 Protocol Stub
 
 ```cs
+public class SyncUserDataImpl : ISyncUserData
+{
+    public void Sync(string type, string data)
+    {
+        // do something
+    }
+}
+
+var target = new SyncDataImpl();
+var stub = Protocol.GetStub<ISyncUserData>(target);
+stub.Dispach(bufferReader);
 ```
 
 # Float16
 
 ```cs
-public struct Location
+[Float16(1000)]
+public struct Position
+{
+    public float x, y, z;
+}
+
+public struct Movement
+{
+    [Float16(1)]
+    float NormalX;
+    [Float16(1)]
+    float NormalY;
+    [Float16(1)]
+    float NormalZ;
+}
+
+public interface ISyncPosition : IProtocol
 {
     [Float16(1000)]
-    public Vector3 Position;
-    [Float16(1)]
-    public Vector3 Direction;
+    void Sync1(float x, float y, float z);
+    void Sync2(
+        [Float16(1)] float normalX,
+        [Float16(1)] float normalY,
+        [Float16(1)] float normalZ,
+    );
 }
 ```
 

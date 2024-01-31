@@ -68,6 +68,11 @@ namespace CompactBuffer
         }
         public int Length => _length - _start;
 
+        public Span<byte> GetWriteBytes()
+        {
+            return new Span<byte>(_buffer, _start, _length - _start);
+        }
+
         public void Write(ReadOnlySpan<byte> bytes)
         {
             var destination = InternalWrite(bytes.Length);
@@ -144,6 +149,10 @@ namespace CompactBuffer
 
         public void WriteFloat16(float floatValue, int integerMax)
         {
+            if (floatValue > integerMax || floatValue < -integerMax)
+            {
+                throw new ArgumentOutOfRangeException("floatValue", floatValue, $"floatValue ({floatValue}) must be between {-integerMax} and {integerMax}");
+            }
             Write((short)(floatValue / integerMax * short.MaxValue));
         }
 

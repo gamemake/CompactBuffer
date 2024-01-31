@@ -142,13 +142,10 @@ namespace CompactBuffer
 
             builder.AppendLine($"namespace ProtocolAutoGen");
             builder.AppendLine($"{{");
-            builder.AppendLine($"    public class {type.FullName.Replace(".", "_")}_Proxy : {type.FullName}");
+            builder.AppendLine($"    public class {type.FullName.Replace(".", "_")}_Proxy : CompactBuffer.ProtocolProxy, {type.FullName}");
             builder.AppendLine($"    {{");
-            builder.AppendLine($"        private readonly CompactBuffer.IProtocolSender m_Sender;");
-            builder.AppendLine($"");
-            builder.AppendLine($"        public {type.FullName.Replace(".", "_")}_Proxy(CompactBuffer.IProtocolSender sender)");
+            builder.AppendLine($"        public {type.FullName.Replace(".", "_")}_Proxy(CompactBuffer.IProtocolSender sender) : base(sender)");
             builder.AppendLine($"        {{");
-            builder.AppendLine($"            m_Sender = sender;");
             builder.AppendLine($"        }}");
             for (var i = 0; i < methods.Count; i++)
             {
