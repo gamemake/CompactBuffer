@@ -9,8 +9,8 @@ TARGET_DIR="$1"
 if [ -d "${TARGET_DIR}" ]; then
     rm -rf "${TARGET_DIR}"
 fi
-    mkdir "${TARGET_DIR}"
 
+mkdir "${TARGET_DIR}"
 mkdir "${TARGET_DIR}/CompactBuffer.Tests"
 
 cp Output/* "${TARGET_DIR}"

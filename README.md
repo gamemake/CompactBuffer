@@ -2,6 +2,12 @@
 
 Binary serialization implemented in pure C#.
 
+# Why use Compact Buffer？
+
+* No type reflection is used.
+* Support Span type to reduce GC.
+* Simple and easy to use.
+
 # Install to unity project
 
 On Windows
@@ -54,6 +60,20 @@ Protocol Stub
 
 ```cs
 ```
+
+# Float16
+
+```cs
+public struct Location
+{
+    [Float16(1000)]
+    public Vector3 Position;
+    [Float16(1)]
+    public Vector3 Direction;
+}
+```
+
+The original Vector3 occupies 12 bytes, and after adding the Float16 Attribute, it occupies 6 bytes. Of course, there is a loss in accuracy.
 
 # Generate code
 
