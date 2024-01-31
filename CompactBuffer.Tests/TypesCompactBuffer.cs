@@ -92,4 +92,39 @@ namespace Tests
             dst = src;
         }
     }
+
+    public class VaiantType
+    {
+    }
+
+    [CompactBuffer.CompactBuffer(typeof(VaiantType))]
+    public class VaiantTypeSerializer : ICompactBufferSerializer<VaiantType>
+    {
+        public static void Read(BufferReader reader, ref VaiantType target)
+        {
+        }
+
+        public static void Write(BufferWriter writer, ref VaiantType target)
+        {
+        }
+
+        public static void Copy(ref VaiantType src, ref VaiantType dst)
+        {
+        }
+
+        void ICompactBufferSerializer<VaiantType>.Read(BufferReader reader, ref VaiantType target)
+        {
+            throw new NotImplementedException();
+        }
+
+        void ICompactBufferSerializer<VaiantType>.Write(BufferWriter writer, ref VaiantType target)
+        {
+            throw new NotImplementedException();
+        }
+
+        void ICompactBufferSerializer<VaiantType>.Copy(ref VaiantType src, ref VaiantType dst)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

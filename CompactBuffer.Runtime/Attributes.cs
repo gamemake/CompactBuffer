@@ -20,10 +20,12 @@ namespace CompactBuffer
     public class CompactBufferAttribute : Attribute
     {
         public readonly Type SerializerType;
+        public readonly bool IsAutoGen;
 
-        public CompactBufferAttribute(Type serializerType)
+        public CompactBufferAttribute(Type serializerType, bool isAutoGen = false)
         {
             SerializerType = serializerType;
+            IsAutoGen = isAutoGen;
         }
     }
 

@@ -11,6 +11,7 @@ namespace CompactBuffer
         private HashSet<Assembly> m_Assemblies = new HashSet<Assembly>();
         private HashSet<Type> m_Types = new HashSet<Type>();
         private HashSet<Type> m_AdditionTypes = new HashSet<Type>();
+        private HashSet<Type> m_CustomSerializerTypes = new HashSet<Type>();
 
         public SerializerGenerator()
         {
@@ -19,6 +20,15 @@ namespace CompactBuffer
         public void AddAssembly(Assembly assembly)
         {
             m_Assemblies.Add(assembly);
+
+            foreach (var type in assembly.GetTypes())
+            {
+                if (!typeof(ICompactBufferSerializer).IsAssignableFrom(type)) continue;
+                var attribute = type.GetCustomAttribute<CompactBufferAttribute>();
+                if (attribute == null) continue;
+                if (attribute.IsAutoGen) continue;
+                m_CustomSerializerTypes.Add(attribute.SerializerType);
+            }
         }
 
         public void AddAdditionType(Type type)
@@ -78,11 +88,10 @@ namespace CompactBuffer
         private void GenCode(StringBuilder builder, Type type)
         {
             if (type.IsEnum) return;
+            if (m_CustomSerializerTypes.Contains(type)) return;
             if (m_Types.Contains(type)) return;
-            if (m_Types.Count > 0)
-            {
-                builder.AppendLine();
-            }
+
+            if (m_Types.Count > 0) builder.AppendLine();
             m_Types.Add(type);
 
             var fields = new List<FieldInfo>();
@@ -125,7 +134,7 @@ namespace CompactBuffer
                 GenCode(builder, field.FieldType);
             }
 
-            builder.AppendLine($"    [CompactBuffer.CompactBuffer(typeof({type.FullName}))]");
+            builder.AppendLine($"    [CompactBuffer.CompactBuffer(typeof({type.FullName}), true)]");
             builder.AppendLine($"    public class {type.FullName.Replace(".", "_")}_Serializer : CompactBuffer.ICompactBufferSerializer<{type.FullName}>");
             builder.AppendLine($"    {{");
             builder.AppendLine($"        public static void Read(CompactBuffer.BufferReader reader, ref {type.FullName} target)");
