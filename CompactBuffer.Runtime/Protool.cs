@@ -20,11 +20,6 @@ namespace CompactBuffer
         void Dispatch(BufferReader reader);
     }
 
-    public interface IProtocolStub<T> : IProtocolStub
-        where T : IProtocol
-    {
-    }
-
     public abstract class ProtocolProxy
     {
         protected readonly IProtocolSender m_Sender;
@@ -33,10 +28,6 @@ namespace CompactBuffer
         {
             m_Sender = sender;
         }
-    }
-
-    public abstract class ProtocolStub
-    {
     }
 
     public static class Protocol
@@ -65,7 +56,7 @@ namespace CompactBuffer
         private static Dictionary<Type, Type> GetAllStubTypes()
         {
             var retval = new Dictionary<Type, Type>();
-            foreach (var type in CompactBufferUtils.EnumAllTypes(typeof(ProtocolStub)))
+            foreach (var type in CompactBufferUtils.EnumAllTypes(typeof(IProtocolStub)))
             {
                 if (type.IsAbstract) continue;
                 var proxyAttribute = type.GetCustomAttribute<ProtocolStubAttribute>();
@@ -94,7 +85,7 @@ namespace CompactBuffer
             }
         }
 
-        public static IProtocolStub<T> GetStub<T>(T target)
+        public static IProtocolStub GetStub<T>(T target)
             where T : IProtocol
         {
             if (!m_StubTypes.TryGetValue(typeof(T), out var type))
@@ -103,15 +94,15 @@ namespace CompactBuffer
             }
             else
             {
-                var stub = (IProtocolStub<T>)Activator.CreateInstance(type, target);
+                var stub = (IProtocolStub)Activator.CreateInstance(type, target);
                 return stub;
             }
         }
 
-        public static IProtocolStub<T> GetDispacher<T>(T impl)
+        public static IProtocolStub GetDispacher<T>(T impl)
             where T : IProtocol
         {
-            return default(IProtocolStub<T>);
+            return default(IProtocolStub);
         }
     }
 }
