@@ -2,7 +2,7 @@
 
 Binary serialization implemented in pure C#.
 
-# Why use Compact Buffer？
+# Why use it？
 
 * No type reflection is used.
 * Support Span type to reduce GC.
@@ -17,7 +17,7 @@ Build.bat
 ./CopyDllTo.bat ${UNITY_PROJECT_DIR}\Assets\CompactBuffer
 ```
 
-On MacOS
+On MacOS and Linux
 ```bash
 cd Unity
 ./Build.sh
