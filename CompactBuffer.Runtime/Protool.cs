@@ -11,7 +11,7 @@ namespace CompactBuffer
 
     public interface IProtocolSender
     {
-        BufferWriter GetStreamWriter();
+        BufferWriter GetStreamWriter(int protocolId);
         void Send(BufferWriter writer);
     }
 
@@ -59,9 +59,9 @@ namespace CompactBuffer
             foreach (var type in CompactBufferUtils.EnumAllTypes(typeof(IProtocolStub)))
             {
                 if (type.IsAbstract) continue;
-                var proxyAttribute = type.GetCustomAttribute<ProtocolStubAttribute>();
-                if (proxyAttribute == null) continue;
-                var protocolType = proxyAttribute.ProtocolType;
+                var stubAttribute = type.GetCustomAttribute<ProtocolStubAttribute>();
+                if (stubAttribute == null) continue;
+                var protocolType = stubAttribute.ProtocolType;
                 if (protocolType == null || !protocolType.IsInterface || !typeof(IProtocol).IsAssignableFrom(protocolType))
                 {
                     throw new ArgumentException("invalid");

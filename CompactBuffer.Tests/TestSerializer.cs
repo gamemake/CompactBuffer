@@ -83,7 +83,7 @@ public class TestSerializer
     }
 
     [Fact]
-    public void TestOne()
+    public void BucketIndexAndSize()
     {
         uint[] sizes = { 1, 2, 4, 100, 254, 1000, 2000, 4000 };
         foreach (var size in sizes)

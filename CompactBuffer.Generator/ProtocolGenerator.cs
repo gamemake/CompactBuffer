@@ -145,6 +145,7 @@ namespace CompactBuffer
 
             builder.AppendLine($"namespace ProtocolAutoGen");
             builder.AppendLine($"{{");
+            builder.AppendLine($"    [CompactBuffer.ProtocolProxy(typeof({type.FullName}))]");
             builder.AppendLine($"    public class {type.FullName.Replace(".", "_")}_Proxy : CompactBuffer.ProtocolProxy, {type.FullName}");
             builder.AppendLine($"    {{");
             builder.AppendLine($"        public {type.FullName.Replace(".", "_")}_Proxy(CompactBuffer.IProtocolSender sender) : base(sender)");
@@ -161,7 +162,7 @@ namespace CompactBuffer
                 builder.AppendLine($"        void {type.FullName}.{method.Name}({paramsText})");
                 builder.AppendLine($"        {{");
                 builder.AppendLine($"            var writer = m_Sender.GetStreamWriter();");
-                builder.AppendLine($"            writer.Write((ushort){i});");
+                builder.AppendLine($"            writer.WriteVariantInt32({i});");
                 foreach (var param in method.GetParameters())
                 {
                     GenProxyField(builder, type, method, param);
@@ -230,6 +231,7 @@ namespace CompactBuffer
 
             builder.AppendLine($"namespace ProtocolAutoGen");
             builder.AppendLine($"{{");
+            builder.AppendLine($"    [CompactBuffer.ProtocolStub(typeof({type.FullName}))]");
             builder.AppendLine($"    public class {type.FullName.Replace(".", "_")}_Stub : CompactBuffer.IProtocolStub");
             builder.AppendLine($"    {{");
             builder.AppendLine($"        protected readonly {type.FullName} m_Target;");
@@ -239,9 +241,9 @@ namespace CompactBuffer
             builder.AppendLine($"            m_Target = target;");
             builder.AppendLine($"        }}");
             builder.AppendLine($"");
-            builder.AppendLine($"        void CompactBuffer.IProtocolStub.Dispatch(CompactBuffer.BufferReader reader)");
+            builder.AppendLine($"        void Dispatch(CompactBuffer.BufferReader reader)");
             builder.AppendLine($"        {{");
-            builder.AppendLine($"            var index = reader.ReadUInt32();");
+            builder.AppendLine($"            var index = reader.ReadVariantInt32();");
             for (var i = 0; i < methods.Count; i++)
             {
                 var method = methods[i];
@@ -271,6 +273,19 @@ namespace CompactBuffer
                 builder.AppendLine($"            }}");
             }
             builder.AppendLine($"            throw new CompactBuffer.CompactBufferExeption(\"{type.FullName} invalid method index\" + index);");
+            builder.AppendLine($"        }}");
+            builder.AppendLine($"");
+            builder.AppendLine($"        void CompactBuffer.IProtocolStub.Dispatch(CompactBuffer.BufferReader reader)");
+            builder.AppendLine($"        {{");
+            builder.AppendLine($"            var top = CompactBuffer.Internal.SpanAllocator.Begin();");
+            builder.AppendLine($"            try");
+            builder.AppendLine($"            {{");
+            builder.AppendLine($"                Dispatch(reader);");
+            builder.AppendLine($"            }}");
+            builder.AppendLine($"            finally");
+            builder.AppendLine($"            {{");
+            builder.AppendLine($"                CompactBuffer.Internal.SpanAllocator.End(top);");
+            builder.AppendLine($"            }}");
             builder.AppendLine($"        }}");
             builder.AppendLine($"    }}");
             builder.AppendLine($"}}");

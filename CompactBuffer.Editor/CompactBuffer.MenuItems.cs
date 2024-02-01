@@ -105,6 +105,12 @@ namespace CompactBuffer.UnityEditor
         [MenuItem("Tools/CompactBuffer/Generate", false, 2)]
         public static void Generate()
         {
+            foreach (var path in GetCompactBufferGroups().Values)
+            {
+                File.Delete(Path.Join(path, CompactBufferFileName));
+                File.Delete(Path.Join(path, ProtocolFileName));
+            }
+
             foreach (var (group, path) in GetCompactBufferGroups())
             {
                 Debug.Log($"CompactBuffer.CodeGen : Generate {path}");
