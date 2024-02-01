@@ -63,7 +63,7 @@ namespace CompactBuffer
                 throw new EndOfStreamException();
 
             _position += size;
-            return new ReadOnlySpan<byte>(_buffer, _position, size);
+            return new ReadOnlySpan<byte>(_buffer, _position - size, size);
         }
 
         public sbyte ReadSByte()

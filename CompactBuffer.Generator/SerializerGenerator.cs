@@ -19,7 +19,7 @@ namespace CompactBuffer
         public bool AddAdditionType(Type type)
         {
             if (type.IsByRef) type = type.GetElementType();
-
+            if (IsBaseType(type)) return true;
             if (type.IsInterface) return false;
             if (type.IsAbstract) return false;
             if (type.IsEnum) return true;
@@ -99,11 +99,14 @@ namespace CompactBuffer
             var fields = new List<FieldInfo>();
             foreach (var field in type.GetFields(BindingFlags.Instance | BindingFlags.Public))
             {
-                if (!m_Assemblies.Contains(field.FieldType.Assembly)) continue;
                 if (field.IsInitOnly) continue;
 
+                if (!AddAdditionType(field.FieldType))
+                {
+                    throw new CompactBufferExeption($"{type.FullName}.{field.Name} unsupport type {GetTypeName(field.FieldType)}");
+
+                }
                 fields.Add(field);
-                AddAdditionType(field.FieldType);
             }
 
             builder.AppendLine($"    [CompactBuffer.CompactBuffer(typeof({type.FullName}), true)]");
@@ -221,7 +224,7 @@ namespace CompactBuffer
 
             if (customSerializer != null)
             {
-                builder.AppendLine($"            {GetTypeName(customSerializer.SerializerType)}.Write(write, in target.{field.Name});");
+                builder.AppendLine($"            {GetTypeName(customSerializer.SerializerType)}.Write(writer, in target.{field.Name});");
             }
             else if (originType.IsEnum)
             {
@@ -249,7 +252,7 @@ namespace CompactBuffer
         {
             var originType = field.FieldType;
 
-            if (originType.IsValueType)
+            if (originType.IsValueType || IsBaseType(originType))
             {
                 builder.AppendLine($"            dst.{field.Name} = src.{field.Name};");
             }

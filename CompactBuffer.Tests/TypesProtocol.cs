@@ -23,6 +23,7 @@ namespace Tests
     {
         void Call();
         void CallInt(int a);
+        void CallString(string a);
         void CallPA(TypeClass pa);
         void CallVariant([VariantInt] int v1, [VariantInt] long v2, [VariantInt] uint v3, int v4, int v5);
         void CallGuid(Guid _guid);

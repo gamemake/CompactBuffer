@@ -44,12 +44,9 @@ namespace CompactBuffer
             if (_position + size > _capacity)
                 throw new OutOfMemoryException("Out of memory.");
 
-            var origin = _position;
             _position += size;
-            if (_position > _length)
-                _length = _position;
-
-            return new Span<byte>(_buffer, origin, size);
+            if (_position > _length) _length = _position;
+            return new Span<byte>(_buffer, _position - size, size);
         }
 
         public int Position
@@ -103,10 +100,6 @@ namespace CompactBuffer
             var span = InternalWrite(stringLength);
             var encoder = _encoding.GetEncoder();
             encoder.Convert(value, span, false, out var charsUsed, out var bytesUsed, out var completed);
-
-            _position += stringLength;
-            if (_position > _length)
-                _length = _position;
         }
 
         public void WriteVariantInt32(int value)
