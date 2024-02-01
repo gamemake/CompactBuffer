@@ -119,6 +119,30 @@ namespace ProtocolAutoGen
             CompactBufferAutoGen.Tests_TypeStruct_Serializer.Write(writer, in ___a);
             m_Sender.Send(writer);
         }
+
+        void Tests.IServerApi.CallIntArray(int[] ___array)
+        {
+            var writer = m_Sender.GetStreamWriter();
+            writer.Write((ushort)13);
+            CompactBuffer.Internal.ArraySerializer<int>.Write(writer, in ___array);
+            m_Sender.Send(writer);
+        }
+
+        void Tests.IServerApi.CallIntSpan(System.Span<int> ___span)
+        {
+            var writer = m_Sender.GetStreamWriter();
+            writer.Write((ushort)14);
+            CompactBuffer.Internal.SpanSerializer<int>.Write(writer, in ___span);
+            m_Sender.Send(writer);
+        }
+
+        void Tests.IServerApi.CallIntReadOnlySpan(System.ReadOnlySpan<int> ___span)
+        {
+            var writer = m_Sender.GetStreamWriter();
+            writer.Write((ushort)15);
+            CompactBuffer.Internal.ReadOnlySpanSerializer<int>.Write(writer, in ___span);
+            m_Sender.Send(writer);
+        }
     }
 }
 namespace ProtocolAutoGen
@@ -221,6 +245,27 @@ namespace ProtocolAutoGen
                 Tests.TypeStruct ___a = default;
                 CompactBufferAutoGen.Tests_TypeStruct_Serializer.Read(reader, ref ___a);
                 m_Target?.CallTypeStructRef(ref ___a);
+                return;
+            }
+            if (index == 13)
+            {
+                int[] ___array = default;
+                CompactBuffer.Internal.ArraySerializer<int>.Read(reader, ref ___array);
+                m_Target?.CallIntArray(___array);
+                return;
+            }
+            if (index == 14)
+            {
+                System.Span<int> ___span = default;
+                CompactBuffer.Internal.SpanSerializer<int>.Read(reader, ref ___span);
+                m_Target?.CallIntSpan(___span);
+                return;
+            }
+            if (index == 15)
+            {
+                System.ReadOnlySpan<int> ___span = default;
+                CompactBuffer.Internal.ReadOnlySpanSerializer<int>.Read(reader, ref ___span);
+                m_Target?.CallIntReadOnlySpan(___span);
                 return;
             }
             throw new CompactBuffer.CompactBufferExeption("Tests.IServerApi invalid method index" + index);

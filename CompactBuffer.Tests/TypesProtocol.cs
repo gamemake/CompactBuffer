@@ -34,5 +34,8 @@ namespace Tests
         void CallTypeClassRef(ref TypeClass a);
         void CallTypeStructRefReadonly(ref readonly TypeStruct a);
         void CallTypeStructRef(ref TypeStruct a);
+        void CallIntArray(int[] array);
+        void CallIntSpan(Span<int> span);
+        void CallIntReadOnlySpan(ReadOnlySpan<int> span);
     }
 }

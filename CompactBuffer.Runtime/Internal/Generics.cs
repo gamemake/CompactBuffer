@@ -373,12 +373,6 @@ namespace CompactBuffer.Internal
 
         public static void Write(BufferWriter writer, ref readonly Span<TElement> target)
         {
-            if (target == null)
-            {
-                writer.WriteVariantInt32(0);
-                return;
-            }
-
             writer.WriteVariantInt32(target.Length);
             for (var i = 0; i < target.Length; i++)
             {
@@ -387,6 +381,32 @@ namespace CompactBuffer.Internal
         }
 
         public static void Copy(ref readonly Span<TElement> src, ref Span<TElement> dst)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class ReadOnlySpanSerializer<TElement> : ICompactBufferSerializer
+    {
+        private static ICompactBufferSerializer<TElement> m_ElementSerializer = CompactBuffer.GetSerializer<TElement>();
+
+        public static void Read(BufferReader reader, ref ReadOnlySpan<TElement> target)
+        {
+            Span<TElement> span = default;
+            SpanSerializer<TElement>.Read(reader, ref span);
+            target = span;
+        }
+
+        public static void Write(BufferWriter writer, ref readonly ReadOnlySpan<TElement> target)
+        {
+            writer.WriteVariantInt32(target.Length);
+            for (var i = 0; i < target.Length; i++)
+            {
+                m_ElementSerializer.Write(writer, in target[i]);
+            }
+        }
+
+        public static void Copy(ref readonly ReadOnlySpan<TElement> src, ref ReadOnlySpan<TElement> dst)
         {
             throw new NotImplementedException();
         }
