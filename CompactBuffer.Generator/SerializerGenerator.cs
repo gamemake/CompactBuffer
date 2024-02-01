@@ -8,35 +8,39 @@ namespace CompactBuffer
 {
     public class SerializerGenerator : Generator, IAddAddtionType
     {
-        private HashSet<Assembly> m_Assemblies = new HashSet<Assembly>();
         private HashSet<Type> m_Types = new HashSet<Type>();
-        private HashSet<Type> m_AdditionTypes = new HashSet<Type>();
-        private HashSet<Type> m_CustomSerializerTypes = new HashSet<Type>();
+        private List<Type> m_AdditionTypes = new List<Type>();
+        private List<Type> m_SupportGenericTypes = new List<Type> { typeof(List<>), typeof(HashSet<>), typeof(Dictionary<,>), typeof(Span<>), typeof(ReadOnlySpan<>) };
 
         public SerializerGenerator()
         {
         }
 
-        public void AddAssembly(Assembly assembly)
+        public bool AddAdditionType(Type type)
         {
-            m_Assemblies.Add(assembly);
+            if (type.IsByRef) type = type.GetElementType();
 
-            foreach (var type in assembly.GetTypes())
+            if (type.IsInterface) return false;
+            if (type.IsAbstract) return false;
+            if (type.IsEnum) return true;
+            if (m_CustomSerializerTypes.ContainsKey(type)) return true;
+            var customSerializer = type.GetCustomAttribute<CompactBufferGenCodeAttribute>();
+            if (customSerializer != null) return true;
+            if (!m_Assemblies.Contains(type.Assembly)) return true;
+            if (m_AdditionTypes.Contains(type)) return true;
+            if (type.IsArray) return AddAdditionType(type.GetElementType());
+            if (type.IsGenericType)
             {
-                if (!typeof(ICompactBufferSerializer).IsAssignableFrom(type)) continue;
-                var attribute = type.GetCustomAttribute<CompactBufferAttribute>();
-                if (attribute == null) continue;
-                if (attribute.IsAutoGen) continue;
-                m_CustomSerializerTypes.Add(attribute.SerializerType);
+                if (!m_SupportGenericTypes.Contains(type.GetGenericTypeDefinition())) return false;
+                foreach (var gType in type.GetGenericArguments())
+                {
+                    if (!AddAdditionType(gType)) return false;
+                }
+                return true;
             }
-        }
 
-        public void AddAdditionType(Type type)
-        {
-            if (type.IsEnum) return;
-            if (!m_Assemblies.Contains(type.Assembly)) return;
-            if (m_AdditionTypes.Contains(type)) return;
             m_AdditionTypes.Add(type);
+            return true;
         }
 
         public string GenCode()
@@ -78,6 +82,7 @@ namespace CompactBuffer
                 if (type.IsAbstract) continue;
                 if (type.IsEnum) continue;
 
+                if (m_CustomSerializerTypes.ContainsKey(type)) continue;
                 var customSerializer = type.GetCustomAttribute<CompactBufferGenCodeAttribute>();
                 if (customSerializer == null) continue;
 
@@ -87,51 +92,18 @@ namespace CompactBuffer
 
         private void GenCode(StringBuilder builder, Type type)
         {
-            if (type.IsEnum) return;
-            if (m_CustomSerializerTypes.Contains(type)) return;
             if (m_Types.Contains(type)) return;
-
             if (m_Types.Count > 0) builder.AppendLine();
             m_Types.Add(type);
 
             var fields = new List<FieldInfo>();
             foreach (var field in type.GetFields(BindingFlags.Instance | BindingFlags.Public))
             {
-                fields.Add(field);
-
                 if (!m_Assemblies.Contains(field.FieldType.Assembly)) continue;
+                if (field.IsInitOnly) continue;
 
-                if (field.FieldType.IsArray)
-                {
-                    var elementType = field.FieldType.GetElementType();
-                    if (m_Assemblies.Contains(elementType.Assembly)) GenCode(builder, elementType);
-                    continue;
-                }
-
-                if (field.FieldType.IsGenericType)
-                {
-                    if (field.FieldType.GetGenericTypeDefinition() == typeof(List<>))
-                    {
-                        var args = field.FieldType.GetGenericArguments();
-                        if (m_Assemblies.Contains(args[0].Assembly)) GenCode(builder, args[0]);
-                        continue;
-                    }
-                    if (field.FieldType.GetGenericTypeDefinition() == typeof(HashSet<>))
-                    {
-                        var args = field.FieldType.GetGenericArguments();
-                        if (m_Assemblies.Contains(args[0].Assembly)) GenCode(builder, args[0]);
-                        continue;
-                    }
-                    if (field.FieldType.GetGenericTypeDefinition() == typeof(Dictionary<,>))
-                    {
-                        var args = field.FieldType.GetGenericArguments();
-                        if (m_Assemblies.Contains(args[0].Assembly)) GenCode(builder, args[0]);
-                        if (m_Assemblies.Contains(args[1].Assembly)) GenCode(builder, args[1]);
-                        continue;
-                    }
-                }
-
-                GenCode(builder, field.FieldType);
+                fields.Add(field);
+                AddAdditionType(field.FieldType);
             }
 
             builder.AppendLine($"    [CompactBuffer.CompactBuffer(typeof({type.FullName}), true)]");
@@ -202,139 +174,89 @@ namespace CompactBuffer
         private void GenReadField(StringBuilder builder, Type type, FieldInfo field)
         {
             var customSerializer = field.GetCustomAttribute<CustomSerializerAttribute>();
-            if (customSerializer == null && field.FieldType.IsEnum)
+            var float16 = field.GetCustomAttribute<Float16Attribute>();
+            if (float16 == null)
             {
-                builder.AppendLine($"            target.{field.Name} = ({field.FieldType.FullName})reader.ReadVariantInt32();");
-                return;
+                float16 = type.GetCustomAttribute<Float16Attribute>();
             }
-            else if (customSerializer == null && IsBaseType(field.FieldType))
+            var variantInt = field.GetCustomAttribute<VariantIntAttribute>();
+            var originType = field.FieldType;
+
+            if (customSerializer != null)
             {
-                var float16 = field.GetCustomAttribute<Float16Attribute>();
-                if (float16 == null)
-                {
-                    float16 = type.GetCustomAttribute<Float16Attribute>();
-                }
-
-                if (field.GetCustomAttribute<VariantIntAttribute>() != null && IsVariantable(field.FieldType))
-                {
-                    builder.AppendLine($"            target.{field.Name} = reader.ReadVariant{field.FieldType.Name}();");
-                }
-                else if (float16 != null && field.FieldType == typeof(float))
-                {
-                    builder.AppendLine($"            target.{field.Name} = reader.ReadFloat16({float16.IntegerMax});");
-                }
-                else
-                {
-                    builder.AppendLine($"            target.{field.Name} = reader.Read{field.FieldType.Name}();");
-                }
-                return;
+                builder.AppendLine($"            {GetTypeName(customSerializer.SerializerType)}.Read(reader, ref target.{field.Name});");
             }
-
-            builder.AppendLine($"            {GetSerializerName(field)}.Read(reader, ref target.{field.Name});");
+            else if (originType.IsEnum)
+            {
+                builder.AppendLine($"            target.{field.Name} = ({originType.FullName})reader.ReadVariantInt32();");
+            }
+            else if (originType == typeof(float) && float16 != null)
+            {
+                builder.AppendLine($"            target.{field.Name} = reader.ReadFloat16({float16.IntegerMax});");
+            }
+            else if (IsVariantable(originType) && variantInt != null)
+            {
+                builder.AppendLine($"            target.{field.Name} = reader.ReadVariant{originType.Name}();");
+            }
+            else if (IsBaseType(originType))
+            {
+                builder.AppendLine($"            target.{field.Name} = reader.Read{originType.Name}();");
+            }
+            else
+            {
+                builder.AppendLine($"            {GetSerializerName(originType)}.Read(reader, ref target.{field.Name});");
+            }
         }
 
         private void GenWriteField(StringBuilder builder, Type type, FieldInfo field)
         {
             var customSerializer = field.GetCustomAttribute<CustomSerializerAttribute>();
-            if (customSerializer == null && field.FieldType.IsEnum)
+            var float16 = field.GetCustomAttribute<Float16Attribute>();
+            if (float16 == null)
+            {
+                float16 = type.GetCustomAttribute<Float16Attribute>();
+            }
+            var variantInt = field.GetCustomAttribute<VariantIntAttribute>();
+            var originType = field.FieldType;
+
+            if (customSerializer != null)
+            {
+                builder.AppendLine($"            {GetTypeName(customSerializer.SerializerType)}.Write(write, in target.{field.Name});");
+            }
+            else if (originType.IsEnum)
             {
                 builder.AppendLine($"            writer.WriteVariantInt32((int)target.{field.Name});");
-                return;
             }
-            else if (customSerializer == null && IsBaseType(field.FieldType))
+            else if (originType == typeof(float) && float16 != null)
             {
-                var float16 = field.GetCustomAttribute<Float16Attribute>();
-                if (float16 == null)
-                {
-                    float16 = type.GetCustomAttribute<Float16Attribute>();
-                }
-
-                if (field.GetCustomAttribute<VariantIntAttribute>() != null && IsVariantable(field.FieldType))
-                {
-                    builder.AppendLine($"            writer.WriteVariant{field.FieldType.Name}(target.{field.Name});");
-                }
-                else if (float16 != null && field.FieldType == typeof(float))
-                {
-                    builder.AppendLine($"            writer.WriteFloat16(target.{field.Name}, {float16.IntegerMax});");
-                }
-                else
-                {
-                    builder.AppendLine($"            writer.Write(target.{field.Name});");
-                }
-                return;
+                builder.AppendLine($"            writer.WriteFloat16(target.{field.Name}, {float16.IntegerMax});");
             }
-            builder.AppendLine($"            {GetSerializerName(field)}.Write(writer, in target.{field.Name});");
+            else if (IsVariantable(originType) && variantInt != null)
+            {
+                builder.AppendLine($"            writer.WriteVariant{originType.Name}(target.{field.Name});");
+            }
+            else if (IsBaseType(originType))
+            {
+                builder.AppendLine($"            writer.Write(target.{field.Name});");
+            }
+            else
+            {
+                builder.AppendLine($"            {GetSerializerName(originType)}.Write(writer, in target.{field.Name});");
+            }
         }
 
         private void GenCopyField(StringBuilder builder, FieldInfo field)
         {
-            if (IsBaseType(field.FieldType) || field.FieldType.IsEnum)
+            var originType = field.FieldType;
+
+            if (originType.IsValueType)
             {
                 builder.AppendLine($"            dst.{field.Name} = src.{field.Name};");
-                return;
-            }
-            builder.AppendLine($"            {GetSerializerName(field)}.Copy(in src.{field.Name}, ref dst.{field.Name});");
-        }
-
-        private string GetSerializerName(FieldInfo field)
-        {
-            var customSerializer = field.GetCustomAttribute<CustomSerializerAttribute>();
-            if (customSerializer != null)
-            {
-                var type = customSerializer.SerializerType;
-                if (type.IsGenericType)
-                {
-                    var className = "";
-                    foreach (var ttype in type.GetGenericArguments())
-                    {
-                        if (!string.IsNullOrEmpty(className)) className += ", ";
-                        className += ttype.FullName;
-                    }
-                    className = $"{type.GetGenericTypeDefinition().FullName}<{className}>";
-                    return className;
-                }
-                else
-                {
-                    return customSerializer.SerializerType.FullName;
-                }
             }
             else
             {
-                var serializer = CompactBuffer.GetSerializer(field.FieldType);
-                if (serializer != null)
-                {
-                    return GetTypeName(serializer.GetType());
-                }
+                builder.AppendLine($"            {GetSerializerName(originType)}.Copy(in src.{field.Name}, ref dst.{field.Name});");
             }
-
-            if (customSerializer != null)
-            {
-                return $"CompactBuffer.CompactBuffer.GetCustomSerializer<{customSerializer.SerializerType.FullName}, {field.FieldType.FullName}>()";
-            }
-
-            if (field.FieldType.IsArray)
-            {
-                return $"CompactBuffer.CompactBuffer.GetArraySerializer<{GetTypeName(field.FieldType.GetElementType())}>()";
-            }
-
-            if (field.FieldType.IsGenericType)
-            {
-                var args = field.FieldType.GetGenericArguments();
-                if (field.FieldType.GetGenericTypeDefinition() == typeof(List<>))
-                {
-                    return $"CompactBuffer.CompactBuffer.GetListSerializer<{GetTypeName(args[0])}>()";
-                }
-                if (field.FieldType.GetGenericTypeDefinition() == typeof(HashSet<>))
-                {
-                    return $"CompactBuffer.CompactBuffer.GetHashSetSerializer<{GetTypeName(args[0])}>()";
-                }
-                if (field.FieldType.GetGenericTypeDefinition() == typeof(Dictionary<,>))
-                {
-                    return $"CompactBuffer.CompactBuffer.GetDictionarySerializer<{GetTypeName(args[0])}, {GetTypeName(args[1])}>()";
-                }
-            }
-
-            return $"CompactBufferAutoGen.{field.FieldType.FullName.Replace(".", "_")}_Serializer";
         }
     }
 }

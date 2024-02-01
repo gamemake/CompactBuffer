@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace CompactBuffer
@@ -8,6 +9,8 @@ namespace CompactBuffer
     public abstract class Generator
     {
         private Dictionary<Type, string> m_TypesShortName = new Dictionary<Type, string>();
+        protected HashSet<Assembly> m_Assemblies = new HashSet<Assembly>();
+        protected Dictionary<Type, Type> m_CustomSerializerTypes = new Dictionary<Type, Type>();
 
         protected Generator()
         {
@@ -62,6 +65,61 @@ namespace CompactBuffer
             if (type == typeof(int)) return true;
             if (type == typeof(long)) return true;
             return false;
+        }
+
+        public void AddAssembly(Assembly assembly)
+        {
+            m_Assemblies.Add(assembly);
+
+            foreach (var type in assembly.GetTypes())
+            {
+                if (!typeof(ICompactBufferSerializer).IsAssignableFrom(type)) continue;
+                var attribute = type.GetCustomAttribute<CompactBufferAttribute>();
+                if (attribute == null) continue;
+                if (attribute.IsAutoGen) continue;
+                m_CustomSerializerTypes.Add(attribute.SerializerType, type);
+            }
+        }
+
+        protected string GetSerializerName(Type type)
+        {
+            var originType = type;
+            if (originType.IsByRef) originType = originType.GetElementType();
+
+            if (m_CustomSerializerTypes.TryGetValue(originType, out var serializerType))
+            {
+                return GetTypeName(serializerType);
+            }
+            if (originType.IsArray)
+            {
+                return $"CompactBuffer.Internal.ArraySerializer<{GetTypeName(originType.GetElementType())}>";
+            }
+            if (originType.IsGenericType)
+            {
+                if (originType.GetGenericTypeDefinition() == typeof(Span<>))
+                {
+                    return $"CompactBuffer.Internal.SpanSerializer<{GetTypeName(originType.GetGenericArguments()[0])}>";
+                }
+                if (originType.GetGenericTypeDefinition() == typeof(ReadOnlySpan<>))
+                {
+                    return $"CompactBuffer.Internal.ReadOnlySpanSerializer<{GetTypeName(originType.GetGenericArguments()[0])}>";
+                }
+                if (originType.GetGenericTypeDefinition() == typeof(List<>))
+                {
+                    return $"CompactBuffer.Internal.ListSerializer<{GetTypeName(originType.GetGenericArguments()[0])}>";
+                }
+                if (originType.GetGenericTypeDefinition() == typeof(HashSet<>))
+                {
+                    return $"CompactBuffer.Internal.HashSetSerializer<{GetTypeName(originType.GetGenericArguments()[0])}>";
+                }
+                if (originType.GetGenericTypeDefinition() == typeof(Dictionary<,>))
+                {
+                    return $"CompactBuffer.Internal.DictionarySerializer<{GetTypeName(originType.GetGenericArguments()[0])}, {GetTypeName(originType.GetGenericArguments()[1])}>";
+                }
+                throw new CompactBufferExeption($"{GetTypeName(originType)} unsupport generic type");
+            }
+
+            return $"CompactBufferAutoGen.{originType.FullName.Replace(".", "_")}_Serializer";
         }
     }
 }

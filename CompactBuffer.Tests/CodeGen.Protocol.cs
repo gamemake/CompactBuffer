@@ -77,7 +77,7 @@ namespace ProtocolAutoGen
         {
             var writer = m_Sender.GetStreamWriter(0);
             writer.WriteVariantInt32(7);
-            CompactBuffer.Internal.ReadOnlySpanByteSerializer.Write(writer, in ___aaaaaaaa);
+            CompactBuffer.Internal.ReadOnlySpanSerializer<byte>.Write(writer, in ___aaaaaaaa);
             m_Sender.Send(writer);
         }
 
@@ -210,7 +210,7 @@ namespace ProtocolAutoGen
             if (index == 7)
             {
                 System.ReadOnlySpan<byte> ___aaaaaaaa = default;
-                CompactBuffer.Internal.ReadOnlySpanByteSerializer.Read(reader, ref ___aaaaaaaa);
+                CompactBuffer.Internal.ReadOnlySpanSerializer<byte>.Read(reader, ref ___aaaaaaaa);
                 m_Target?.CallReadOnlySpan(___aaaaaaaa);
                 return;
             }
