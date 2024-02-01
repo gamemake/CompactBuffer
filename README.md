@@ -1,11 +1,11 @@
 # CompactBuffer
 
-Binary serialization implemented in pure C#.
+Implementing Binary Serialization Using C#.
 
 # Why use it？
 
-* Provides code generation to avoid the use of reflection.
-* Reference types are supported in the protocol.
+* Use Code Generation to Avoid Reflection.
+* Supporting the use of application types in protocols can reduce the occurrence of GC (Garbage Collection).
 * Simple and easy to use.
 
 # How to Install?
@@ -125,15 +125,16 @@ public interface ISyncPosition : IProtocol
 }
 ```
 
-The original Vector3 occupies 12 bytes, and after adding the Float16 Attribute, it occupies 6 bytes. Of course, there is a loss in accuracy.
+The original Vector3 takes up 12 bytes, but after adding float16attribute, it only takes up 6 bytes.
 
 # Generate code
 
-1. Add asmdef
-2. Add CompactBufferGroup
-3. [Tools/CompactBuffer/Generate]
+1. Add CompactBufferGroup
+2. Add asmdef
+3. Click the menu [Tools/CompactBuffer/Generate] in the Unity editor.
+4. CodeGen.CompactBuffer.cs and CodeGen.Protocol.cs have been generated in the directory of the asmdef file.
 
-When compilation errors occur in the generated code, please try [Tools/CompactBuffer/Clean] and then regenerate the code.
+If code generation results in a compilation error, please click on Unity Editor menu's [Tools/CompactBuffer/Clean] then regenerate the code.
 
 # License
 
