@@ -104,7 +104,6 @@ namespace ProtocolAutoGen
             m_Sender.Send(writer);
         }
 
-
         void Tests.IServerApi.CallTypeStructRefReadonly(ref readonly Tests.TypeStruct ___a)
         {
             var writer = m_Sender.GetStreamWriter();
@@ -112,7 +111,6 @@ namespace ProtocolAutoGen
             CompactBufferAutoGen.Tests_TypeStruct_Serializer.Write(writer, in ___a);
             m_Sender.Send(writer);
         }
-
 
         void Tests.IServerApi.CallTypeStructRef(ref Tests.TypeStruct ___a)
         {
