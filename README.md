@@ -5,7 +5,7 @@ Implementing Binary Serialization Using C#.
 # Why use it？
 
 * Use Code Generation to Avoid Reflection.
-* Supporting the use of application types in protocols can reduce the occurrence of GC (Garbage Collection).
+* Serialization with zero GC. (Depends on the data type being a value type or not containing any reference types)
 * Simple and easy to use.
 
 # How to Install?
