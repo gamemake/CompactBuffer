@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using CompactBuffer;
 
 namespace Tests
@@ -13,9 +14,11 @@ namespace Tests
         public Dictionary<string, int> dict;
     }
 
-    public struct TypeStruct
+    public struct RefStruct
     {
         public int i;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 1000)]
+        public int[] array;
     }
 
     [Protocol(0)]
@@ -33,8 +36,8 @@ namespace Tests
         void CallVariantType(VaiantType vv);
         void CallTypeClassRefReadonly(in TypeClass a);
         void CallTypeClassRef(ref TypeClass a);
-        void CallTypeStructRefReadonly(in TypeStruct a);
-        void CallTypeStructRef(ref TypeStruct a);
+        void CallTypeStructRefReadonly(in RefStruct a);
+        void CallTypeStructRef(ref RefStruct a);
         void CallIntArray(int[] array);
         void CallIntSpan(Span<int> span);
         void CallIntReadOnlySpan(ReadOnlySpan<int> span);

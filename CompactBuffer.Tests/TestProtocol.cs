@@ -163,12 +163,12 @@ public class TestProtocol : IProtocolSender, IServerApi
         m_Output = ToObjs(a);
     }
 
-    void IServerApi.CallTypeStructRefReadonly(in TypeStruct a)
+    void IServerApi.CallTypeStructRefReadonly(in RefStruct a)
     {
         m_Output = ToObjs(a);
     }
 
-    void IServerApi.CallTypeStructRef(ref TypeStruct a)
+    void IServerApi.CallTypeStructRef(ref RefStruct a)
     {
         m_Output = ToObjs(a);
     }

@@ -259,36 +259,39 @@ namespace CompactBufferAutoGen
         }
     }
 
-    [CompactBuffer.CompactBuffer(typeof(Tests.TypeStruct), true)]
-    public class Tests_TypeStruct_Serializer : CompactBuffer.ICompactBufferSerializer<Tests.TypeStruct>
+    [CompactBuffer.CompactBuffer(typeof(Tests.RefStruct), true)]
+    public class Tests_RefStruct_Serializer : CompactBuffer.ICompactBufferSerializer<Tests.RefStruct>
     {
-        public static void Read(CompactBuffer.BufferReader reader, ref Tests.TypeStruct target)
+        public static void Read(CompactBuffer.BufferReader reader, ref Tests.RefStruct target)
         {
             target.i = reader.ReadInt32();
+            CompactBuffer.Internal.ArraySerializer<int>.Read(reader, ref target.array);
         }
 
-        public static void Write(CompactBuffer.BufferWriter writer, in Tests.TypeStruct target)
+        public static void Write(CompactBuffer.BufferWriter writer, in Tests.RefStruct target)
         {
-            writer.WriteVariantInt32(2);
+            writer.WriteVariantInt32(3);
             writer.Write(target.i);
+            CompactBuffer.Internal.ArraySerializer<int>.Write(writer, in target.array);
         }
 
-        public static void Copy(in Tests.TypeStruct src, ref Tests.TypeStruct dst)
+        public static void Copy(in Tests.RefStruct src, ref Tests.RefStruct dst)
         {
             dst.i = src.i;
+            CompactBuffer.Internal.ArraySerializer<int>.Copy(in src.array, ref dst.array);
         }
 
-        void CompactBuffer.ICompactBufferSerializer<Tests.TypeStruct>.Read(CompactBuffer.BufferReader reader, ref Tests.TypeStruct target)
+        void CompactBuffer.ICompactBufferSerializer<Tests.RefStruct>.Read(CompactBuffer.BufferReader reader, ref Tests.RefStruct target)
         {
             Read(reader, ref target);
         }
 
-        void CompactBuffer.ICompactBufferSerializer<Tests.TypeStruct>.Write(CompactBuffer.BufferWriter writer, in Tests.TypeStruct target)
+        void CompactBuffer.ICompactBufferSerializer<Tests.RefStruct>.Write(CompactBuffer.BufferWriter writer, in Tests.RefStruct target)
         {
             Write(writer, in target);
         }
 
-        void CompactBuffer.ICompactBufferSerializer<Tests.TypeStruct>.Copy(in Tests.TypeStruct src, ref Tests.TypeStruct dst)
+        void CompactBuffer.ICompactBufferSerializer<Tests.RefStruct>.Copy(in Tests.RefStruct src, ref Tests.RefStruct dst)
         {
             Copy(in src, ref dst);
         }
