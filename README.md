@@ -2,6 +2,11 @@
 
 Implementing Binary Serialization Using C#.
 
+# Requirement
+
+* .NET Core 2.1 and later versions.
+* Unity 2021 and later versions.
+
 # Why use it？
 
 * Use Code Generation to Avoid Reflection.
