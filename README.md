@@ -4,11 +4,11 @@ Binary serialization implemented in pure C#.
 
 # Why use it？
 
-* No type reflection is used.
-* Support Span type to reduce GC.
+* Provides code generation to avoid the use of reflection.
+* Reference types are supported in the protocol.
 * Simple and easy to use.
 
-# Install to unity project
+# How to Install?
 
 On Windows
 ```dos
@@ -25,9 +25,10 @@ cd Unity
 ```
 
 # How to use it?
-Pure C# binary data serialze
+* Compact Buffer
+* Protocol
 
-Compact Buffer
+## Compact Buffer
 ```cs
 [CompactBufferGenCode]
 public class LiveData
@@ -46,7 +47,7 @@ liveData = null;
 serializer.Read(reader, ref liveData);
 ```
 
-Protocol
+## Protocol
 
 ```cs
 public interface ISyncUserData : IProtocol
