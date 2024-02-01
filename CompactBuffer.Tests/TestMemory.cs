@@ -57,10 +57,10 @@ public class TestMemory
         pp.x = 1;
         pp.y = 2;
         pp.z = 3;
-        Marshal.FreeHGlobal(ptr);
         var pp1 = Marshal.PtrToStructure<Position>(ptr);
         Assert.Equal(1, pp1.x);
         Assert.Equal(2, pp1.y);
         Assert.Equal(3, pp1.z);
+        Marshal.FreeHGlobal(ptr);
     }
 }
