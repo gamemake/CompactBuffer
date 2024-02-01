@@ -19,11 +19,11 @@ namespace CompactBuffer
         public bool AddAdditionType(Type type)
         {
             if (type.IsByRef) type = type.GetElementType();
+            if (m_CustomSerializerTypes.ContainsKey(type)) return true;
             if (IsBaseType(type)) return true;
             if (type.IsInterface) return false;
             if (type.IsAbstract) return false;
             if (type.IsEnum) return true;
-            if (m_CustomSerializerTypes.ContainsKey(type)) return true;
             var customSerializer = type.GetCustomAttribute<CompactBufferGenCodeAttribute>();
             if (customSerializer != null) return true;
             if (!m_Assemblies.Contains(type.Assembly)) return true;

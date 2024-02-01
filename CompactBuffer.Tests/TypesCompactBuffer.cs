@@ -93,7 +93,7 @@ namespace Tests
         }
     }
 
-    public class VaiantType
+    public abstract class VaiantType
     {
     }
 

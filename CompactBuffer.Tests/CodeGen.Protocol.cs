@@ -37,7 +37,7 @@ namespace ProtocolAutoGen
             m_Sender.Send(writer);
         }
 
-        void Tests.IServerApi.CallPA(Tests.TypeClass ___pa)
+        void Tests.IServerApi.CallTypeClass(Tests.TypeClass ___pa)
         {
             var writer = m_Sender.GetStreamWriter(0);
             writer.WriteVariantInt32(3);
@@ -190,7 +190,7 @@ namespace ProtocolAutoGen
             {
                 Tests.TypeClass ___pa = default;
                 CompactBufferAutoGen.Tests_TypeClass_Serializer.Read(reader, ref ___pa);
-                m_Target?.CallPA(___pa);
+                m_Target?.CallTypeClass(___pa);
                 return;
             }
             if (index == 4)

@@ -69,14 +69,38 @@ public class TestProtocol : IProtocolSender, IServerApi
     }
 
     [Fact]
-    public void TestCallPA()
+    public void CallTypeClass()
     {
-        GoTest("CallPA", new TypeClass(){
+        GoTest("CallTypeClass", new TypeClass(){
             kkk = 11,
             list = new List<int>(){345, 35,234},
             hashset = new HashSet<int>() {6, 7, 8},
             dict = new Dictionary<string, int>() {{"a", 1}},
         });
+    }
+
+    [Fact]
+    public void CallVariant()
+    {
+        GoTest("CallVariant", (int)1, (long)444, (uint)4535, (int)23423, (int)2344);
+    }
+
+    [Fact]
+    public void CallGuid()
+    {
+        GoTest("CallGuid", Guid.NewGuid());
+    }
+
+    [Fact]
+    public void CallEnum()
+    {
+        GoTest("CallEnum", EnumTypes.Int);
+    }
+
+    [Fact]
+    public void CallFloat16()
+    {
+        GoTest("CallFloat16", 0);
     }
 
     void IServerApi.Call()
@@ -94,7 +118,7 @@ public class TestProtocol : IProtocolSender, IServerApi
         m_Output = ToObjs(a);
     }
 
-    void IServerApi.CallPA(TypeClass pa)
+    void IServerApi.CallTypeClass(TypeClass pa)
     {
         m_Output = ToObjs(pa);
     }
