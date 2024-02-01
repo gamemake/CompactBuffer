@@ -11,36 +11,23 @@ namespace CompactBuffer
         {
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
-                Type[] types = null;
-                try
+                foreach (var type in assembly.GetTypes())
                 {
-                    types = assembly.GetTypes();
-                }
-                catch (Exception e)
-                {
-                    Console.Error.WriteLine($"failed to get types from {assembly.FullName} with excepetion : {e}");
-                }
-
-                if (types != null)
-                {
-                    foreach (var type in types)
+                    if (parentType.IsInterface)
                     {
-                        if (parentType.IsInterface)
+                        foreach (var itype in type.GetInterfaces())
                         {
-                            foreach (var itype in type.GetInterfaces())
-                            {
-                                if (itype == parentType)
-                                {
-                                    yield return type;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (type.IsSubclassOf(parentType))
+                            if (itype == parentType)
                             {
                                 yield return type;
                             }
+                        }
+                    }
+                    else
+                    {
+                        if (type.IsSubclassOf(parentType))
+                        {
+                            yield return type;
                         }
                     }
                 }

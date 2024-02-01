@@ -29,7 +29,7 @@ namespace CompactBuffer.Internal
             }
         }
 
-        public static void Write(BufferWriter writer, ref TElement[] target)
+        public static void Write(BufferWriter writer, ref readonly TElement[] target)
         {
             if (target == null)
             {
@@ -44,7 +44,7 @@ namespace CompactBuffer.Internal
             }
         }
 
-        public static void Copy(ref TElement[] src, ref TElement[] dst)
+        public static void Copy(ref readonly TElement[] src, ref TElement[] dst)
         {
             if (src == null)
             {
@@ -65,14 +65,14 @@ namespace CompactBuffer.Internal
             Read(reader, ref target);
         }
 
-        void ICompactBufferSerializer<TElement[]>.Write(BufferWriter writer, ref TElement[] target)
+        void ICompactBufferSerializer<TElement[]>.Write(BufferWriter writer, ref readonly TElement[] target)
         {
-            Write(writer, ref target);
+            Write(writer, in target);
         }
 
-        void ICompactBufferSerializer<TElement[]>.Copy(ref TElement[] src, ref TElement[] dst)
+        void ICompactBufferSerializer<TElement[]>.Copy(ref readonly TElement[] src, ref TElement[] dst)
         {
-            Copy(ref src, ref dst);
+            Copy(in src, ref dst);
         }
     }
 
@@ -107,7 +107,7 @@ namespace CompactBuffer.Internal
             }
         }
 
-        public static void Write(BufferWriter writer, ref List<TElement> target)
+        public static void Write(BufferWriter writer, ref readonly List<TElement> target)
         {
             if (target == null)
             {
@@ -124,7 +124,7 @@ namespace CompactBuffer.Internal
             }
         }
 
-        public static void Copy(ref List<TElement> src, ref List<TElement> dst)
+        public static void Copy(ref readonly List<TElement> src, ref List<TElement> dst)
         {
             if (src == null)
             {
@@ -154,14 +154,14 @@ namespace CompactBuffer.Internal
             Read(reader, ref target);
         }
 
-        void ICompactBufferSerializer<List<TElement>>.Write(BufferWriter writer, ref List<TElement> target)
+        void ICompactBufferSerializer<List<TElement>>.Write(BufferWriter writer, ref readonly List<TElement> target)
         {
-            Write(writer, ref target);
+            Write(writer, in target);
         }
 
-        void ICompactBufferSerializer<List<TElement>>.Copy(ref List<TElement> src, ref List<TElement> dst)
+        void ICompactBufferSerializer<List<TElement>>.Copy(ref readonly List<TElement> src, ref List<TElement> dst)
         {
-            Copy(ref src, ref dst);
+            Copy(in src, ref dst);
         }
     }
 
@@ -195,7 +195,7 @@ namespace CompactBuffer.Internal
             }
         }
 
-        public static void Write(BufferWriter writer, ref HashSet<TElement> target)
+        public static void Write(BufferWriter writer, ref readonly HashSet<TElement> target)
         {
             if (target == null)
             {
@@ -211,7 +211,7 @@ namespace CompactBuffer.Internal
             }
         }
 
-        public static void Copy(ref HashSet<TElement> src, ref HashSet<TElement> dst)
+        public static void Copy(ref readonly HashSet<TElement> src, ref HashSet<TElement> dst)
         {
             if (src == null)
             {
@@ -241,14 +241,14 @@ namespace CompactBuffer.Internal
             Read(reader, ref target);
         }
 
-        void ICompactBufferSerializer<HashSet<TElement>>.Write(BufferWriter writer, ref HashSet<TElement> target)
+        void ICompactBufferSerializer<HashSet<TElement>>.Write(BufferWriter writer, ref readonly HashSet<TElement> target)
         {
-            Write(writer, ref target);
+            Write(writer, in target);
         }
 
-        void ICompactBufferSerializer<HashSet<TElement>>.Copy(ref HashSet<TElement> src, ref HashSet<TElement> dst)
+        void ICompactBufferSerializer<HashSet<TElement>>.Copy(ref readonly HashSet<TElement> src, ref HashSet<TElement> dst)
         {
-            Copy(ref src, ref dst);
+            Copy(in src, ref dst);
         }
     }
 
@@ -285,7 +285,7 @@ namespace CompactBuffer.Internal
             }
         }
 
-        public static void Write(BufferWriter writer, ref Dictionary<TKey, TValue> target)
+        public static void Write(BufferWriter writer, ref readonly Dictionary<TKey, TValue> target)
         {
             if (target == null)
             {
@@ -302,7 +302,7 @@ namespace CompactBuffer.Internal
             }
         }
 
-        public static void Copy(ref Dictionary<TKey, TValue> src, ref Dictionary<TKey, TValue> dst)
+        public static void Copy(ref readonly Dictionary<TKey, TValue> src, ref Dictionary<TKey, TValue> dst)
         {
             if (src == null)
             {
@@ -336,14 +336,14 @@ namespace CompactBuffer.Internal
             Read(reader, ref target);
         }
 
-        void ICompactBufferSerializer<Dictionary<TKey, TValue>>.Write(BufferWriter writer, ref Dictionary<TKey, TValue> target)
+        void ICompactBufferSerializer<Dictionary<TKey, TValue>>.Write(BufferWriter writer, ref readonly Dictionary<TKey, TValue> target)
         {
-            Write(writer, ref target);
+            Write(writer, in target);
         }
 
-        void ICompactBufferSerializer<Dictionary<TKey, TValue>>.Copy(ref Dictionary<TKey, TValue> src, ref Dictionary<TKey, TValue> dst)
+        void ICompactBufferSerializer<Dictionary<TKey, TValue>>.Copy(ref readonly Dictionary<TKey, TValue> src, ref Dictionary<TKey, TValue> dst)
         {
-            Copy(ref src, ref dst);
+            Copy(in src, ref dst);
         }
     }
 
@@ -371,7 +371,7 @@ namespace CompactBuffer.Internal
             }
         }
 
-        public static void Write(BufferWriter writer, ref Span<TElement> target)
+        public static void Write(BufferWriter writer, ref readonly Span<TElement> target)
         {
             if (target == null)
             {
@@ -386,7 +386,7 @@ namespace CompactBuffer.Internal
             }
         }
 
-        public static void Copy(ref TElement[] src, ref TElement[] dst)
+        public static void Copy(ref readonly Span<TElement> src, ref Span<TElement> dst)
         {
             throw new NotImplementedException();
         }

@@ -67,12 +67,12 @@ namespace Tests
             target = (float)reader.ReadInt32();
         }
 
-        public static void Write(BufferWriter writer, ref float target)
+        public static void Write(BufferWriter writer, ref readonly float target)
         {
             writer.Write((int)target);
         }
 
-        public static void Copy(ref float src, ref float dst)
+        public static void Copy(ref readonly float src, ref float dst)
         {
             dst = src;
         }
@@ -82,12 +82,12 @@ namespace Tests
             target = (float)reader.ReadInt32();
         }
 
-        void ICompactBufferSerializer<float>.Write(BufferWriter writer, ref float target)
+        void ICompactBufferSerializer<float>.Write(BufferWriter writer, ref readonly float target)
         {
             writer.Write((int)target);
         }
 
-        void ICompactBufferSerializer<float>.Copy(ref float src, ref float dst)
+        void ICompactBufferSerializer<float>.Copy(ref readonly float src, ref float dst)
         {
             dst = src;
         }
@@ -97,18 +97,18 @@ namespace Tests
     {
     }
 
-    [CompactBuffer.CompactBuffer(typeof(VaiantType))]
+    [CompactBuffer(typeof(VaiantType))]
     public class VaiantTypeSerializer : ICompactBufferSerializer<VaiantType>
     {
         public static void Read(BufferReader reader, ref VaiantType target)
         {
         }
 
-        public static void Write(BufferWriter writer, ref VaiantType target)
+        public static void Write(BufferWriter writer, ref readonly VaiantType target)
         {
         }
 
-        public static void Copy(ref VaiantType src, ref VaiantType dst)
+        public static void Copy(ref readonly VaiantType src, ref VaiantType dst)
         {
         }
 
@@ -117,12 +117,12 @@ namespace Tests
             throw new NotImplementedException();
         }
 
-        void ICompactBufferSerializer<VaiantType>.Write(BufferWriter writer, ref VaiantType target)
+        void ICompactBufferSerializer<VaiantType>.Write(BufferWriter writer, ref readonly VaiantType target)
         {
             throw new NotImplementedException();
         }
 
-        void ICompactBufferSerializer<VaiantType>.Copy(ref VaiantType src, ref VaiantType dst)
+        void ICompactBufferSerializer<VaiantType>.Copy(ref readonly VaiantType src, ref VaiantType dst)
         {
             throw new NotImplementedException();
         }

@@ -1,6 +1,7 @@
 
 using System;
 using System.Linq;
+using System.Numerics;
 using System.Text.Json;
 using System.Collections.Generic;
 using Tests;
@@ -78,6 +79,18 @@ public class TestSerializer
                 var diffMax = 0.0001f * integerMax;
                 Assert.True(diff < diffMax);
             }
+        }
+    }
+
+    [Fact]
+    public void TestOne()
+    {
+        uint[] sizes = { 1, 2, 4, 100, 254, 1000, 2000, 4000 };
+        foreach (var size in sizes)
+        {
+            var bucketIndex = BitOperations.Log2(size - 1 | 15) - 3;
+            var bucketMaxSize = 16 << bucketIndex;
+            Assert.NotEqual(0, bucketMaxSize);
         }
     }
 }

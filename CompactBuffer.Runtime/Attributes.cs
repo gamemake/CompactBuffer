@@ -46,6 +46,11 @@ namespace CompactBuffer
         }
     }
 
+    [AttributeUsage(AttributeTargets.Parameter)]
+    public class DontReturnAttribute : Attribute
+    {
+    }
+
     public enum ProtocolType
     {
         None,

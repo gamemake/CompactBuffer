@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace CompactBuffer
 {
@@ -32,36 +33,34 @@ namespace CompactBuffer
 
         public string GetTypeName(Type type)
         {
-            if (m_TypesShortName.TryGetValue(type, out var name))
+            var originType = type;
+            if (type.IsByRef) originType = type.GetElementType();
+
+            if (m_TypesShortName.TryGetValue(originType, out var name))
             {
                 return name;
             }
-
-            if (type.IsArray)
+            else if (originType.IsArray)
             {
-                return $"{GetTypeName(type.GetElementType())}[]";
+                return $"{GetTypeName(originType.GetElementType())}[]";
             }
-
-            if (type.IsGenericType)
+            else if (originType.IsGenericType)
             {
-                var paramsName = string.Join(", ", Array.ConvertAll(type.GetGenericArguments(), (x) =>
-                {
-                    return GetTypeName(x);
-
-                }));
-                var className = type.GetGenericTypeDefinition().FullName;
+                var paramsName = string.Join(", ", Array.ConvertAll(originType.GetGenericArguments(), (x) => GetTypeName(x)));
+                var className = originType.GetGenericTypeDefinition().FullName;
                 className = className.Substring(0, className.IndexOf("`"));
-                className = $"{className}<{paramsName}>";
-                return className;
+                return $"{className}<{paramsName}>";
             }
-
-            return type.FullName;
+            else
+            {
+                return $"{originType.FullName}";
+            }
         }
 
-        public bool Variantable(Type type)
+        public bool IsVariantable(Type type)
         {
-            if(type==typeof(int)) return true;
-            if(type==typeof(long)) return true;
+            if (type == typeof(int)) return true;
+            if (type == typeof(long)) return true;
             return false;
         }
     }
