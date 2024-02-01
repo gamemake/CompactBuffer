@@ -12,6 +12,7 @@ public class TestSerializer
 {
     private readonly BufferReader m_Reader;
     private readonly BufferWriter m_Writer;
+    private JsonSerializerOptions m_JsonOptions = new JsonSerializerOptions { IncludeFields = true };
 
     public TestSerializer()
     {
@@ -50,8 +51,8 @@ public class TestSerializer
         CompactBuffer.GetSerializer<AAA>().Read(m_Reader, ref dst);
         Assert.Equal(m_Reader.Position, m_Writer.Position);
 
-        var srcJson = JsonSerializer.Serialize(src);
-        var dstJson = JsonSerializer.Serialize(dst);
+        var srcJson = JsonSerializer.Serialize(src, m_JsonOptions);
+        var dstJson = JsonSerializer.Serialize(dst, m_JsonOptions);
         Assert.Equal(srcJson, dstJson);
     }
 
