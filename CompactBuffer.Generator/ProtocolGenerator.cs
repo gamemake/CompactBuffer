@@ -161,7 +161,7 @@ namespace CompactBuffer
                 }));
                 builder.AppendLine($"        void {type.FullName}.{method.Name}({paramsText})");
                 builder.AppendLine($"        {{");
-                builder.AppendLine($"            var writer = m_Sender.GetStreamWriter();");
+                builder.AppendLine($"            var writer = m_Sender.GetStreamWriter({type.GetCustomAttribute<ProtocolAttribute>().ProtocolId});");
                 builder.AppendLine($"            writer.WriteVariantInt32({i});");
                 foreach (var param in method.GetParameters())
                 {
