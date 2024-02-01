@@ -81,7 +81,7 @@ namespace ProtocolAutoGen
             m_Sender.Send(writer);
         }
 
-        void Tests.IServerApi.CallVaiantType(Tests.VaiantType ___vv)
+        void Tests.IServerApi.CallVariantType(Tests.VaiantType ___vv)
         {
             var writer = m_Sender.GetStreamWriter(0);
             writer.WriteVariantInt32(8);
@@ -218,7 +218,7 @@ namespace ProtocolAutoGen
             {
                 Tests.VaiantType ___vv = default;
                 Tests.VaiantTypeSerializer.Read(reader, ref ___vv);
-                m_Target?.CallVaiantType(___vv);
+                m_Target?.CallVariantType(___vv);
                 return;
             }
             if (index == 9)

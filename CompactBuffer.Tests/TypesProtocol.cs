@@ -29,7 +29,7 @@ namespace Tests
         void CallEnum(EnumTypes _enum);
         void CallFloat16([Float16(1)] float v);
         void CallReadOnlySpan(ReadOnlySpan<byte> aaaaaaaa);
-        void CallVaiantType(VaiantType vv);
+        void CallVariantType(VaiantType vv);
         void CallTypeClassRefReadonly(in TypeClass a);
         void CallTypeClassRef(ref TypeClass a);
         void CallTypeStructRefReadonly(in TypeStruct a);
