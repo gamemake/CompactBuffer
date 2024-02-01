@@ -30,9 +30,9 @@ namespace Tests
         void CallFloat16([Float16(1)] float v);
         void CallReadOnlySpan(ReadOnlySpan<byte> aaaaaaaa);
         void CallVaiantType(VaiantType vv);
-        void CallTypeClassRefReadonly(ref readonly TypeClass a);
+        void CallTypeClassRefReadonly(in TypeClass a);
         void CallTypeClassRef(ref TypeClass a);
-        void CallTypeStructRefReadonly(ref readonly TypeStruct a);
+        void CallTypeStructRefReadonly(in TypeStruct a);
         void CallTypeStructRef(ref TypeStruct a);
         void CallIntArray(int[] array);
         void CallIntSpan(Span<int> span);

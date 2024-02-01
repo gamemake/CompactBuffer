@@ -152,7 +152,7 @@ namespace CompactBuffer
             }
             builder.AppendLine($"        }}");
             builder.AppendLine($"");
-            builder.AppendLine($"        public static void Write(CompactBuffer.BufferWriter writer, ref readonly {type.FullName} target)");
+            builder.AppendLine($"        public static void Write(CompactBuffer.BufferWriter writer, in {type.FullName} target)");
             builder.AppendLine($"        {{");
             if (!type.IsValueType)
             {
@@ -169,7 +169,7 @@ namespace CompactBuffer
             }
             builder.AppendLine($"        }}");
             builder.AppendLine($"");
-            builder.AppendLine($"        public static void Copy(ref readonly {type.FullName} src, ref {type.FullName} dst)");
+            builder.AppendLine($"        public static void Copy(in {type.FullName} src, ref {type.FullName} dst)");
             builder.AppendLine($"        {{");
             if (!type.IsValueType)
             {
@@ -187,12 +187,12 @@ namespace CompactBuffer
             builder.AppendLine($"            Read(reader, ref target);");
             builder.AppendLine($"        }}");
             builder.AppendLine($"");
-            builder.AppendLine($"        void CompactBuffer.ICompactBufferSerializer<{type.FullName}>.Write(CompactBuffer.BufferWriter writer, ref readonly {type.FullName} target)");
+            builder.AppendLine($"        void CompactBuffer.ICompactBufferSerializer<{type.FullName}>.Write(CompactBuffer.BufferWriter writer, in {type.FullName} target)");
             builder.AppendLine($"        {{");
             builder.AppendLine($"            Write(writer, in target);");
             builder.AppendLine($"        }}");
             builder.AppendLine($"");
-            builder.AppendLine($"        void CompactBuffer.ICompactBufferSerializer<{type.FullName}>.Copy(ref readonly {type.FullName} src, ref {type.FullName} dst)");
+            builder.AppendLine($"        void CompactBuffer.ICompactBufferSerializer<{type.FullName}>.Copy(in {type.FullName} src, ref {type.FullName} dst)");
             builder.AppendLine($"        {{");
             builder.AppendLine($"            Copy(in src, ref dst);");
             builder.AppendLine($"        }}");
@@ -273,7 +273,7 @@ namespace CompactBuffer
                 builder.AppendLine($"            dst.{field.Name} = src.{field.Name};");
                 return;
             }
-            builder.AppendLine($"            {GetSerializerName(field)}.Copy(ref src.{field.Name}, ref dst.{field.Name});");
+            builder.AppendLine($"            {GetSerializerName(field)}.Copy(in src.{field.Name}, ref dst.{field.Name});");
         }
 
         private string GetSerializerName(FieldInfo field)

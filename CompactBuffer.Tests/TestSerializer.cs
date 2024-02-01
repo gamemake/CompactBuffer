@@ -46,7 +46,7 @@ public class TestSerializer
             list10 = new List<int>(Enumerable.Repeat(66, 10)),
         };
         var dst = default(AAA);
-        CompactBuffer.GetSerializer<AAA>().Write(m_Writer, ref src);
+        CompactBuffer.GetSerializer<AAA>().Write(m_Writer, in src);
         CompactBuffer.GetSerializer<AAA>().Read(m_Reader, ref dst);
         Assert.Equal(m_Reader.Position, m_Writer.Position);
 

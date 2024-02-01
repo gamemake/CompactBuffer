@@ -343,7 +343,7 @@ namespace CompactBuffer
         {
             var isRef = param.ParameterType.IsByRef;
             var isIn = param.IsIn;
-            if (isRef && isIn) return "ref readonly ";
+            if (isRef && isIn) return "in ";
             if (isRef) return "ref ";
             if (isIn) return "in ";
             return "";

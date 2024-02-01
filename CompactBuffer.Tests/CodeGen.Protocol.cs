@@ -89,7 +89,7 @@ namespace ProtocolAutoGen
             m_Sender.Send(writer);
         }
 
-        void Tests.IServerApi.CallTypeClassRefReadonly(ref readonly Tests.TypeClass ___a)
+        void Tests.IServerApi.CallTypeClassRefReadonly(in Tests.TypeClass ___a)
         {
             var writer = m_Sender.GetStreamWriter(0);
             writer.WriteVariantInt32(9);
@@ -105,7 +105,7 @@ namespace ProtocolAutoGen
             m_Sender.Send(writer);
         }
 
-        void Tests.IServerApi.CallTypeStructRefReadonly(ref readonly Tests.TypeStruct ___a)
+        void Tests.IServerApi.CallTypeStructRefReadonly(in Tests.TypeStruct ___a)
         {
             var writer = m_Sender.GetStreamWriter(0);
             writer.WriteVariantInt32(11);

@@ -8,7 +8,7 @@ namespace CompactBuffer
     public interface ICompactBufferSerializer<T> : ICompactBufferSerializer
     {
         void Read(BufferReader reader, ref T target);
-        void Write(BufferWriter writer, ref readonly T target);
-        void Copy(ref readonly T src, ref T dst);
+        void Write(BufferWriter writer, in T target);
+        void Copy(in T src, ref T dst);
     }
 }
