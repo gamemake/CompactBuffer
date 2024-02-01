@@ -10,7 +10,7 @@ Implementing Binary Serialization Using C#.
 # Why use it？
 
 * Use Code Generation to Avoid Reflection.
-* Serialization with zero GC. (Depends on the data type being a value type or not containing any reference types)
+* Serialization with zero GC. (Depends on the data type being a value type and not containing any reference types)
 * Simple and easy to use.
 
 # How to Install?
