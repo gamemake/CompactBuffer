@@ -40,13 +40,15 @@ namespace CompactBuffer
                         {
                             m_Serializer = (ICompactBufferSerializer<T>)serializer;
                         }
-                        else
-                        {
-                            var name = $"{typeof(T).FullName}";
-                            throw new CompactBufferExeption($"{typeof(T).FullName}");
-                        }
                     }
                     return m_Serializer;
+                }
+                set
+                {
+                    if (m_Serializer != null)
+                    {
+                        m_Serializer = value;
+                    }
                 }
             }
         }
@@ -70,58 +72,46 @@ namespace CompactBuffer
 
         public static ICompactBufferSerializer<T[]> GetArraySerializer<T>()
         {
-            if (m_Serializers.TryGetValue(typeof(T[]), out var serializer))
-            {
-                return (ICompactBufferSerializer<T[]>)serializer;
-            }
-            else
+            var serializer = SerializerGetter<T[]>.Serializer;
+            if (serializer == null)
             {
                 serializer = new Internal.ArraySerializer<T>();
-                m_Serializers.TryAdd(typeof(T[]), serializer);
-                return (ICompactBufferSerializer<T[]>)serializer;
+                SerializerGetter<T[]>.Serializer = serializer;
             }
+            return serializer;
         }
 
         public static ICompactBufferSerializer<List<T>> GetListSerializer<T>()
         {
-            if (m_Serializers.TryGetValue(typeof(List<T>), out var serializer))
-            {
-                return (ICompactBufferSerializer<List<T>>)serializer;
-            }
-            else
+            var serializer = SerializerGetter<List<T>>.Serializer;
+            if (serializer == null)
             {
                 serializer = new Internal.ListSerializer<T>();
-                m_Serializers.TryAdd(typeof(List<T>), serializer);
-                return (ICompactBufferSerializer<List<T>>)serializer;
+                SerializerGetter<List<T>>.Serializer = serializer;
             }
+            return serializer;
         }
 
         public static ICompactBufferSerializer<HashSet<T>> GetHashSetSerializer<T>()
         {
-            if (m_Serializers.TryGetValue(typeof(HashSet<T>), out var serializer))
-            {
-                return (ICompactBufferSerializer<HashSet<T>>)serializer;
-            }
-            else
+            var serializer = SerializerGetter<HashSet<T>>.Serializer;
+            if (serializer == null)
             {
                 serializer = new Internal.HashSetSerializer<T>();
-                m_Serializers.TryAdd(typeof(HashSet<T>), serializer);
-                return (ICompactBufferSerializer<HashSet<T>>)serializer;
+                SerializerGetter<HashSet<T>>.Serializer = serializer;
             }
+            return serializer;
         }
 
         public static ICompactBufferSerializer<Dictionary<TKey, TValue>> GetDictionarySerializer<TKey, TValue>()
         {
-            if (m_Serializers.TryGetValue(typeof(Dictionary<TKey, TValue>), out var serializer))
-            {
-                return (ICompactBufferSerializer<Dictionary<TKey, TValue>>)serializer;
-            }
-            else
+            var serializer = SerializerGetter<Dictionary<TKey, TValue>>.Serializer;
+            if (serializer == null)
             {
                 serializer = new Internal.DictionarySerializer<TKey, TValue>();
-                m_Serializers.TryAdd(typeof(Dictionary<TKey, TValue>), serializer);
-                return (ICompactBufferSerializer<Dictionary<TKey, TValue>>)serializer;
+                SerializerGetter<Dictionary<TKey, TValue>>.Serializer = serializer;
             }
+            return serializer;
         }
 
         public static ICompactBufferSerializer<T> GetCustomSerializer<TSerializer, T>()

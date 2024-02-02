@@ -102,7 +102,7 @@ namespace CompactBuffer
         public static IProtocolStub GetDispacher<T>(T impl)
             where T : IProtocol
         {
-            return default(IProtocolStub);
+            return default;
         }
     }
 }
