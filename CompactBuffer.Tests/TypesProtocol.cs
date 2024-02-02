@@ -14,32 +14,33 @@ namespace Tests
         public Dictionary<string, int> dict;
     }
 
-    public struct RefStruct
+    public struct TypeStruct
     {
         public int i;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 1000)]
         public int[] array;
     }
 
-    [Protocol(0)]
+    [ProtocolId(0)]
     public interface IServerApi : IProtocol
     {
         void Call();
         void CallInt(int a);
+        void CallIntArray(int[] array);
         void CallString(string a);
-        void CallTypeClass(TypeClass pa);
         void CallVariant([VariantInt] int v1, [VariantInt] long v2, [VariantInt] uint v3, int v4, int v5);
         void CallGuid(Guid _guid);
         void CallEnum(EnumTypes _enum);
         void CallFloat16([Float16(1)] float v);
-        void CallReadOnlySpan(ReadOnlySpan<byte> aaaaaaaa);
-        void CallVariantType(VaiantType vv);
-        void CallTypeClassRefReadonly(in TypeClass a);
+        void CallVariantClass(VaiantClass vv);
+        void CallTypeClass(TypeClass pa);
+        void CallTypeClassIn(in TypeClass a);
         void CallTypeClassRef(ref TypeClass a);
-        void CallTypeStructRefReadonly(in RefStruct a);
-        void CallTypeStructRef(ref RefStruct a);
-        void CallIntArray(int[] array);
+        void CallTypeStruct(TypeStruct a);
+        void CallTypeStructIn(in TypeStruct a);
+        void CallTypeStructRef(ref TypeStruct a);
         void CallIntSpan(Span<int> span);
         void CallIntReadOnlySpan(ReadOnlySpan<int> span);
+        void CallReadOnlySpan(ReadOnlySpan<byte> aaaaaaaa);
     }
 }

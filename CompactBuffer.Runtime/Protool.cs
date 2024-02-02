@@ -41,7 +41,7 @@ namespace CompactBuffer
             foreach (var type in CompactBufferUtils.EnumAllTypes(typeof(ProtocolProxy)))
             {
                 if (type.IsAbstract) continue;
-                var proxyAttribute = type.GetCustomAttribute<ProtocolProxyAttribute>();
+                var proxyAttribute = type.GetCustomAttribute<ProtocolAttribute>();
                 if (proxyAttribute == null) continue;
                 var protocolType = proxyAttribute.ProtocolType;
                 if (protocolType == null || !protocolType.IsInterface || !typeof(IProtocol).IsAssignableFrom(protocolType))
@@ -59,9 +59,9 @@ namespace CompactBuffer
             foreach (var type in CompactBufferUtils.EnumAllTypes(typeof(IProtocolStub)))
             {
                 if (type.IsAbstract) continue;
-                var stubAttribute = type.GetCustomAttribute<ProtocolStubAttribute>();
-                if (stubAttribute == null) continue;
-                var protocolType = stubAttribute.ProtocolType;
+                var protocolAttribute = type.GetCustomAttribute<ProtocolAttribute>();
+                if (protocolAttribute == null) continue;
+                var protocolType = protocolAttribute.ProtocolType;
                 if (protocolType == null || !protocolType.IsInterface || !typeof(IProtocol).IsAssignableFrom(protocolType))
                 {
                     throw new ArgumentException("invalid");
@@ -76,7 +76,7 @@ namespace CompactBuffer
         {
             if (!m_ProxyTypes.TryGetValue(typeof(T), out var type))
             {
-                throw new Exception("proxy not found");
+                throw new CompactBufferExeption("proxy not found");
             }
             else
             {
@@ -90,7 +90,7 @@ namespace CompactBuffer
         {
             if (!m_StubTypes.TryGetValue(typeof(T), out var type))
             {
-                throw new Exception("proxy not found");
+                throw new CompactBufferExeption("stub not found");
             }
             else
             {

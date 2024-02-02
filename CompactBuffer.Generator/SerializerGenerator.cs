@@ -136,8 +136,8 @@ namespace CompactBuffer
                 builder.AppendLine($"                writer.WriteVariantInt32(0);");
                 builder.AppendLine($"                return;");
                 builder.AppendLine($"            }}");
+                builder.AppendLine($"            writer.WriteVariantInt32({fields.Count + 1});");
             }
-            builder.AppendLine($"            writer.WriteVariantInt32({fields.Count + 1});");
             foreach (var field in fields)
             {
                 GenWriteField(builder, type, field);

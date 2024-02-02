@@ -21,11 +21,11 @@ namespace CompactBuffer
         public BufferReader(byte[] buffer, int index, int count, Encoding encoding = null)
         {
             if (buffer is null)
-                throw new ArgumentNullException("buffer");
+                throw new ArgumentNullException(nameof(buffer));
             if (index < 0)
-                throw new ArgumentOutOfRangeException("index", index, $"index '{index}' must be a non-negative and non-zero value.");
+                throw new ArgumentOutOfRangeException(nameof(index), index, $"index '{index}' must be a non-negative and non-zero value.");
             if (count < 0)
-                throw new ArgumentOutOfRangeException("count", count, $"index '{count}' must be a non-negative and non-zero value.");
+                throw new ArgumentOutOfRangeException(nameof(count), count, $"index '{count}' must be a non-negative and non-zero value.");
             if (buffer.Length - index < count)
                 throw new ArgumentException("Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection.");
 
@@ -41,24 +41,21 @@ namespace CompactBuffer
 
         public int Position
         {
-            get
-            {
-                return _position - _start; ;
-            }
+            get => _position - _start;
             set
             {
                 if (value < 0 || value > _length - _start)
-                    throw new ArgumentOutOfRangeException("value", value, $"value '{value}' must be between 0 and {_length - _start}.");
+                    throw new ArgumentOutOfRangeException(nameof(value), value, $"value '{value}' must be between 0 and {_length - _start}.");
 
                 _position = value;
             }
         }
-        public int Lenght => _length - _position;
+        public int Length => _length - _position;
 
         public ReadOnlySpan<byte> ReadBytes(int size)
         {
             if (size < 0)
-                throw new ArgumentOutOfRangeException("size", size, $"size '{size}' must be a non-negative and non-zero value.");
+                throw new ArgumentOutOfRangeException(nameof(size), size, $"size '{size}' must be a non-negative and non-zero value.");
             if (_position + size > _length)
                 throw new EndOfStreamException();
 

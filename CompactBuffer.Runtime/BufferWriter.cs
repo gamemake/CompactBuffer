@@ -21,11 +21,11 @@ namespace CompactBuffer
         public BufferWriter(byte[] buffer, int index, int count, Encoding encoding = null)
         {
             if (buffer is null)
-                throw new ArgumentNullException("buffer");
+                throw new ArgumentNullException(nameof(buffer));
             if (index < 0)
-                throw new ArgumentOutOfRangeException("index", index, $"index '{index}' must be a non-negative.");
+                throw new ArgumentOutOfRangeException(nameof(index), index, $"index '{index}' must be a non-negative.");
             if (count < 0)
-                throw new ArgumentOutOfRangeException("count", count, $"index '{count}' must be a non-negative.");
+                throw new ArgumentOutOfRangeException(nameof(count), count, $"count '{count}' must be a non-negative.");
             if (buffer.Length - index < count)
                 throw new ArgumentException("Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection.");
 
@@ -58,7 +58,7 @@ namespace CompactBuffer
             set
             {
                 if (value < 0 || value > _length - _start)
-                    throw new ArgumentOutOfRangeException("value", value, $"value '{value}' must be between 0 and {_length - _start}.");
+                    throw new ArgumentOutOfRangeException(nameof(value), value, $"value '{value}' must be between 0 and {_length - _start}.");
 
                 _position = value;
             }
@@ -144,7 +144,7 @@ namespace CompactBuffer
         {
             if (floatValue > integerMax || floatValue < -integerMax)
             {
-                throw new ArgumentOutOfRangeException("floatValue", floatValue, $"floatValue ({floatValue}) must be between {-integerMax} and {integerMax}");
+                throw new ArgumentOutOfRangeException(nameof(floatValue), floatValue, $"floatValue ({floatValue}) must be between {-integerMax} and {integerMax}");
             }
             Write((short)(floatValue / integerMax * short.MaxValue));
         }

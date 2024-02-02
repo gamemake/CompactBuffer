@@ -7,7 +7,7 @@
 
 namespace ProtocolAutoGen
 {
-    [CompactBuffer.ProtocolProxy(typeof(Tests.IServerApi))]
+    [CompactBuffer.Protocol(typeof(Tests.IServerApi))]
     public class Tests_IServerApi_Proxy : CompactBuffer.ProtocolProxy, Tests.IServerApi
     {
         public Tests_IServerApi_Proxy(CompactBuffer.IProtocolSender sender) : base(sender)
@@ -29,19 +29,19 @@ namespace ProtocolAutoGen
             m_Sender.Send(writer);
         }
 
-        void Tests.IServerApi.CallString(string ___a)
+        void Tests.IServerApi.CallIntArray(int[] ___array)
         {
             var writer = m_Sender.GetStreamWriter(0);
             writer.WriteVariantInt32(2);
-            writer.Write(___a);
+            CompactBuffer.Internal.ArraySerializer<int>.Write(writer, in ___array);
             m_Sender.Send(writer);
         }
 
-        void Tests.IServerApi.CallTypeClass(Tests.TypeClass ___pa)
+        void Tests.IServerApi.CallString(string ___a)
         {
             var writer = m_Sender.GetStreamWriter(0);
             writer.WriteVariantInt32(3);
-            CompactBufferAutoGen.Tests_TypeClass_Serializer.Write(writer, in ___pa);
+            writer.Write(___a);
             m_Sender.Send(writer);
         }
 
@@ -81,23 +81,23 @@ namespace ProtocolAutoGen
             m_Sender.Send(writer);
         }
 
-        void Tests.IServerApi.CallReadOnlySpan(System.ReadOnlySpan<byte> ___aaaaaaaa)
+        void Tests.IServerApi.CallVariantClass(Tests.VaiantClass ___vv)
         {
             var writer = m_Sender.GetStreamWriter(0);
             writer.WriteVariantInt32(8);
-            CompactBuffer.Internal.ReadOnlySpanSerializer<byte>.Write(writer, in ___aaaaaaaa);
-            m_Sender.Send(writer);
-        }
-
-        void Tests.IServerApi.CallVariantType(Tests.VaiantType ___vv)
-        {
-            var writer = m_Sender.GetStreamWriter(0);
-            writer.WriteVariantInt32(9);
             Tests.VaiantTypeSerializer.Write(writer, in ___vv);
             m_Sender.Send(writer);
         }
 
-        void Tests.IServerApi.CallTypeClassRefReadonly(in Tests.TypeClass ___a)
+        void Tests.IServerApi.CallTypeClass(Tests.TypeClass ___pa)
+        {
+            var writer = m_Sender.GetStreamWriter(0);
+            writer.WriteVariantInt32(9);
+            CompactBufferAutoGen.Tests_TypeClass_Serializer.Write(writer, in ___pa);
+            m_Sender.Send(writer);
+        }
+
+        void Tests.IServerApi.CallTypeClassIn(in Tests.TypeClass ___a)
         {
             var writer = m_Sender.GetStreamWriter(0);
             writer.WriteVariantInt32(10);
@@ -113,27 +113,27 @@ namespace ProtocolAutoGen
             m_Sender.Send(writer);
         }
 
-        void Tests.IServerApi.CallTypeStructRefReadonly(in Tests.RefStruct ___a)
+        void Tests.IServerApi.CallTypeStruct(Tests.TypeStruct ___a)
         {
             var writer = m_Sender.GetStreamWriter(0);
             writer.WriteVariantInt32(12);
-            CompactBufferAutoGen.Tests_RefStruct_Serializer.Write(writer, in ___a);
+            CompactBufferAutoGen.Tests_TypeStruct_Serializer.Write(writer, in ___a);
             m_Sender.Send(writer);
         }
 
-        void Tests.IServerApi.CallTypeStructRef(ref Tests.RefStruct ___a)
+        void Tests.IServerApi.CallTypeStructIn(in Tests.TypeStruct ___a)
         {
             var writer = m_Sender.GetStreamWriter(0);
             writer.WriteVariantInt32(13);
-            CompactBufferAutoGen.Tests_RefStruct_Serializer.Write(writer, in ___a);
+            CompactBufferAutoGen.Tests_TypeStruct_Serializer.Write(writer, in ___a);
             m_Sender.Send(writer);
         }
 
-        void Tests.IServerApi.CallIntArray(int[] ___array)
+        void Tests.IServerApi.CallTypeStructRef(ref Tests.TypeStruct ___a)
         {
             var writer = m_Sender.GetStreamWriter(0);
             writer.WriteVariantInt32(14);
-            CompactBuffer.Internal.ArraySerializer<int>.Write(writer, in ___array);
+            CompactBufferAutoGen.Tests_TypeStruct_Serializer.Write(writer, in ___a);
             m_Sender.Send(writer);
         }
 
@@ -152,11 +152,19 @@ namespace ProtocolAutoGen
             CompactBuffer.Internal.ReadOnlySpanSerializer<int>.Write(writer, in ___span);
             m_Sender.Send(writer);
         }
+
+        void Tests.IServerApi.CallReadOnlySpan(System.ReadOnlySpan<byte> ___aaaaaaaa)
+        {
+            var writer = m_Sender.GetStreamWriter(0);
+            writer.WriteVariantInt32(17);
+            CompactBuffer.Internal.ReadOnlySpanSerializer<byte>.Write(writer, in ___aaaaaaaa);
+            m_Sender.Send(writer);
+        }
     }
 }
 namespace ProtocolAutoGen
 {
-    [CompactBuffer.ProtocolStub(typeof(Tests.IServerApi))]
+    [CompactBuffer.Protocol(typeof(Tests.IServerApi))]
     public class Tests_IServerApi_Stub : CompactBuffer.IProtocolStub
     {
         protected readonly Tests.IServerApi m_Target;
@@ -182,15 +190,15 @@ namespace ProtocolAutoGen
             }
             if (index == 2)
             {
-                var ___a = reader.ReadString();
-                m_Target?.CallString(___a);
+                int[] ___array = default;
+                CompactBuffer.Internal.ArraySerializer<int>.Read(reader, ref ___array);
+                m_Target?.CallIntArray(___array);
                 return;
             }
             if (index == 3)
             {
-                Tests.TypeClass ___pa = default;
-                CompactBufferAutoGen.Tests_TypeClass_Serializer.Read(reader, ref ___pa);
-                m_Target?.CallTypeClass(___pa);
+                var ___a = reader.ReadString();
+                m_Target?.CallString(___a);
                 return;
             }
             if (index == 4)
@@ -223,23 +231,23 @@ namespace ProtocolAutoGen
             }
             if (index == 8)
             {
-                System.ReadOnlySpan<byte> ___aaaaaaaa = default;
-                CompactBuffer.Internal.ReadOnlySpanSerializer<byte>.Read(reader, ref ___aaaaaaaa);
-                m_Target?.CallReadOnlySpan(___aaaaaaaa);
+                Tests.VaiantClass ___vv = default;
+                Tests.VaiantTypeSerializer.Read(reader, ref ___vv);
+                m_Target?.CallVariantClass(___vv);
                 return;
             }
             if (index == 9)
             {
-                Tests.VaiantType ___vv = default;
-                Tests.VaiantTypeSerializer.Read(reader, ref ___vv);
-                m_Target?.CallVariantType(___vv);
+                Tests.TypeClass ___pa = default;
+                CompactBufferAutoGen.Tests_TypeClass_Serializer.Read(reader, ref ___pa);
+                m_Target?.CallTypeClass(___pa);
                 return;
             }
             if (index == 10)
             {
                 Tests.TypeClass ___a = default;
                 CompactBufferAutoGen.Tests_TypeClass_Serializer.Read(reader, ref ___a);
-                m_Target?.CallTypeClassRefReadonly(in ___a);
+                m_Target?.CallTypeClassIn(in ___a);
                 return;
             }
             if (index == 11)
@@ -251,23 +259,23 @@ namespace ProtocolAutoGen
             }
             if (index == 12)
             {
-                Tests.RefStruct ___a = default;
-                CompactBufferAutoGen.Tests_RefStruct_Serializer.Read(reader, ref ___a);
-                m_Target?.CallTypeStructRefReadonly(in ___a);
+                Tests.TypeStruct ___a = default;
+                CompactBufferAutoGen.Tests_TypeStruct_Serializer.Read(reader, ref ___a);
+                m_Target?.CallTypeStruct(___a);
                 return;
             }
             if (index == 13)
             {
-                Tests.RefStruct ___a = default;
-                CompactBufferAutoGen.Tests_RefStruct_Serializer.Read(reader, ref ___a);
-                m_Target?.CallTypeStructRef(ref ___a);
+                Tests.TypeStruct ___a = default;
+                CompactBufferAutoGen.Tests_TypeStruct_Serializer.Read(reader, ref ___a);
+                m_Target?.CallTypeStructIn(in ___a);
                 return;
             }
             if (index == 14)
             {
-                int[] ___array = default;
-                CompactBuffer.Internal.ArraySerializer<int>.Read(reader, ref ___array);
-                m_Target?.CallIntArray(___array);
+                Tests.TypeStruct ___a = default;
+                CompactBufferAutoGen.Tests_TypeStruct_Serializer.Read(reader, ref ___a);
+                m_Target?.CallTypeStructRef(ref ___a);
                 return;
             }
             if (index == 15)
@@ -282,6 +290,13 @@ namespace ProtocolAutoGen
                 System.ReadOnlySpan<int> ___span = default;
                 CompactBuffer.Internal.ReadOnlySpanSerializer<int>.Read(reader, ref ___span);
                 m_Target?.CallIntReadOnlySpan(___span);
+                return;
+            }
+            if (index == 17)
+            {
+                System.ReadOnlySpan<byte> ___aaaaaaaa = default;
+                CompactBuffer.Internal.ReadOnlySpanSerializer<byte>.Read(reader, ref ___aaaaaaaa);
+                m_Target?.CallReadOnlySpan(___aaaaaaaa);
                 return;
             }
             throw new CompactBuffer.CompactBufferExeption("Tests.IServerApi invalid method index" + index);

@@ -17,6 +17,7 @@ namespace CompactBuffer
         }
     }
 
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
     public class CompactBufferAttribute : Attribute
     {
         public readonly Type SerializerType;
@@ -29,13 +30,12 @@ namespace CompactBuffer
         }
     }
 
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
     public class CompactBufferGenCodeAttribute : Attribute
     {
-        public CompactBufferGenCodeAttribute()
-        {
-        }
     }
 
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Field | AttributeTargets.Parameter)]
     public class CustomSerializerAttribute : Attribute
     {
         public readonly Type SerializerType;
@@ -58,13 +58,14 @@ namespace CompactBuffer
         Server,
     }
 
-    public class ProtocolAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Interface)]
+    public class ProtocolIdAttribute : Attribute
     {
         public readonly int ProtocolId;
         public readonly ProtocolType ProtocolType;
         public readonly bool Dispatch;
 
-        public ProtocolAttribute(int protocolId, ProtocolType protocolType = ProtocolType.None, bool dispatch = false)
+        public ProtocolIdAttribute(int protocolId, ProtocolType protocolType = ProtocolType.None, bool dispatch = false)
         {
             ProtocolId = protocolId;
             ProtocolType = protocolType;
@@ -72,31 +73,12 @@ namespace CompactBuffer
         }
     }
 
-    public class ProtocolProxyAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Class)]
+    public class ProtocolAttribute : Attribute
     {
         public readonly Type ProtocolType;
 
-        public ProtocolProxyAttribute(Type protocolType)
-        {
-            ProtocolType = protocolType;
-        }
-    }
-
-    public class ProtocolStubAttribute : Attribute
-    {
-        public readonly Type ProtocolType;
-
-        public ProtocolStubAttribute(Type protocolType)
-        {
-            ProtocolType = protocolType;
-        }
-    }
-
-    public class ProtocolDispacherAttribute : Attribute
-    {
-        public readonly Type ProtocolType;
-
-        public ProtocolDispacherAttribute(Type protocolType)
+        public ProtocolAttribute(Type protocolType)
         {
             ProtocolType = protocolType;
         }

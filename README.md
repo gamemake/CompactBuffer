@@ -55,6 +55,7 @@ serializer.Read(reader, ref liveData);
 ## Protocol
 
 ```cs
+[ProtocolId(0)]
 public interface ISyncUserData : IProtocol
 {
     void Sync(string type, string data);

@@ -69,17 +69,6 @@ public class TestProtocol : IProtocolSender, IServerApi
     }
 
     [Fact]
-    public void CallTypeClass()
-    {
-        GoTest("CallTypeClass", new TypeClass(){
-            kkk = 11,
-            list = new List<int>(){345, 35,234},
-            hashset = new HashSet<int>() {6, 7, 8},
-            dict = new Dictionary<string, int>() {{"a", 1}},
-        });
-    }
-
-    [Fact]
     public void CallVariant()
     {
         GoTest("CallVariant", (int)1, (long)444, (uint)4535, (int)23423, (int)2344);
@@ -101,6 +90,66 @@ public class TestProtocol : IProtocolSender, IServerApi
     public void CallFloat16()
     {
         GoTest("CallFloat16", 0);
+    }
+
+    [Fact]
+    public void CallTypeClass()
+    {
+        GoTest("CallTypeClass", new TypeClass()
+        {
+            kkk = 11,
+            list = new List<int>() { 345, 35, 234 },
+            hashset = new HashSet<int>() { 6, 7, 8 },
+            dict = new Dictionary<string, int>() { { "a", 1 } },
+        });
+    }
+
+    [Fact]
+    public void CallTypeClassIn()
+    {
+        GoTest("CallTypeClassIn", new TypeClass()
+        {
+            kkk = 11,
+            list = new List<int>() { 345, 35, 234 },
+            hashset = new HashSet<int>() { 6, 7, 8 },
+            dict = new Dictionary<string, int>() { { "a", 1 } },
+        });
+    }
+
+    [Fact]
+    public void CallTypeClassRef()
+    {
+        GoTest("CallTypeClassRef", new TypeClass()
+        {
+            kkk = 11,
+            list = new List<int>() { 345, 35, 234 },
+            hashset = new HashSet<int>() { 6, 7, 8 },
+            dict = new Dictionary<string, int>() { { "a", 1 } },
+        });
+    }
+
+    [Fact]
+    public void CallTypeStruct()
+    {
+        GoTest("CallTypeStruct", new TypeStruct()
+        {
+        });
+    }
+
+    [Fact]
+    public void CallTypeStructIn()
+    {
+        GoTest("CallTypeStructIn", new TypeStruct()
+        {
+        });
+    }
+
+    [Fact]
+    public void CallTypeStructRef()
+    {
+        GoTest("CallTypeStructIn", new TypeStruct()
+        {
+        });
     }
 
     void IServerApi.Call()
@@ -148,12 +197,12 @@ public class TestProtocol : IProtocolSender, IServerApi
         throw new NotImplementedException();
     }
 
-    void IServerApi.CallVariantType(VaiantType vv)
+    void IServerApi.CallVariantClass(VaiantClass vv)
     {
         m_Output = ToObjs(vv);
     }
 
-    void IServerApi.CallTypeClassRefReadonly(in TypeClass a)
+    void IServerApi.CallTypeClassIn(in TypeClass a)
     {
         m_Output = ToObjs(a);
     }
@@ -163,12 +212,17 @@ public class TestProtocol : IProtocolSender, IServerApi
         m_Output = ToObjs(a);
     }
 
-    void IServerApi.CallTypeStructRefReadonly(in RefStruct a)
+    void IServerApi.CallTypeStruct(TypeStruct a)
     {
         m_Output = ToObjs(a);
     }
 
-    void IServerApi.CallTypeStructRef(ref RefStruct a)
+    void IServerApi.CallTypeStructIn(in TypeStruct a)
+    {
+        m_Output = ToObjs(a);
+    }
+
+    void IServerApi.CallTypeStructRef(ref TypeStruct a)
     {
         m_Output = ToObjs(a);
     }

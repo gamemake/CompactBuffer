@@ -50,7 +50,7 @@ namespace CompactBuffer
                 if (!type.IsInterface) continue;
                 if (!typeof(IProtocol).IsAssignableFrom(type)) continue;
 
-                var customSerializer = type.GetCustomAttribute<ProtocolAttribute>();
+                var customSerializer = type.GetCustomAttribute<ProtocolIdAttribute>();
                 if (customSerializer == null) continue;
 
                 GenCode(builder, type);
@@ -90,7 +90,7 @@ namespace CompactBuffer
 
             GenProxy(builder, type, methods);
             GenStub(builder, type, methods);
-            if (type.GetCustomAttribute<ProtocolAttribute>().Dispatch)
+            if (type.GetCustomAttribute<ProtocolIdAttribute>().Dispatch)
             {
                 GenDispach(builder, type, methods);
             }
@@ -98,7 +98,7 @@ namespace CompactBuffer
 
         private void GenProxy(StringBuilder builder, Type type, List<MethodInfo> methods)
         {
-            var protocol = type.GetCustomAttribute<ProtocolAttribute>();
+            var protocol = type.GetCustomAttribute<ProtocolIdAttribute>();
             if (protocol.ProtocolType == ProtocolType.Client)
             {
                 builder.AppendLine($"#if PROTOCOL_SERVER");
@@ -110,7 +110,7 @@ namespace CompactBuffer
 
             builder.AppendLine($"namespace ProtocolAutoGen");
             builder.AppendLine($"{{");
-            builder.AppendLine($"    [CompactBuffer.ProtocolProxy(typeof({type.FullName}))]");
+            builder.AppendLine($"    [CompactBuffer.Protocol(typeof({type.FullName}))]");
             builder.AppendLine($"    public class {type.FullName.Replace(".", "_")}_Proxy : CompactBuffer.ProtocolProxy, {type.FullName}");
             builder.AppendLine($"    {{");
             builder.AppendLine($"        public {type.FullName.Replace(".", "_")}_Proxy(CompactBuffer.IProtocolSender sender) : base(sender)");
@@ -126,7 +126,7 @@ namespace CompactBuffer
                 }));
                 builder.AppendLine($"        void {type.FullName}.{method.Name}({paramsText})");
                 builder.AppendLine($"        {{");
-                builder.AppendLine($"            var writer = m_Sender.GetStreamWriter({type.GetCustomAttribute<ProtocolAttribute>().ProtocolId});");
+                builder.AppendLine($"            var writer = m_Sender.GetStreamWriter({type.GetCustomAttribute<ProtocolIdAttribute>().ProtocolId});");
                 builder.AppendLine($"            writer.WriteVariantInt32({i});");
                 foreach (var param in method.GetParameters())
                 {
@@ -183,7 +183,7 @@ namespace CompactBuffer
 
         private void GenStub(StringBuilder builder, Type type, List<MethodInfo> methods)
         {
-            var protocol = type.GetCustomAttribute<ProtocolAttribute>();
+            var protocol = type.GetCustomAttribute<ProtocolIdAttribute>();
             if (protocol.ProtocolType == ProtocolType.Client)
             {
                 builder.AppendLine($"#if PROTOCOL_CLIENT");
@@ -195,7 +195,7 @@ namespace CompactBuffer
 
             builder.AppendLine($"namespace ProtocolAutoGen");
             builder.AppendLine($"{{");
-            builder.AppendLine($"    [CompactBuffer.ProtocolStub(typeof({type.FullName}))]");
+            builder.AppendLine($"    [CompactBuffer.Protocol(typeof({type.FullName}))]");
             builder.AppendLine($"    public class {type.FullName.Replace(".", "_")}_Stub : CompactBuffer.IProtocolStub");
             builder.AppendLine($"    {{");
             builder.AppendLine($"        protected readonly {type.FullName} m_Target;");

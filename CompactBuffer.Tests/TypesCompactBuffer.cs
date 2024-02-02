@@ -93,36 +93,36 @@ namespace Tests
         }
     }
 
-    public abstract class VaiantType
+    public abstract class VaiantClass
     {
     }
 
-    [CompactBuffer(typeof(VaiantType))]
-    public class VaiantTypeSerializer : ICompactBufferSerializer<VaiantType>
+    [CompactBuffer(typeof(VaiantClass))]
+    public class VaiantTypeSerializer : ICompactBufferSerializer<VaiantClass>
     {
-        public static void Read(BufferReader reader, ref VaiantType target)
+        public static void Read(BufferReader reader, ref VaiantClass target)
         {
         }
 
-        public static void Write(BufferWriter writer, in VaiantType target)
+        public static void Write(BufferWriter writer, in VaiantClass target)
         {
         }
 
-        public static void Copy(in VaiantType src, ref VaiantType dst)
+        public static void Copy(in VaiantClass src, ref VaiantClass dst)
         {
         }
 
-        void ICompactBufferSerializer<VaiantType>.Read(BufferReader reader, ref VaiantType target)
-        {
-            throw new NotImplementedException();
-        }
-
-        void ICompactBufferSerializer<VaiantType>.Write(BufferWriter writer, in VaiantType target)
+        void ICompactBufferSerializer<VaiantClass>.Read(BufferReader reader, ref VaiantClass target)
         {
             throw new NotImplementedException();
         }
 
-        void ICompactBufferSerializer<VaiantType>.Copy(in VaiantType src, ref VaiantType dst)
+        void ICompactBufferSerializer<VaiantClass>.Write(BufferWriter writer, in VaiantClass target)
+        {
+            throw new NotImplementedException();
+        }
+
+        void ICompactBufferSerializer<VaiantClass>.Copy(in VaiantClass src, ref VaiantClass dst)
         {
             throw new NotImplementedException();
         }

@@ -8,13 +8,13 @@ namespace CompactBuffer.Tests;
 
 public class TestGenerator
 {
-    public static string GetDirName()
+    public string GetDirName()
     {
 #pragma warning disable IL3000
-        var dirName = Assembly.GetEntryAssembly().Location;
+        var dirName = GetType().Assembly.Location;
 #pragma warning restore IL3000
         if (string.IsNullOrWhiteSpace(dirName))
-            dirName = Process.GetCurrentProcess().MainModule.FileName;
+            dirName = Process.GetCurrentProcess().MainModule?.FileName;
         for (; ; )
         {
             if (Path.GetFileName(dirName) == "CompactBuffer") break;
