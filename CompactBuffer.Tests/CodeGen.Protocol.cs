@@ -81,19 +81,19 @@ namespace ProtocolAutoGen
             m_Sender.Send(writer);
         }
 
-        void Tests.IServerApi.CallVariantClass(Tests.VaiantClass ___vv)
-        {
-            var writer = m_Sender.GetStreamWriter(0);
-            writer.WriteVariantInt32(8);
-            Tests.VaiantTypeSerializer.Write(writer, in ___vv);
-            m_Sender.Send(writer);
-        }
-
         void Tests.IServerApi.CallTypeClass(Tests.TypeClass ___pa)
         {
             var writer = m_Sender.GetStreamWriter(0);
-            writer.WriteVariantInt32(9);
+            writer.WriteVariantInt32(8);
             CompactBufferAutoGen.Tests_TypeClass_Serializer.Write(writer, in ___pa);
+            m_Sender.Send(writer);
+        }
+
+        void Tests.IServerApi.CallTypeClassArray(Tests.TypeClass[] ___pa)
+        {
+            var writer = m_Sender.GetStreamWriter(0);
+            writer.WriteVariantInt32(9);
+            CompactBuffer.Internal.ArraySerializer<Tests.TypeClass>.Write(writer, in ___pa);
             m_Sender.Send(writer);
         }
 
@@ -231,16 +231,16 @@ namespace ProtocolAutoGen
             }
             if (index == 8)
             {
-                Tests.VaiantClass ___vv = default;
-                Tests.VaiantTypeSerializer.Read(reader, ref ___vv);
-                m_Target?.CallVariantClass(___vv);
+                Tests.TypeClass ___pa = default;
+                CompactBufferAutoGen.Tests_TypeClass_Serializer.Read(reader, ref ___pa);
+                m_Target?.CallTypeClass(___pa);
                 return;
             }
             if (index == 9)
             {
-                Tests.TypeClass ___pa = default;
-                CompactBufferAutoGen.Tests_TypeClass_Serializer.Read(reader, ref ___pa);
-                m_Target?.CallTypeClass(___pa);
+                Tests.TypeClass[] ___pa = default;
+                CompactBuffer.Internal.ArraySerializer<Tests.TypeClass>.Read(reader, ref ___pa);
+                m_Target?.CallTypeClassArray(___pa);
                 return;
             }
             if (index == 10)

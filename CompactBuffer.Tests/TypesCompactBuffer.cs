@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using CompactBuffer;
 
 namespace Tests
@@ -90,41 +91,6 @@ namespace Tests
         void ICompactBufferSerializer<float>.Copy(in float src, ref float dst)
         {
             dst = src;
-        }
-    }
-
-    public abstract class VaiantClass
-    {
-    }
-
-    [CompactBuffer(typeof(VaiantClass))]
-    public class VaiantTypeSerializer : ICompactBufferSerializer<VaiantClass>
-    {
-        public static void Read(BufferReader reader, ref VaiantClass target)
-        {
-        }
-
-        public static void Write(BufferWriter writer, in VaiantClass target)
-        {
-        }
-
-        public static void Copy(in VaiantClass src, ref VaiantClass dst)
-        {
-        }
-
-        void ICompactBufferSerializer<VaiantClass>.Read(BufferReader reader, ref VaiantClass target)
-        {
-            throw new NotImplementedException();
-        }
-
-        void ICompactBufferSerializer<VaiantClass>.Write(BufferWriter writer, in VaiantClass target)
-        {
-            throw new NotImplementedException();
-        }
-
-        void ICompactBufferSerializer<VaiantClass>.Copy(in VaiantClass src, ref VaiantClass dst)
-        {
-            throw new NotImplementedException();
         }
     }
 }

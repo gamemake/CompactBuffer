@@ -51,21 +51,27 @@ public class TestProtocol : IProtocolSender, IServerApi
     }
 
     [Fact]
-    public void TestCall()
+    public void Call()
     {
         GoTest("Call");
     }
 
     [Fact]
-    public void TestCallString()
+    public void CallString()
     {
         GoTest("CallString", "a");
     }
 
     [Fact]
-    public void TestCallInt()
+    public void CallInt()
     {
         GoTest("CallInt", 111);
+    }
+
+    [Fact]
+    public void CallIntArray()
+    {
+        GoTest("CallIntArray", new int[] { 1, 23, 232, 34324, 342, 24323, 3453, 345567 });
     }
 
     [Fact]
@@ -101,6 +107,21 @@ public class TestProtocol : IProtocolSender, IServerApi
             list = new List<int>() { 345, 35, 234 },
             hashset = new HashSet<int>() { 6, 7, 8 },
             dict = new Dictionary<string, int>() { { "a", 1 } },
+        });
+    }
+
+    [Fact]
+    public void CallTypeClassArray()
+    {
+        GoTest("CallTypeClassArray", (object)new TypeClass[]
+        {
+             new TypeClass()
+            {
+                kkk = 11,
+                list = new List<int>() { 345, 35, 234 },
+                hashset = new HashSet<int>() { 6, 7, 8 },
+                dict = new Dictionary<string, int>() { { "a", 1 } },
+            }
         });
     }
 
@@ -167,9 +188,9 @@ public class TestProtocol : IProtocolSender, IServerApi
         m_Output = ToObjs(a);
     }
 
-    void IServerApi.CallTypeClass(TypeClass pa)
+    void IServerApi.CallIntArray(int[] array)
     {
-        m_Output = ToObjs(pa);
+        m_Output = ToObjs(array);
     }
 
     void IServerApi.CallVariant(int v1, long v2, uint v3, int v4, int v5)
@@ -197,9 +218,14 @@ public class TestProtocol : IProtocolSender, IServerApi
         throw new NotImplementedException();
     }
 
-    void IServerApi.CallVariantClass(VaiantClass vv)
+    void IServerApi.CallTypeClass(TypeClass pa)
     {
-        m_Output = ToObjs(vv);
+        m_Output = ToObjs(pa);
+    }
+
+    void IServerApi.CallTypeClassArray(TypeClass[] pa)
+    {
+        m_Output = ToObjs((object)pa);
     }
 
     void IServerApi.CallTypeClassIn(in TypeClass a)
@@ -225,11 +251,6 @@ public class TestProtocol : IProtocolSender, IServerApi
     void IServerApi.CallTypeStructRef(ref TypeStruct a)
     {
         m_Output = ToObjs(a);
-    }
-
-    void IServerApi.CallIntArray(int[] array)
-    {
-        m_Output = ToObjs(array);
     }
 
     void IServerApi.CallIntSpan(Span<int> span)

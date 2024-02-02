@@ -32,8 +32,8 @@ namespace Tests
         void CallGuid(Guid _guid);
         void CallEnum(EnumTypes _enum);
         void CallFloat16([Float16(1)] float v);
-        void CallVariantClass(VaiantClass vv);
         void CallTypeClass(TypeClass pa);
+        void CallTypeClassArray(TypeClass[] pa);
         void CallTypeClassIn(in TypeClass a);
         void CallTypeClassRef(ref TypeClass a);
         void CallTypeStruct(TypeStruct a);
