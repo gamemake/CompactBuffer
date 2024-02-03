@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace CompactBuffer
 {
-    public static class CompactBuffer
+    public static class Serializers
     {
         private static Dictionary<Type, ICompactBufferSerializer> m_Serializers = GetAllSerializers();
         private static Dictionary<Type, ICompactBufferSerializer> GetAllSerializers()
@@ -59,65 +59,15 @@ namespace CompactBuffer
             public static TSerializer m_Serializer = new TSerializer();
         }
 
-        public static ICompactBufferSerializer GetSerializer(Type type)
+        public static ICompactBufferSerializer Get(Type type)
         {
             m_Serializers.TryGetValue(type, out var serializer);
             return serializer;
         }
 
-        public static ICompactBufferSerializer<T> GetSerializer<T>()
+        public static ICompactBufferSerializer<T> Get<T>()
         {
             return SerializerGetter<T>.Serializer;
-        }
-
-        public static ICompactBufferSerializer<T[]> GetArraySerializer<T>()
-        {
-            var serializer = SerializerGetter<T[]>.Serializer;
-            if (serializer == null)
-            {
-                serializer = new Internal.ArraySerializer<T>();
-                SerializerGetter<T[]>.Serializer = serializer;
-            }
-            return serializer;
-        }
-
-        public static ICompactBufferSerializer<List<T>> GetListSerializer<T>()
-        {
-            var serializer = SerializerGetter<List<T>>.Serializer;
-            if (serializer == null)
-            {
-                serializer = new Internal.ListSerializer<T>();
-                SerializerGetter<List<T>>.Serializer = serializer;
-            }
-            return serializer;
-        }
-
-        public static ICompactBufferSerializer<HashSet<T>> GetHashSetSerializer<T>()
-        {
-            var serializer = SerializerGetter<HashSet<T>>.Serializer;
-            if (serializer == null)
-            {
-                serializer = new Internal.HashSetSerializer<T>();
-                SerializerGetter<HashSet<T>>.Serializer = serializer;
-            }
-            return serializer;
-        }
-
-        public static ICompactBufferSerializer<Dictionary<TKey, TValue>> GetDictionarySerializer<TKey, TValue>()
-        {
-            var serializer = SerializerGetter<Dictionary<TKey, TValue>>.Serializer;
-            if (serializer == null)
-            {
-                serializer = new Internal.DictionarySerializer<TKey, TValue>();
-                SerializerGetter<Dictionary<TKey, TValue>>.Serializer = serializer;
-            }
-            return serializer;
-        }
-
-        public static ICompactBufferSerializer<T> GetCustomSerializer<TSerializer, T>()
-            where TSerializer : ICompactBufferSerializer<T>, new()
-        {
-            return CustomSerializerGetter<TSerializer, T>.m_Serializer;
         }
     }
 }

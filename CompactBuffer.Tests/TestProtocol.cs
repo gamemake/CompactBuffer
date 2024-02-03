@@ -33,8 +33,8 @@ public class TestProtocol : IProtocolSender, IServerApi
 
     void GoTest(string methodName, params object[] args)
     {
-        var proxy = Protocol.GetProxy<IServerApi>(this);
-        var stub = Protocol.GetStub<IServerApi>(this);
+        var proxy = Protocols.GetProxy<IServerApi>(this);
+        var stub = Protocols.GetStub<IServerApi>(this);
         var method = typeof(IServerApi).GetMethod(methodName, BindingFlags.Public | BindingFlags.Instance);
         method.Invoke(proxy, args);
         m_Input = args;

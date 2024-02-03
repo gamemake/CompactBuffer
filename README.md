@@ -30,10 +30,10 @@ cd Unity
 ```
 
 # How to use it?
-* Compact Buffer
-* Protocol
+* Serializers
+* Protocols
 
-## Compact Buffer
+## Serializers
 ```cs
 [CompactBufferGenCode]
 public class LiveData
@@ -42,7 +42,7 @@ public class LiveData
     public string UserName;
 }
 
-var serailizer = CompactBuffer.GetSerializer<LiveData>();
+var serailizer = CompactBuffer.Serializers.GetSerializer<LiveData>();
 var bytes = new byte[1000];
 var writer = new BufferWriter(bytes);
 var liveData = new LiveData();
@@ -52,7 +52,7 @@ liveData = null;
 serializer.Read(reader, ref liveData);
 ```
 
-## Protocol
+## Protocols
 
 ```cs
 [ProtocolId(0)]

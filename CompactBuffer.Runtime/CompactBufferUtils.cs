@@ -13,22 +13,9 @@ namespace CompactBuffer
             {
                 foreach (var type in assembly.GetTypes())
                 {
-                    if (parentType.IsInterface)
+                    if (parentType.IsAssignableFrom(type))
                     {
-                        foreach (var itype in type.GetInterfaces())
-                        {
-                            if (itype == parentType)
-                            {
-                                yield return type;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (type.IsSubclassOf(parentType))
-                        {
-                            yield return type;
-                        }
+                        yield return type;
                     }
                 }
             }

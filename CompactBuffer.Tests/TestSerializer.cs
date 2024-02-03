@@ -47,8 +47,8 @@ public class TestSerializer
             list10 = new List<int>(Enumerable.Repeat(66, 10)),
         };
         var dst = default(AAA);
-        CompactBuffer.GetSerializer<AAA>().Write(m_Writer, in src);
-        CompactBuffer.GetSerializer<AAA>().Read(m_Reader, ref dst);
+        Serializers.Get<AAA>().Write(m_Writer, in src);
+        Serializers.Get<AAA>().Read(m_Reader, ref dst);
         Assert.Equal(m_Reader.Position, m_Writer.Position);
 
         var srcJson = JsonSerializer.Serialize(src, m_JsonOptions);

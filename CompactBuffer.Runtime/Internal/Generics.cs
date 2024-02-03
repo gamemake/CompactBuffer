@@ -6,7 +6,7 @@ namespace CompactBuffer.Internal
 {
     public class ArraySerializer<TElement> : ICompactBufferSerializer<TElement[]>
     {
-        private static ICompactBufferSerializer<TElement> m_ElementSerializer = CompactBuffer.GetSerializer<TElement>();
+        private static ICompactBufferSerializer<TElement> m_ElementSerializer = Serializers.Get<TElement>();
 
         public static void Read(BufferReader reader, ref TElement[] target)
         {
@@ -78,7 +78,7 @@ namespace CompactBuffer.Internal
 
     public class ListSerializer<TElement> : ICompactBufferSerializer<List<TElement>>
     {
-        private static ICompactBufferSerializer<TElement> m_ElementSerializer = CompactBuffer.GetSerializer<TElement>();
+        private static ICompactBufferSerializer<TElement> m_ElementSerializer = Serializers.Get<TElement>();
         private static bool m_IsValueType = typeof(TElement).IsValueType;
 
         public static void Read(BufferReader reader, ref List<TElement> target)
@@ -167,7 +167,7 @@ namespace CompactBuffer.Internal
 
     public class HashSetSerializer<TElement> : ICompactBufferSerializer<HashSet<TElement>>
     {
-        private static ICompactBufferSerializer<TElement> m_ElementSerializer = CompactBuffer.GetSerializer<TElement>();
+        private static ICompactBufferSerializer<TElement> m_ElementSerializer = Serializers.Get<TElement>();
 
         public static void Read(BufferReader reader, ref HashSet<TElement> target)
         {
@@ -254,8 +254,8 @@ namespace CompactBuffer.Internal
 
     public class DictionarySerializer<TKey, TValue> : ICompactBufferSerializer<Dictionary<TKey, TValue>>
     {
-        private static ICompactBufferSerializer<TKey> m_KeySerializer = CompactBuffer.GetSerializer<TKey>();
-        private static ICompactBufferSerializer<TValue> m_ValueSerializer = CompactBuffer.GetSerializer<TValue>();
+        private static ICompactBufferSerializer<TKey> m_KeySerializer = Serializers.Get<TKey>();
+        private static ICompactBufferSerializer<TValue> m_ValueSerializer = Serializers.Get<TValue>();
 
         public static void Read(BufferReader reader, ref Dictionary<TKey, TValue> target)
         {
@@ -349,7 +349,7 @@ namespace CompactBuffer.Internal
 
     public class SpanSerializer<TElement> : ICompactBufferSerializer
     {
-        private static ICompactBufferSerializer<TElement> m_ElementSerializer = CompactBuffer.GetSerializer<TElement>();
+        private static ICompactBufferSerializer<TElement> m_ElementSerializer = Serializers.Get<TElement>();
 
         public static void Read(BufferReader reader, ref Span<TElement> target)
         {
@@ -388,7 +388,7 @@ namespace CompactBuffer.Internal
 
     public class ReadOnlySpanSerializer<TElement> : ICompactBufferSerializer
     {
-        private static ICompactBufferSerializer<TElement> m_ElementSerializer = CompactBuffer.GetSerializer<TElement>();
+        private static ICompactBufferSerializer<TElement> m_ElementSerializer = Serializers.Get<TElement>();
 
         public static void Read(BufferReader reader, ref ReadOnlySpan<TElement> target)
         {
