@@ -1,8 +1,8 @@
 
 using System;
 using System.IO;
-using System.Buffers.Binary;
 using System.Text;
+using System.Buffers.Binary;
 
 namespace CompactBuffer
 {

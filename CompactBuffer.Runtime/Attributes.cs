@@ -3,7 +3,7 @@ using System;
 
 namespace CompactBuffer
 {
-    public class VariantIntAttribute : Attribute
+    public class VariantAttribute : Attribute
     {
     }
 

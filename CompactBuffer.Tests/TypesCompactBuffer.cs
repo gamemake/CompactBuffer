@@ -1,7 +1,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using CompactBuffer;
 
 namespace Tests
@@ -34,11 +33,11 @@ namespace Tests
         public List<int> list0 = null;
         public List<int> list1 = null;
         public List<int> list10 = null;
-        [VariantInt]
+        [Variant]
         public int variantInt = 0;
-        [VariantInt]
+        [Variant]
         public long variantLong = 10;
-        [VariantInt]
+        [Variant]
         public uint variantUInt = 999;
         [Float16(10)]
         public float floatTwoByte = 0f;

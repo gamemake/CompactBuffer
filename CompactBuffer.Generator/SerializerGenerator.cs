@@ -18,17 +18,16 @@ namespace CompactBuffer
 
         public bool AddAdditionType(Type type)
         {
-            if (type.IsByRef) type = type.GetElementType();
+            if (type.IsByRef && type.GetElementType() != null) type = type.GetElementType();
+            
+            if (!m_Assemblies.Contains(type.Assembly)) return true;
             if (m_CustomSerializerTypes.ContainsKey(type)) return true;
-            if (IsBaseType(type)) return true;
+            if (type.GetCustomAttribute<CompactBufferGenCodeAttribute>() != null) return true;
+            if (type.IsArray) return AddAdditionType(type.GetElementType());
+            if (type.IsEnum) return true;
+            if (m_AdditionTypes.Contains(type)) return true;
             if (type.IsInterface) return false;
             if (type.IsAbstract) return false;
-            if (type.IsEnum) return true;
-            var customSerializer = type.GetCustomAttribute<CompactBufferGenCodeAttribute>();
-            if (customSerializer != null) return true;
-            if (!m_Assemblies.Contains(type.Assembly)) return true;
-            if (m_AdditionTypes.Contains(type)) return true;
-            if (type.IsArray) return AddAdditionType(type.GetElementType());
             if (type.IsGenericType)
             {
                 if (!m_SupportGenericTypes.Contains(type.GetGenericTypeDefinition())) return false;
@@ -38,7 +37,6 @@ namespace CompactBuffer
                 }
                 return true;
             }
-
             m_AdditionTypes.Add(type);
             return true;
         }
@@ -182,7 +180,7 @@ namespace CompactBuffer
             {
                 float16 = type.GetCustomAttribute<Float16Attribute>();
             }
-            var variantInt = field.GetCustomAttribute<VariantIntAttribute>();
+            var variant = field.GetCustomAttribute<VariantAttribute>();
             var originType = field.FieldType;
 
             if (customSerializer != null)
@@ -197,7 +195,7 @@ namespace CompactBuffer
             {
                 builder.AppendLine($"            target.{field.Name} = reader.ReadFloat16({float16.IntegerMax});");
             }
-            else if (IsVariantable(originType) && variantInt != null)
+            else if (IsVariantable(originType) && variant != null)
             {
                 builder.AppendLine($"            target.{field.Name} = reader.ReadVariant{originType.Name}();");
             }
@@ -219,7 +217,7 @@ namespace CompactBuffer
             {
                 float16 = type.GetCustomAttribute<Float16Attribute>();
             }
-            var variantInt = field.GetCustomAttribute<VariantIntAttribute>();
+            var variant = field.GetCustomAttribute<VariantAttribute>();
             var originType = field.FieldType;
 
             if (customSerializer != null)
@@ -234,7 +232,7 @@ namespace CompactBuffer
             {
                 builder.AppendLine($"            writer.WriteFloat16(target.{field.Name}, {float16.IntegerMax});");
             }
-            else if (IsVariantable(originType) && variantInt != null)
+            else if (IsVariantable(originType) && variant != null)
             {
                 builder.AppendLine($"            writer.WriteVariant{originType.Name}(target.{field.Name});");
             }

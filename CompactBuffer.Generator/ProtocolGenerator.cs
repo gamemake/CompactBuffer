@@ -152,7 +152,7 @@ namespace CompactBuffer
             {
                 float16 = type.GetCustomAttribute<Float16Attribute>();
             }
-            var variantInt = param.GetCustomAttribute<VariantIntAttribute>();
+            var variant = param.GetCustomAttribute<VariantAttribute>();
             var originType = param.ParameterType;
 
             if (customSerializer != null)
@@ -167,7 +167,7 @@ namespace CompactBuffer
             {
                 builder.AppendLine($"            writer.WriteFloat16(___{param.Name}, {float16.IntegerMax});");
             }
-            else if (IsVariantable(originType) && variantInt != null)
+            else if (IsVariantable(originType) && variant != null)
             {
                 builder.AppendLine($"            writer.WriteVariant{originType.Name}(___{param.Name});");
             }
@@ -268,7 +268,7 @@ namespace CompactBuffer
             {
                 float16 = type.GetCustomAttribute<Float16Attribute>();
             }
-            var variantInt = param.GetCustomAttribute<VariantIntAttribute>();
+            var variant = param.GetCustomAttribute<VariantAttribute>();
             var originType = param.ParameterType;
             if (originType.IsByRef) originType = originType.GetElementType();
 
@@ -285,7 +285,7 @@ namespace CompactBuffer
             {
                 builder.AppendLine($"                var ___{param.Name} = reader.ReadFloat16({float16.IntegerMax});");
             }
-            else if (IsVariantable(originType) && variantInt != null)
+            else if (IsVariantable(originType) && variant != null)
             {
                 builder.AppendLine($"                var ___{param.Name} = reader.ReadVariant{originType.Name}();");
             }

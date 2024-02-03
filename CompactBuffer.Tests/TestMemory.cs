@@ -1,12 +1,12 @@
 
-
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace CompactBuffer.Tests;
 
-public struct Position{
+public struct Position
+{
     public float x;
     public float y;
     public float z;
@@ -21,7 +21,7 @@ public class TestMemory
         var memorySize = Marshal.SizeOf<Position>() * count;
         var ptr = Marshal.AllocHGlobal(memorySize);
         var span = new Span<Position>((void*)ptr, count);
-        for(var i=0; i<span.Length;i++)
+        for (var i = 0; i < span.Length; i++)
         {
             /*
             span[i].x = 100;
