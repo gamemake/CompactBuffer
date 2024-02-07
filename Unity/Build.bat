@@ -3,8 +3,7 @@ del /s /f ..\Build
 del /s /f Publish
 del /s /f Output
 
-set UNITY_BUILD=1
-dotnet publish ..\CompactBuffer.Editor\CompactBuffer.Editor.csproj -o Publish
+dotnet publish ..\CompactBuffer.Editor\CompactBuffer.Editor.csproj -p:UNITY_BUILD=true -o Publish
 IF %ERRORLEVEL% NEQ 0 goto ERROR
 
 md Output
