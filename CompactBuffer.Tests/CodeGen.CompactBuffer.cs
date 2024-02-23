@@ -2,7 +2,7 @@
 
 namespace CompactBufferAutoGen
 {
-    [CompactBuffer.CompactBuffer(typeof(Tests.Vector3), true)]
+    [CompactBuffer.AutoGen(typeof(Tests.Vector3))]
     public class Tests_Vector3_Serializer : CompactBuffer.ICompactBufferSerializer<Tests.Vector3>
     {
         public static void Read(CompactBuffer.BufferReader reader, ref Tests.Vector3 target)
@@ -42,7 +42,7 @@ namespace CompactBufferAutoGen
         }
     }
 
-    [CompactBuffer.CompactBuffer(typeof(Tests.AAA), true)]
+    [CompactBuffer.AutoGen(typeof(Tests.AAA))]
     public class Tests_AAA_Serializer : CompactBuffer.ICompactBufferSerializer<Tests.AAA>
     {
         public static void Read(CompactBuffer.BufferReader reader, ref Tests.AAA target)
@@ -160,7 +160,7 @@ namespace CompactBufferAutoGen
         }
     }
 
-    [CompactBuffer.CompactBuffer(typeof(Tests.BBB), true)]
+    [CompactBuffer.AutoGen(typeof(Tests.BBB))]
     public class Tests_BBB_Serializer : CompactBuffer.ICompactBufferSerializer<Tests.BBB>
     {
         public static void Read(CompactBuffer.BufferReader reader, ref Tests.BBB target)
@@ -206,7 +206,7 @@ namespace CompactBufferAutoGen
         }
     }
 
-    [CompactBuffer.CompactBuffer(typeof(Tests.CCC), true)]
+    [CompactBuffer.AutoGen(typeof(Tests.CCC))]
     public class Tests_CCC_Serializer : CompactBuffer.ICompactBufferSerializer<Tests.CCC>
     {
         public static void Read(CompactBuffer.BufferReader reader, ref Tests.CCC target)
@@ -243,7 +243,7 @@ namespace CompactBufferAutoGen
         }
     }
 
-    [CompactBuffer.CompactBuffer(typeof(Tests.TypeClass), true)]
+    [CompactBuffer.AutoGen(typeof(Tests.TypeClass))]
     public class Tests_TypeClass_Serializer : CompactBuffer.ICompactBufferSerializer<Tests.TypeClass>
     {
         public static void Read(CompactBuffer.BufferReader reader, ref Tests.TypeClass target)
@@ -298,7 +298,7 @@ namespace CompactBufferAutoGen
         }
     }
 
-    [CompactBuffer.CompactBuffer(typeof(Tests.TypeStruct), true)]
+    [CompactBuffer.AutoGen(typeof(Tests.TypeStruct))]
     public class Tests_TypeStruct_Serializer : CompactBuffer.ICompactBufferSerializer<Tests.TypeStruct>
     {
         public static void Read(CompactBuffer.BufferReader reader, ref Tests.TypeStruct target)

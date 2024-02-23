@@ -35,7 +35,7 @@ cd Unity
 
 ## Serializers
 ```cs
-[CompactBufferGenCode]
+[CompactBuffer.GenCode]
 public class LiveData
 {
     public Guid guid;
@@ -54,6 +54,8 @@ serializer.Read(reader, ref liveData);
 
 ## Protocols
 
+Define Protocol
+
 ```cs
 [ProtocolId(0)]
 public interface ISyncUserData : IProtocol
@@ -62,7 +64,7 @@ public interface ISyncUserData : IProtocol
 }
 ```
 
-Protocol Proxy
+Proxy Example
 
 ```cs
 
@@ -84,7 +86,7 @@ var proxy = Protocol.GetProxy<ISyncUserData>(sender)
 proxy.Sync("type", "data");
 ```
 
-Protocol Stub
+Stub Example
 
 ```cs
 public class SyncUserDataImpl : ISyncUserData
@@ -102,17 +104,17 @@ stub.Dispach(bufferReader);
 
 # Attributes for Serialize
 
-* CustomSerializer
+* Overwrite
 * Float16
 * 7BitEncoded
 * Channel
 
-## CustomSerializer
+## Overwrite
 
 ```cs
 public struct Location
 {
-    [CustomSerializer(typeof(Vector3Serializer))]
+    [CompactBuffer.Overwrite(typeof(Vector3Serializer))]
     public System.Numerics.Vector3 Position;
 }
 ```
@@ -123,7 +125,7 @@ public struct Location
     public System.Numerics.Vector3 Position;
 }
 
-[CompactBuffer.CompactBuffer(typeof(System.Numerics.Vector3))]
+[CompactBuffer.Overwrite(typeof(System.Numerics.Vector3))]
 public class Vector3Serializer : CompactBuffer.ICompactBufferSerializer
 {
     public static void Read(CompactBuffer.BufferReader reader, ref System.Numerics.Vector3 target)

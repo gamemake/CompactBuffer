@@ -22,7 +22,7 @@ namespace CompactBuffer
             
             if (!m_Assemblies.Contains(type.Assembly)) return true;
             if (m_CustomSerializerTypes.ContainsKey(type)) return true;
-            if (type.GetCustomAttribute<CompactBufferGenCodeAttribute>() != null) return true;
+            if (type.GetCustomAttribute<GenCodeAttribute>() != null) return true;
             if (type.IsArray) return AddAdditionType(type.GetElementType());
             if (type.IsEnum) return true;
             if (m_AdditionTypes.Contains(type)) return true;
@@ -81,7 +81,7 @@ namespace CompactBuffer
                 if (type.IsEnum) continue;
 
                 if (m_CustomSerializerTypes.ContainsKey(type)) continue;
-                var customSerializer = type.GetCustomAttribute<CompactBufferGenCodeAttribute>();
+                var customSerializer = type.GetCustomAttribute<GenCodeAttribute>();
                 if (customSerializer == null) continue;
 
                 GenCode(builder, type);
@@ -107,7 +107,7 @@ namespace CompactBuffer
                 fields.Add(field);
             }
 
-            builder.AppendLine($"    [CompactBuffer.CompactBuffer(typeof({type.FullName}), true)]");
+            builder.AppendLine($"    [CompactBuffer.AutoGen(typeof({type.FullName}))]");
             builder.AppendLine($"    public class {type.FullName.Replace(".", "_")}_Serializer : CompactBuffer.ICompactBufferSerializer<{type.FullName}>");
             builder.AppendLine($"    {{");
             builder.AppendLine($"        public static void Read(CompactBuffer.BufferReader reader, ref {type.FullName} target)");
@@ -174,7 +174,7 @@ namespace CompactBuffer
 
         private void GenReadField(StringBuilder builder, Type type, FieldInfo field)
         {
-            var customSerializer = field.GetCustomAttribute<CustomSerializerAttribute>();
+            var customSerializer = field.GetCustomAttribute<OverwriteAttribute>();
             var float16 = field.GetCustomAttribute<Float16Attribute>();
             if (float16 == null)
             {
@@ -211,7 +211,7 @@ namespace CompactBuffer
 
         private void GenWriteField(StringBuilder builder, Type type, FieldInfo field)
         {
-            var customSerializer = field.GetCustomAttribute<CustomSerializerAttribute>();
+            var customSerializer = field.GetCustomAttribute<OverwriteAttribute>();
             var float16 = field.GetCustomAttribute<Float16Attribute>();
             if (float16 == null)
             {

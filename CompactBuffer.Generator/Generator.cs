@@ -73,7 +73,7 @@ namespace CompactBuffer
             foreach (var type in assembly.GetTypes())
             {
                 if (!typeof(ICompactBufferSerializer).IsAssignableFrom(type)) continue;
-                var attribute = type.GetCustomAttribute<CompactBufferAttribute>();
+                var attribute = type.GetCustomAttribute<OverwriteAttribute>();
                 if (attribute == null) continue;
                 if (attribute.IsAutoGen) continue;
                 m_CustomSerializerTypes.Add(attribute.SerializerType, type);

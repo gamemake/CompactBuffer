@@ -75,7 +75,7 @@ namespace CompactBuffer
                 {
                     if (!m_Assemblies.Contains(p.ParameterType.Assembly)) continue;
 
-                    var customSerializer = p.GetCustomAttribute<CustomSerializerAttribute>();
+                    var customSerializer = p.GetCustomAttribute<OverwriteAttribute>();
                     if (customSerializer != null) continue;
 
 
@@ -161,7 +161,7 @@ namespace CompactBuffer
 
         private void GenProxyParameter(StringBuilder builder, Type type, MethodInfo method, ParameterInfo param)
         {
-            var customSerializer = param.GetCustomAttribute<CustomSerializerAttribute>();
+            var customSerializer = param.GetCustomAttribute<OverwriteAttribute>();
             var float16 = param.GetCustomAttribute<Float16Attribute>();
             if (float16 == null)
             {
@@ -277,7 +277,7 @@ namespace CompactBuffer
 
         private void GenStubParameter(StringBuilder builder, Type type, MethodInfo method, ParameterInfo param)
         {
-            var customSerializer = param.GetCustomAttribute<CustomSerializerAttribute>();
+            var customSerializer = param.GetCustomAttribute<OverwriteAttribute>();
             var float16 = param.GetCustomAttribute<Float16Attribute>();
             if (float16 == null)
             {

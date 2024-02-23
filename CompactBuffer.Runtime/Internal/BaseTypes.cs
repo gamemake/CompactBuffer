@@ -3,7 +3,7 @@ using System;
 
 namespace CompactBuffer.Internal
 {
-    [CompactBuffer(typeof(sbyte))]
+    [Overwrite(typeof(sbyte))]
     public class SByteSerializer : ICompactBufferSerializer<sbyte>
     {
         public static void Read(BufferReader reader, ref sbyte target)
@@ -37,7 +37,7 @@ namespace CompactBuffer.Internal
         }
     }
 
-    [CompactBuffer(typeof(short))]
+    [Overwrite(typeof(short))]
     public class ShortSerializer : ICompactBufferSerializer<short>
     {
         public static void Read(BufferReader reader, ref short target)
@@ -71,7 +71,7 @@ namespace CompactBuffer.Internal
         }
     }
 
-    [CompactBuffer(typeof(int))]
+    [Overwrite(typeof(int))]
     public class IntSerializer : ICompactBufferSerializer<int>
     {
         public static void Read(BufferReader reader, ref int target)
@@ -105,7 +105,7 @@ namespace CompactBuffer.Internal
         }
     }
 
-    [CompactBuffer(typeof(long))]
+    [Overwrite(typeof(long))]
     public class LongSerializer : ICompactBufferSerializer<long>
     {
         public static void Read(BufferReader reader, ref long target)
@@ -139,7 +139,7 @@ namespace CompactBuffer.Internal
         }
     }
 
-    [CompactBuffer(typeof(byte))]
+    [Overwrite(typeof(byte))]
     public class ByteSerializer : ICompactBufferSerializer<byte>
     {
         public static void Read(BufferReader reader, ref byte target)
@@ -173,7 +173,7 @@ namespace CompactBuffer.Internal
         }
     }
 
-    [CompactBuffer(typeof(ushort))]
+    [Overwrite(typeof(ushort))]
     public class UShortSerializer : ICompactBufferSerializer<ushort>
     {
         public static void Read(BufferReader reader, ref ushort target)
@@ -207,7 +207,7 @@ namespace CompactBuffer.Internal
         }
     }
 
-    [CompactBuffer(typeof(uint))]
+    [Overwrite(typeof(uint))]
     public class UIntSerializer : ICompactBufferSerializer<uint>
     {
         public static void Read(BufferReader reader, ref uint target)
@@ -241,7 +241,7 @@ namespace CompactBuffer.Internal
         }
     }
 
-    [CompactBuffer(typeof(ulong))]
+    [Overwrite(typeof(ulong))]
     public class ULongSerializer : ICompactBufferSerializer<ulong>
     {
         public static void Read(BufferReader reader, ref ulong target)
@@ -275,7 +275,7 @@ namespace CompactBuffer.Internal
         }
     }
 
-    [CompactBuffer(typeof(float))]
+    [Overwrite(typeof(float))]
     public class FloatSerializer : ICompactBufferSerializer<float>
     {
         public static void Read(BufferReader reader, ref float target)
@@ -310,7 +310,7 @@ namespace CompactBuffer.Internal
         }
     }
 
-    [CompactBuffer(typeof(double))]
+    [Overwrite(typeof(double))]
     public class DoubleSerializer : ICompactBufferSerializer<double>
     {
         public static void Read(BufferReader reader, ref double target)
@@ -344,7 +344,7 @@ namespace CompactBuffer.Internal
         }
     }
 
-    [CompactBuffer(typeof(bool))]
+    [Overwrite(typeof(bool))]
     public class BoolSerializer : ICompactBufferSerializer<bool>
     {
         public static void Read(BufferReader reader, ref bool target)
@@ -378,7 +378,7 @@ namespace CompactBuffer.Internal
         }
     }
 
-    [CompactBuffer(typeof(string))]
+    [Overwrite(typeof(string))]
     public class StringSerializer : ICompactBufferSerializer<string>
     {
         public static void Read(BufferReader reader, ref string target)
@@ -412,7 +412,7 @@ namespace CompactBuffer.Internal
         }
     }
 
-    [CompactBuffer(typeof(Guid))]
+    [Overwrite(typeof(Guid))]
     public class GuidSerializer : ICompactBufferSerializer<Guid>
     {
         public static void Read(BufferReader reader, ref Guid target)
@@ -446,7 +446,7 @@ namespace CompactBuffer.Internal
         }
     }
 
-    [CompactBuffer(typeof(ReadOnlySpan<byte>))]
+    [Overwrite(typeof(ReadOnlySpan<byte>))]
     public class ReadOnlySpanByteSerializer : ICompactBufferSerializer
     {
         public static void Read(BufferReader reader, ref ReadOnlySpan<byte> target)

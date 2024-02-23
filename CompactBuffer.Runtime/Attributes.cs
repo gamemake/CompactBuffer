@@ -19,13 +19,19 @@ namespace CompactBuffer
         }
     }
 
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
-    public class CompactBufferAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.Class)]
+    public class OverwriteAttribute : Attribute
     {
         public readonly Type SerializerType;
         public readonly bool IsAutoGen;
 
-        public CompactBufferAttribute(Type serializerType, bool isAutoGen = false)
+        public OverwriteAttribute(Type serializerType)
+        {
+            SerializerType = serializerType;
+            IsAutoGen = false;
+        }
+
+        protected OverwriteAttribute(Type serializerType, bool isAutoGen)
         {
             SerializerType = serializerType;
             IsAutoGen = isAutoGen;
@@ -33,18 +39,15 @@ namespace CompactBuffer
     }
 
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
-    public class CompactBufferGenCodeAttribute : Attribute
+    public class GenCodeAttribute : Attribute
     {
     }
 
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Parameter)]
-    public class CustomSerializerAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
+    public class AutoGenAttribute : OverwriteAttribute
     {
-        public readonly Type SerializerType;
-
-        public CustomSerializerAttribute(Type serializerType)
+        public AutoGenAttribute(Type serializerType) : base(serializerType, true)
         {
-            SerializerType = serializerType;
         }
     }
 

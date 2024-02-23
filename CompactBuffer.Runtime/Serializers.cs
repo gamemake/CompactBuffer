@@ -16,7 +16,7 @@ namespace CompactBuffer
                 if (type.IsInterface) continue;
                 if (type.IsAbstract) continue;
 
-                var compactBuffer = type.GetCustomAttribute<CompactBufferAttribute>();
+                var compactBuffer = type.GetCustomAttribute<OverwriteAttribute>();
                 if (compactBuffer != null)
                 {
                     var serializer = (ICompactBufferSerializer)Activator.CreateInstance(type);

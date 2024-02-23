@@ -11,7 +11,7 @@ namespace Tests
         Long,
     }
 
-    [CompactBufferGenCode]
+    [GenCode]
     public struct Vector3
     {
         public float X;
@@ -19,7 +19,7 @@ namespace Tests
         public float Z;
     }
 
-    [CompactBufferGenCode]
+    [GenCode]
     public class AAA
     {
         public sbyte _sbyte;
@@ -53,18 +53,18 @@ namespace Tests
         public EnumTypes enum0;
     }
 
-    [CompactBufferGenCode]
+    [GenCode]
     public class BBB
     {
         public int i = 0;
     }
 
-    [CompactBufferGenCode]
+    [GenCode]
     public struct CCC
     {
         public int i;
 
-        [CustomSerializer(typeof(CustomFloatSerializer))]
+        [Overwrite(typeof(CustomFloatSerializer))]
         public float customFloat;
     }
 
