@@ -108,6 +108,13 @@ namespace CompactBuffer
                 builder.AppendLine($"#if PROTOCOL_CLIENT");
             }
 
+            byte defaultChannel = byte.MaxValue;
+            var interfaceChannel = type.GetCustomAttribute<ChannelAttribute>();
+            if (interfaceChannel != null)
+            {
+                defaultChannel = interfaceChannel.Channel;
+            }
+
             builder.AppendLine($"namespace ProtocolAutoGen");
             builder.AppendLine($"{{");
             builder.AppendLine($"    [CompactBuffer.Protocol(typeof({type.FullName}))]");
@@ -119,7 +126,15 @@ namespace CompactBuffer
             for (var i = 0; i < methods.Count; i++)
             {
                 builder.AppendLine($"");
+
                 var method = methods[i];
+                var channel = defaultChannel;
+                var methodChannel = method.GetCustomAttribute<ChannelAttribute>();
+                if(methodChannel!=null)
+                {
+                    channel = methodChannel.Channel;
+                }
+
                 var paramsText = string.Join(", ", Array.ConvertAll(method.GetParameters(), (x) =>
                 {
                     return $"{GetDeclarePrefix(x)}{GetTypeName(x.ParameterType)} ___{x.Name}";
@@ -132,7 +147,7 @@ namespace CompactBuffer
                 {
                     GenProxyParameter(builder, type, method, param);
                 }
-                builder.AppendLine($"            m_Sender.Send(writer);");
+                builder.AppendLine($"            m_Sender.Send(writer, {channel});");
                 builder.AppendLine($"        }}");
             }
             builder.AppendLine($"    }}");

@@ -83,4 +83,15 @@ namespace CompactBuffer
             ProtocolType = protocolType;
         }
     }
+
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Interface)]
+    public class ChannelAttribute : Attribute
+    {
+        public readonly byte Channel;
+
+        public ChannelAttribute(byte channel)
+        {
+            Channel = channel;
+        }
+    }
 }

@@ -26,7 +26,7 @@ public class TestProtocol : IProtocolSender, IServerApi
         return new BufferWriter(m_Bytes);
     }
 
-    void IProtocolSender.Send(BufferWriter writer)
+    void IProtocolSender.Send(BufferWriter writer, byte channel)
     {
         m_Length = writer.Length;
     }

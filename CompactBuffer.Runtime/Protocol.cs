@@ -8,7 +8,7 @@ namespace CompactBuffer
     public interface IProtocolSender
     {
         BufferWriter GetStreamWriter(int protocolId);
-        void Send(BufferWriter writer);
+        void Send(BufferWriter writer, byte channel);
     }
 
     public interface IProtocolStub
