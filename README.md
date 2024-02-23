@@ -74,7 +74,7 @@ public class ProtocolSender : IProtocolSender
         return BufferWrite(bytes);
     }
     
-    public void Send(BufferWriter writer)
+    public void Send(BufferWriter writer, byte channel)
     {
         // Send writer.GetWriteBytes()
     }
@@ -100,7 +100,13 @@ var stub = Protocol.GetStub<ISyncUserData>(target);
 stub.Dispach(bufferReader);
 ```
 
-# Float16
+# Attributes for Serialize
+
+* Float16
+* Variant
+* Channel
+
+## Float16
 
 ```cs
 [Float16(1000)]
@@ -119,11 +125,10 @@ public struct Movement
     float NormalZ;
 }
 
+[ProtocolId(0)]
 public interface ISyncPosition : IProtocol
 {
-    [Float16(1000)]
-    void Sync1(float x, float y, float z);
-    void Sync2(
+    void Sync(
         [Float16(1)] float normalX,
         [Float16(1)] float normalY,
         [Float16(1)] float normalZ,
@@ -131,7 +136,49 @@ public interface ISyncPosition : IProtocol
 }
 ```
 
-The original Vector3 takes up 12 bytes, but after adding float16attribute, it only takes up 6 bytes.
+The original float takes up 4 bytes, but after adding float16attribute, it only takes up 2 bytes.
+
+## Variant
+
+```cs
+public struct Data
+{
+    [Variant]
+    public int Count;
+}
+
+[ProtocolId(0)]
+public interface ISyncPosition : IProtocol
+{
+    void Sync(
+        [Variant] int Count
+    );
+}
+```
+
+## Channel
+
+```cs
+public enum ChannelType : byte
+{
+    OrderAndReliable,
+    OrderAndUnreliable,
+    DisorderAndUnreliable,
+}
+
+[ProtocolId(0)]
+public interface ISyncPosition : IProtocol
+{
+    [Channel(ChannelType.OrderAndReliable)]
+    void Sync(Vector3 position);
+
+    [Channel(ChannelType.OrderAndUnreliable)]
+    void LastPosition(Vector3 position)
+
+    [Channel(ChannelType.DisorderAndUnreliable)]
+    void Chat(string message);
+}
+```
 
 # Generate code
 

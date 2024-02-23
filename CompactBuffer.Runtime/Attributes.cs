@@ -3,10 +3,12 @@ using System;
 
 namespace CompactBuffer
 {
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Parameter)]
     public class VariantAttribute : Attribute
     {
     }
 
+    [AttributeUsage(AttributeTargets.Struct | AttributeTargets.Field | AttributeTargets.Parameter)]
     public class Float16Attribute : Attribute
     {
         public readonly int IntegerMax;
@@ -44,11 +46,6 @@ namespace CompactBuffer
         {
             SerializerType = serializerType;
         }
-    }
-
-    [AttributeUsage(AttributeTargets.Parameter)]
-    public class DontReturnAttribute : Attribute
-    {
     }
 
     public enum ProtocolType
