@@ -102,9 +102,52 @@ stub.Dispach(bufferReader);
 
 # Attributes for Serialize
 
+* CustomSerializer
 * Float16
 * 7BitEncoded
 * Channel
+
+## CustomSerializer
+
+```cs
+public struct Location
+{
+    [CustomSerializer(typeof(Vector3Serializer))]
+    public System.Numerics.Vector3 Position;
+}
+```
+
+```cs
+public struct Location
+{
+    public System.Numerics.Vector3 Position;
+}
+
+[CompactBuffer.CompactBuffer(typeof(System.Numerics.Vector3))]
+public class Vector3Serializer : CompactBuffer.ICompactBufferSerializer
+{
+    public static void Read(CompactBuffer.BufferReader reader, ref System.Numerics.Vector3 target)
+    {
+        target.X = reader.ReadSingle();
+        target.Y = reader.ReadSingle();
+        target.Z = reader.ReadSingle();
+    }
+
+    public static void Write(CompactBuffer.BufferWriter writer, in System.Numerics.Vector3 target)
+    {
+        writer.Write(target.X);
+        writer.Write(target.Y);
+        writer.Write(target.Z);
+    }
+
+    public static void Copy(in System.Numerics.Vector3 src, ref System.Numerics.Vector3 dst)
+    {
+        dst.X = src.X;
+        dst.Y = src.Y;
+        dst.Z = src.Z;
+    }
+}
+```
 
 ## Float16
 

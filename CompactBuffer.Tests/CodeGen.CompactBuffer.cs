@@ -2,6 +2,46 @@
 
 namespace CompactBufferAutoGen
 {
+    [CompactBuffer.CompactBuffer(typeof(Tests.Vector3), true)]
+    public class Tests_Vector3_Serializer : CompactBuffer.ICompactBufferSerializer<Tests.Vector3>
+    {
+        public static void Read(CompactBuffer.BufferReader reader, ref Tests.Vector3 target)
+        {
+            target.X = reader.ReadSingle();
+            target.Y = reader.ReadSingle();
+            target.Z = reader.ReadSingle();
+        }
+
+        public static void Write(CompactBuffer.BufferWriter writer, in Tests.Vector3 target)
+        {
+            writer.Write(target.X);
+            writer.Write(target.Y);
+            writer.Write(target.Z);
+        }
+
+        public static void Copy(in Tests.Vector3 src, ref Tests.Vector3 dst)
+        {
+            dst.X = src.X;
+            dst.Y = src.Y;
+            dst.Z = src.Z;
+        }
+
+        void CompactBuffer.ICompactBufferSerializer<Tests.Vector3>.Read(CompactBuffer.BufferReader reader, ref Tests.Vector3 target)
+        {
+            Read(reader, ref target);
+        }
+
+        void CompactBuffer.ICompactBufferSerializer<Tests.Vector3>.Write(CompactBuffer.BufferWriter writer, in Tests.Vector3 target)
+        {
+            Write(writer, in target);
+        }
+
+        void CompactBuffer.ICompactBufferSerializer<Tests.Vector3>.Copy(in Tests.Vector3 src, ref Tests.Vector3 dst)
+        {
+            Copy(in src, ref dst);
+        }
+    }
+
     [CompactBuffer.CompactBuffer(typeof(Tests.AAA), true)]
     public class Tests_AAA_Serializer : CompactBuffer.ICompactBufferSerializer<Tests.AAA>
     {
