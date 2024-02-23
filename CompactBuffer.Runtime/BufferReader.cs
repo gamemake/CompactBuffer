@@ -94,7 +94,7 @@ namespace CompactBuffer
 
         public string ReadString()
         {
-            var stringLength = ReadVariantInt32();
+            var stringLength = Read7BitEncodedInt32();
             if (stringLength < 0)
                 throw new IOException($"BinaryReader encountered an invalid string length of {stringLength} characters.");
 
@@ -103,7 +103,7 @@ namespace CompactBuffer
 
         private static readonly string Format_Bad7BitInt = "Too many bytes in what should have been a 7-bit encoded integer.";
 
-        public int ReadVariantInt32()
+        public int Read7BitEncodedInt32()
         {
             // Unlike writing, we can't delegate to the 64-bit read on
             // 64-bit platforms. The reason for this is that we want to
@@ -147,7 +147,7 @@ namespace CompactBuffer
             return (int)result;
         }
 
-        public long ReadVariantInt64()
+        public long Read7BitEncodedInt64()
         {
             ulong result = 0;
             byte byteReadJustNow;

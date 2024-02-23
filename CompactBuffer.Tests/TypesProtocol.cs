@@ -28,7 +28,7 @@ namespace Tests
         void CallInt(int a);
         void CallIntArray(int[] array);
         void CallString(string a);
-        void CallVariant([Variant] int v1, [Variant] long v2, [Variant] uint v3, int v4, int v5);
+        void Call7BitEncoded([SevenBitEncodedInt] int v1, [SevenBitEncodedInt] long v2, [SevenBitEncodedInt] uint v3, int v4, int v5);
         void CallGuid(Guid _guid);
         void CallEnum(EnumTypes _enum);
         void CallFloat16([Float16(1)] float v);

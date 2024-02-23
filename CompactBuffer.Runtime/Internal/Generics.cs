@@ -10,7 +10,7 @@ namespace CompactBuffer.Internal
 
         public static void Read(BufferReader reader, ref TElement[] target)
         {
-            var length = reader.ReadVariantInt32();
+            var length = reader.Read7BitEncodedInt32();
             if (length <= 0)
             {
                 target = null;
@@ -33,11 +33,11 @@ namespace CompactBuffer.Internal
         {
             if (target == null)
             {
-                writer.WriteVariantInt32(0);
+                writer.Write7BitEncodedInt32(0);
                 return;
             }
 
-            writer.WriteVariantInt32(target.Length + 1);
+            writer.Write7BitEncodedInt32(target.Length + 1);
             for (var i = 0; i < target.Length; i++)
             {
                 m_ElementSerializer.Write(writer, in target[i]);
@@ -83,7 +83,7 @@ namespace CompactBuffer.Internal
 
         public static void Read(BufferReader reader, ref List<TElement> target)
         {
-            var length = reader.ReadVariantInt32();
+            var length = reader.Read7BitEncodedInt32();
             if (length <= 0)
             {
                 target = null;
@@ -111,11 +111,11 @@ namespace CompactBuffer.Internal
         {
             if (target == null)
             {
-                writer.WriteVariantInt32(0);
+                writer.Write7BitEncodedInt32(0);
                 return;
             }
 
-            writer.WriteVariantInt32(target.Count + 1);
+            writer.Write7BitEncodedInt32(target.Count + 1);
             for (var i = 0; i < target.Count; i++)
             {
                 var element = target[i];
@@ -171,7 +171,7 @@ namespace CompactBuffer.Internal
 
         public static void Read(BufferReader reader, ref HashSet<TElement> target)
         {
-            var length = reader.ReadVariantInt32();
+            var length = reader.Read7BitEncodedInt32();
             if (length-- <= 0)
             {
                 target = null;
@@ -199,11 +199,11 @@ namespace CompactBuffer.Internal
         {
             if (target == null)
             {
-                writer.WriteVariantInt32(0);
+                writer.Write7BitEncodedInt32(0);
                 return;
             }
 
-            writer.WriteVariantInt32(target.Count + 1);
+            writer.Write7BitEncodedInt32(target.Count + 1);
             foreach (var element in target)
             {
                 var _element = element;
@@ -259,7 +259,7 @@ namespace CompactBuffer.Internal
 
         public static void Read(BufferReader reader, ref Dictionary<TKey, TValue> target)
         {
-            var length = reader.ReadVariantInt32();
+            var length = reader.Read7BitEncodedInt32();
             if (length-- <= 0)
             {
                 target = null;
@@ -289,10 +289,10 @@ namespace CompactBuffer.Internal
         {
             if (target == null)
             {
-                writer.WriteVariantInt32(0);
+                writer.Write7BitEncodedInt32(0);
             }
 
-            writer.WriteVariantInt32(target.Count + 1);
+            writer.Write7BitEncodedInt32(target.Count + 1);
             foreach (var item in target)
             {
                 var _key = item.Key;
@@ -353,7 +353,7 @@ namespace CompactBuffer.Internal
 
         public static void Read(BufferReader reader, ref Span<TElement> target)
         {
-            var length = reader.ReadVariantInt32();
+            var length = reader.Read7BitEncodedInt32();
             if (length < 0)
             {
                 throw new FormatException($"Span length ({length}) must be a non-negative");
@@ -373,7 +373,7 @@ namespace CompactBuffer.Internal
 
         public static void Write(BufferWriter writer, in Span<TElement> target)
         {
-            writer.WriteVariantInt32(target.Length);
+            writer.Write7BitEncodedInt32(target.Length);
             for (var i = 0; i < target.Length; i++)
             {
                 m_ElementSerializer.Write(writer, in target[i]);
@@ -399,7 +399,7 @@ namespace CompactBuffer.Internal
 
         public static void Write(BufferWriter writer, in ReadOnlySpan<TElement> target)
         {
-            writer.WriteVariantInt32(target.Length);
+            writer.Write7BitEncodedInt32(target.Length);
             for (var i = 0; i < target.Length; i++)
             {
                 m_ElementSerializer.Write(writer, in target[i]);

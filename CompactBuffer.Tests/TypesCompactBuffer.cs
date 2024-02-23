@@ -33,12 +33,12 @@ namespace Tests
         public List<int> list0 = null;
         public List<int> list1 = null;
         public List<int> list10 = null;
-        [Variant]
-        public int variantInt = 0;
-        [Variant]
-        public long variantLong = 10;
-        [Variant]
-        public uint variantUInt = 999;
+        [SevenBitEncodedInt]
+        public int _7BitEncodedInt = 0;
+        [SevenBitEncodedInt]
+        public long _7BitEncodedLong = 10;
+        [SevenBitEncodedInt]
+        public uint _7BitEncodedUInt = 999;
         [Float16(10)]
         public float floatTwoByte = 0f;
         public Guid guid;

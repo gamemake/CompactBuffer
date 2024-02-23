@@ -142,7 +142,7 @@ namespace CompactBuffer
                 builder.AppendLine($"        void {type.FullName}.{method.Name}({paramsText})");
                 builder.AppendLine($"        {{");
                 builder.AppendLine($"            var writer = m_Sender.GetStreamWriter({type.GetCustomAttribute<ProtocolIdAttribute>().ProtocolId});");
-                builder.AppendLine($"            writer.WriteVariantInt32({i});");
+                builder.AppendLine($"            writer.Write7BitEncodedInt32({i});");
                 foreach (var param in method.GetParameters())
                 {
                     GenProxyParameter(builder, type, method, param);
@@ -167,7 +167,7 @@ namespace CompactBuffer
             {
                 float16 = type.GetCustomAttribute<Float16Attribute>();
             }
-            var variant = param.GetCustomAttribute<VariantAttribute>();
+            var sevenBitEncoded = param.GetCustomAttribute<SevenBitEncodedIntAttribute>();
             var originType = param.ParameterType;
 
             if (customSerializer != null)
@@ -176,15 +176,15 @@ namespace CompactBuffer
             }
             else if (originType.IsEnum)
             {
-                builder.AppendLine($"            writer.WriteVariantInt32((int)___{param.Name});");
+                builder.AppendLine($"            writer.Write7BitEncodedInt32((int)___{param.Name});");
             }
             else if (originType == typeof(float) && float16 != null)
             {
                 builder.AppendLine($"            writer.WriteFloat16(___{param.Name}, {float16.IntegerMax});");
             }
-            else if (IsVariantable(originType) && variant != null)
+            else if (Is7BitEncoded(originType) && sevenBitEncoded != null)
             {
-                builder.AppendLine($"            writer.WriteVariant{originType.Name}(___{param.Name});");
+                builder.AppendLine($"            writer.Write7BitEncoded{originType.Name}(___{param.Name});");
             }
             else if (IsBaseType(originType))
             {
@@ -222,7 +222,7 @@ namespace CompactBuffer
             builder.AppendLine($"");
             builder.AppendLine($"        void Dispatch(CompactBuffer.BufferReader reader)");
             builder.AppendLine($"        {{");
-            builder.AppendLine($"            var index = reader.ReadVariantInt32();");
+            builder.AppendLine($"            var index = reader.Read7BitEncodedInt32();");
             for (var i = 0; i < methods.Count; i++)
             {
                 var method = methods[i];
@@ -283,7 +283,7 @@ namespace CompactBuffer
             {
                 float16 = type.GetCustomAttribute<Float16Attribute>();
             }
-            var variant = param.GetCustomAttribute<VariantAttribute>();
+            var sevenBitEncoded = param.GetCustomAttribute<SevenBitEncodedIntAttribute>();
             var originType = param.ParameterType;
             if (originType.IsByRef) originType = originType.GetElementType();
 
@@ -294,15 +294,15 @@ namespace CompactBuffer
             }
             else if (originType.IsEnum)
             {
-                builder.AppendLine($"                var ___{param.Name} = ({originType.FullName})reader.ReadVariantInt32();");
+                builder.AppendLine($"                var ___{param.Name} = ({originType.FullName})reader.Read7BitEncodedInt32();");
             }
             else if (originType == typeof(float) && float16 != null)
             {
                 builder.AppendLine($"                var ___{param.Name} = reader.ReadFloat16({float16.IntegerMax});");
             }
-            else if (IsVariantable(originType) && variant != null)
+            else if (Is7BitEncoded(originType) && sevenBitEncoded != null)
             {
-                builder.AppendLine($"                var ___{param.Name} = reader.ReadVariant{originType.Name}();");
+                builder.AppendLine($"                var ___{param.Name} = reader.Read7BitEncoded{originType.Name}();");
             }
             else if (IsBaseType(originType))
             {

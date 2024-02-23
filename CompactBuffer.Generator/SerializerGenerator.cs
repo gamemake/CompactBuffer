@@ -114,7 +114,7 @@ namespace CompactBuffer
             builder.AppendLine($"        {{");
             if (!type.IsValueType)
             {
-                builder.AppendLine($"            var length = reader.ReadVariantInt32();");
+                builder.AppendLine($"            var length = reader.Read7BitEncodedInt32();");
                 builder.AppendLine($"            if (length == 0) {{ target = null; return; }}");
                 builder.AppendLine($"            if (length != {fields.Count + 1}) {{ throw new CompactBuffer.CompactBufferExeption(\"data version not match\"); }}");
                 builder.AppendLine($"            if (target == null) {{ target = new {type.FullName}(); }}");
@@ -131,10 +131,10 @@ namespace CompactBuffer
             {
                 builder.AppendLine($"            if (target == null)");
                 builder.AppendLine($"            {{");
-                builder.AppendLine($"                writer.WriteVariantInt32(0);");
+                builder.AppendLine($"                writer.Write7BitEncodedInt32(0);");
                 builder.AppendLine($"                return;");
                 builder.AppendLine($"            }}");
-                builder.AppendLine($"            writer.WriteVariantInt32({fields.Count + 1});");
+                builder.AppendLine($"            writer.Write7BitEncodedInt32({fields.Count + 1});");
             }
             foreach (var field in fields)
             {
@@ -180,7 +180,7 @@ namespace CompactBuffer
             {
                 float16 = type.GetCustomAttribute<Float16Attribute>();
             }
-            var variant = field.GetCustomAttribute<VariantAttribute>();
+            var sevenBitEncoded = field.GetCustomAttribute<SevenBitEncodedIntAttribute>();
             var originType = field.FieldType;
 
             if (customSerializer != null)
@@ -189,15 +189,15 @@ namespace CompactBuffer
             }
             else if (originType.IsEnum)
             {
-                builder.AppendLine($"            target.{field.Name} = ({originType.FullName})reader.ReadVariantInt32();");
+                builder.AppendLine($"            target.{field.Name} = ({originType.FullName})reader.Read7BitEncodedInt32();");
             }
             else if (originType == typeof(float) && float16 != null)
             {
                 builder.AppendLine($"            target.{field.Name} = reader.ReadFloat16({float16.IntegerMax});");
             }
-            else if (IsVariantable(originType) && variant != null)
+            else if (Is7BitEncoded(originType) && sevenBitEncoded != null)
             {
-                builder.AppendLine($"            target.{field.Name} = reader.ReadVariant{originType.Name}();");
+                builder.AppendLine($"            target.{field.Name} = reader.Read7BitEncoded{originType.Name}();");
             }
             else if (IsBaseType(originType))
             {
@@ -217,7 +217,7 @@ namespace CompactBuffer
             {
                 float16 = type.GetCustomAttribute<Float16Attribute>();
             }
-            var variant = field.GetCustomAttribute<VariantAttribute>();
+            var sevenBitEncoded = field.GetCustomAttribute<SevenBitEncodedIntAttribute>();
             var originType = field.FieldType;
 
             if (customSerializer != null)
@@ -226,15 +226,15 @@ namespace CompactBuffer
             }
             else if (originType.IsEnum)
             {
-                builder.AppendLine($"            writer.WriteVariantInt32((int)target.{field.Name});");
+                builder.AppendLine($"            writer.Write7BitEncodedInt32((int)target.{field.Name});");
             }
             else if (originType == typeof(float) && float16 != null)
             {
                 builder.AppendLine($"            writer.WriteFloat16(target.{field.Name}, {float16.IntegerMax});");
             }
-            else if (IsVariantable(originType) && variant != null)
+            else if (Is7BitEncoded(originType) && sevenBitEncoded != null)
             {
-                builder.AppendLine($"            writer.WriteVariant{originType.Name}(target.{field.Name});");
+                builder.AppendLine($"            writer.Write7BitEncoded{originType.Name}(target.{field.Name});");
             }
             else if (IsBaseType(originType))
             {

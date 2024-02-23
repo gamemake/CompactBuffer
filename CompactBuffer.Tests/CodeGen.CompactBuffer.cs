@@ -7,7 +7,7 @@ namespace CompactBufferAutoGen
     {
         public static void Read(CompactBuffer.BufferReader reader, ref Tests.AAA target)
         {
-            var length = reader.ReadVariantInt32();
+            var length = reader.Read7BitEncodedInt32();
             if (length == 0) { target = null; return; }
             if (length != 26) { throw new CompactBuffer.CompactBufferExeption("data version not match"); }
             if (target == null) { target = new Tests.AAA(); }
@@ -30,22 +30,22 @@ namespace CompactBufferAutoGen
             CompactBuffer.Internal.ListSerializer<int>.Read(reader, ref target.list0);
             CompactBuffer.Internal.ListSerializer<int>.Read(reader, ref target.list1);
             CompactBuffer.Internal.ListSerializer<int>.Read(reader, ref target.list10);
-            target.variantInt = reader.ReadVariantInt32();
-            target.variantLong = reader.ReadVariantInt64();
-            target.variantUInt = reader.ReadUInt32();
+            target._7BitEncodedInt = reader.Read7BitEncodedInt32();
+            target._7BitEncodedLong = reader.Read7BitEncodedInt64();
+            target._7BitEncodedUInt = reader.ReadUInt32();
             target.floatTwoByte = reader.ReadFloat16(10);
             target.guid = reader.ReadGuid();
-            target.enum0 = (Tests.EnumTypes)reader.ReadVariantInt32();
+            target.enum0 = (Tests.EnumTypes)reader.Read7BitEncodedInt32();
         }
 
         public static void Write(CompactBuffer.BufferWriter writer, in Tests.AAA target)
         {
             if (target == null)
             {
-                writer.WriteVariantInt32(0);
+                writer.Write7BitEncodedInt32(0);
                 return;
             }
-            writer.WriteVariantInt32(26);
+            writer.Write7BitEncodedInt32(26);
             writer.Write(target._sbyte);
             writer.Write(target._short);
             writer.Write(target._int);
@@ -65,12 +65,12 @@ namespace CompactBufferAutoGen
             CompactBuffer.Internal.ListSerializer<int>.Write(writer, in target.list0);
             CompactBuffer.Internal.ListSerializer<int>.Write(writer, in target.list1);
             CompactBuffer.Internal.ListSerializer<int>.Write(writer, in target.list10);
-            writer.WriteVariantInt32(target.variantInt);
-            writer.WriteVariantInt64(target.variantLong);
-            writer.Write(target.variantUInt);
+            writer.Write7BitEncodedInt32(target._7BitEncodedInt);
+            writer.Write7BitEncodedInt64(target._7BitEncodedLong);
+            writer.Write(target._7BitEncodedUInt);
             writer.WriteFloat16(target.floatTwoByte, 10);
             writer.Write(target.guid);
-            writer.WriteVariantInt32((int)target.enum0);
+            writer.Write7BitEncodedInt32((int)target.enum0);
         }
 
         public static void Copy(in Tests.AAA src, ref Tests.AAA dst)
@@ -96,9 +96,9 @@ namespace CompactBufferAutoGen
             CompactBuffer.Internal.ListSerializer<int>.Copy(in src.list0, ref dst.list0);
             CompactBuffer.Internal.ListSerializer<int>.Copy(in src.list1, ref dst.list1);
             CompactBuffer.Internal.ListSerializer<int>.Copy(in src.list10, ref dst.list10);
-            dst.variantInt = src.variantInt;
-            dst.variantLong = src.variantLong;
-            dst.variantUInt = src.variantUInt;
+            dst._7BitEncodedInt = src._7BitEncodedInt;
+            dst._7BitEncodedLong = src._7BitEncodedLong;
+            dst._7BitEncodedUInt = src._7BitEncodedUInt;
             dst.floatTwoByte = src.floatTwoByte;
             dst.guid = src.guid;
             dst.enum0 = src.enum0;
@@ -125,7 +125,7 @@ namespace CompactBufferAutoGen
     {
         public static void Read(CompactBuffer.BufferReader reader, ref Tests.BBB target)
         {
-            var length = reader.ReadVariantInt32();
+            var length = reader.Read7BitEncodedInt32();
             if (length == 0) { target = null; return; }
             if (length != 2) { throw new CompactBuffer.CompactBufferExeption("data version not match"); }
             if (target == null) { target = new Tests.BBB(); }
@@ -136,10 +136,10 @@ namespace CompactBufferAutoGen
         {
             if (target == null)
             {
-                writer.WriteVariantInt32(0);
+                writer.Write7BitEncodedInt32(0);
                 return;
             }
-            writer.WriteVariantInt32(2);
+            writer.Write7BitEncodedInt32(2);
             writer.Write(target.i);
         }
 
@@ -208,7 +208,7 @@ namespace CompactBufferAutoGen
     {
         public static void Read(CompactBuffer.BufferReader reader, ref Tests.TypeClass target)
         {
-            var length = reader.ReadVariantInt32();
+            var length = reader.Read7BitEncodedInt32();
             if (length == 0) { target = null; return; }
             if (length != 5) { throw new CompactBuffer.CompactBufferExeption("data version not match"); }
             if (target == null) { target = new Tests.TypeClass(); }
@@ -222,10 +222,10 @@ namespace CompactBufferAutoGen
         {
             if (target == null)
             {
-                writer.WriteVariantInt32(0);
+                writer.Write7BitEncodedInt32(0);
                 return;
             }
-            writer.WriteVariantInt32(5);
+            writer.Write7BitEncodedInt32(5);
             writer.Write(target.kkk);
             CompactBuffer.Internal.ListSerializer<int>.Write(writer, in target.list);
             CompactBuffer.Internal.HashSetSerializer<int>.Write(writer, in target.hashset);

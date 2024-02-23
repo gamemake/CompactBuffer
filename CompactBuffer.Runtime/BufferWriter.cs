@@ -95,14 +95,14 @@ namespace CompactBuffer
         public void Write(string value)
         {
             var stringLength = _encoding.GetByteCount(value);
-            WriteVariantInt32(stringLength);
+            Write7BitEncodedInt32(stringLength);
 
             var span = InternalWrite(stringLength);
             var encoder = _encoding.GetEncoder();
             encoder.Convert(value, span, false, out var charsUsed, out var bytesUsed, out var completed);
         }
 
-        public void WriteVariantInt32(int value)
+        public void Write7BitEncodedInt32(int value)
         {
             uint uValue = (uint)value;
 
@@ -121,7 +121,7 @@ namespace CompactBuffer
             Write((byte)uValue);
         }
 
-        public void WriteVariantInt64(long value)
+        public void Write7BitEncodedInt64(long value)
         {
             ulong uValue = (ulong)value;
 

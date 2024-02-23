@@ -59,7 +59,7 @@ namespace CompactBuffer
             }
         }
 
-        public bool IsVariantable(Type type)
+        public bool Is7BitEncoded(Type type)
         {
             if (type == typeof(int)) return true;
             if (type == typeof(long)) return true;

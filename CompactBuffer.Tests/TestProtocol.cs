@@ -75,9 +75,9 @@ public class TestProtocol : IProtocolSender, IServerApi
     }
 
     [Fact]
-    public void CallVariant()
+    public void Call7BitEncoded()
     {
-        GoTest("CallVariant", (int)1, (long)444, (uint)4535, (int)23423, (int)2344);
+        GoTest("Call7BitEncoded", (int)1, (long)444, (uint)4535, (int)23423, (int)2344);
     }
 
     [Fact]
@@ -193,7 +193,7 @@ public class TestProtocol : IProtocolSender, IServerApi
         m_Output = ToObjs(array);
     }
 
-    void IServerApi.CallVariant(int v1, long v2, uint v3, int v4, int v5)
+    void IServerApi.Call7BitEncoded(int v1, long v2, uint v3, int v4, int v5)
     {
         m_Output = ToObjs(v1, v2, v3, v4, v5);
     }

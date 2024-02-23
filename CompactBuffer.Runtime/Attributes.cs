@@ -4,7 +4,7 @@ using System;
 namespace CompactBuffer
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Parameter)]
-    public class VariantAttribute : Attribute
+    public class SevenBitEncodedIntAttribute : Attribute
     {
     }
 

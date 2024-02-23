@@ -103,7 +103,7 @@ stub.Dispach(bufferReader);
 # Attributes for Serialize
 
 * Float16
-* Variant
+* 7BitEncoded
 * Channel
 
 ## Float16
@@ -138,12 +138,12 @@ public interface ISyncPosition : IProtocol
 
 The original float takes up 4 bytes, but after adding float16attribute, it only takes up 2 bytes.
 
-## Variant
+## 7BitEncoded
 
 ```cs
 public struct Data
 {
-    [Variant]
+    [SevenBitEncoded]
     public int Count;
 }
 
@@ -151,7 +151,7 @@ public struct Data
 public interface ISyncPosition : IProtocol
 {
     void Sync(
-        [Variant] int Count
+        [SevenBitEncoded] int Count
     );
 }
 ```

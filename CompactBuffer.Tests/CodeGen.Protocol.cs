@@ -17,14 +17,14 @@ namespace ProtocolAutoGen
         void Tests.IServerApi.Call()
         {
             var writer = m_Sender.GetStreamWriter(0);
-            writer.WriteVariantInt32(0);
+            writer.Write7BitEncodedInt32(0);
             m_Sender.Send(writer, 255);
         }
 
         void Tests.IServerApi.CallInt(int ___a)
         {
             var writer = m_Sender.GetStreamWriter(0);
-            writer.WriteVariantInt32(1);
+            writer.Write7BitEncodedInt32(1);
             writer.Write(___a);
             m_Sender.Send(writer, 255);
         }
@@ -32,7 +32,7 @@ namespace ProtocolAutoGen
         void Tests.IServerApi.CallIntArray(int[] ___array)
         {
             var writer = m_Sender.GetStreamWriter(0);
-            writer.WriteVariantInt32(2);
+            writer.Write7BitEncodedInt32(2);
             CompactBuffer.Internal.ArraySerializer<int>.Write(writer, in ___array);
             m_Sender.Send(writer, 255);
         }
@@ -40,17 +40,17 @@ namespace ProtocolAutoGen
         void Tests.IServerApi.CallString(string ___a)
         {
             var writer = m_Sender.GetStreamWriter(0);
-            writer.WriteVariantInt32(3);
+            writer.Write7BitEncodedInt32(3);
             writer.Write(___a);
             m_Sender.Send(writer, 255);
         }
 
-        void Tests.IServerApi.CallVariant(int ___v1, long ___v2, uint ___v3, int ___v4, int ___v5)
+        void Tests.IServerApi.Call7BitEncoded(int ___v1, long ___v2, uint ___v3, int ___v4, int ___v5)
         {
             var writer = m_Sender.GetStreamWriter(0);
-            writer.WriteVariantInt32(4);
-            writer.WriteVariantInt32(___v1);
-            writer.WriteVariantInt64(___v2);
+            writer.Write7BitEncodedInt32(4);
+            writer.Write7BitEncodedInt32(___v1);
+            writer.Write7BitEncodedInt64(___v2);
             writer.Write(___v3);
             writer.Write(___v4);
             writer.Write(___v5);
@@ -60,7 +60,7 @@ namespace ProtocolAutoGen
         void Tests.IServerApi.CallGuid(System.Guid ____guid)
         {
             var writer = m_Sender.GetStreamWriter(0);
-            writer.WriteVariantInt32(5);
+            writer.Write7BitEncodedInt32(5);
             writer.Write(____guid);
             m_Sender.Send(writer, 255);
         }
@@ -68,15 +68,15 @@ namespace ProtocolAutoGen
         void Tests.IServerApi.CallEnum(Tests.EnumTypes ____enum)
         {
             var writer = m_Sender.GetStreamWriter(0);
-            writer.WriteVariantInt32(6);
-            writer.WriteVariantInt32((int)____enum);
+            writer.Write7BitEncodedInt32(6);
+            writer.Write7BitEncodedInt32((int)____enum);
             m_Sender.Send(writer, 255);
         }
 
         void Tests.IServerApi.CallFloat16(float ___v)
         {
             var writer = m_Sender.GetStreamWriter(0);
-            writer.WriteVariantInt32(7);
+            writer.Write7BitEncodedInt32(7);
             writer.WriteFloat16(___v, 1);
             m_Sender.Send(writer, 255);
         }
@@ -84,7 +84,7 @@ namespace ProtocolAutoGen
         void Tests.IServerApi.CallTypeClass(Tests.TypeClass ___pa)
         {
             var writer = m_Sender.GetStreamWriter(0);
-            writer.WriteVariantInt32(8);
+            writer.Write7BitEncodedInt32(8);
             CompactBufferAutoGen.Tests_TypeClass_Serializer.Write(writer, in ___pa);
             m_Sender.Send(writer, 255);
         }
@@ -92,7 +92,7 @@ namespace ProtocolAutoGen
         void Tests.IServerApi.CallTypeClassArray(Tests.TypeClass[] ___pa)
         {
             var writer = m_Sender.GetStreamWriter(0);
-            writer.WriteVariantInt32(9);
+            writer.Write7BitEncodedInt32(9);
             CompactBuffer.Internal.ArraySerializer<Tests.TypeClass>.Write(writer, in ___pa);
             m_Sender.Send(writer, 255);
         }
@@ -100,7 +100,7 @@ namespace ProtocolAutoGen
         void Tests.IServerApi.CallTypeClassIn(in Tests.TypeClass ___a)
         {
             var writer = m_Sender.GetStreamWriter(0);
-            writer.WriteVariantInt32(10);
+            writer.Write7BitEncodedInt32(10);
             CompactBufferAutoGen.Tests_TypeClass_Serializer.Write(writer, in ___a);
             m_Sender.Send(writer, 255);
         }
@@ -108,7 +108,7 @@ namespace ProtocolAutoGen
         void Tests.IServerApi.CallTypeClassRef(ref Tests.TypeClass ___a)
         {
             var writer = m_Sender.GetStreamWriter(0);
-            writer.WriteVariantInt32(11);
+            writer.Write7BitEncodedInt32(11);
             CompactBufferAutoGen.Tests_TypeClass_Serializer.Write(writer, in ___a);
             m_Sender.Send(writer, 255);
         }
@@ -116,7 +116,7 @@ namespace ProtocolAutoGen
         void Tests.IServerApi.CallTypeStruct(Tests.TypeStruct ___a)
         {
             var writer = m_Sender.GetStreamWriter(0);
-            writer.WriteVariantInt32(12);
+            writer.Write7BitEncodedInt32(12);
             CompactBufferAutoGen.Tests_TypeStruct_Serializer.Write(writer, in ___a);
             m_Sender.Send(writer, 255);
         }
@@ -124,7 +124,7 @@ namespace ProtocolAutoGen
         void Tests.IServerApi.CallTypeStructIn(in Tests.TypeStruct ___a)
         {
             var writer = m_Sender.GetStreamWriter(0);
-            writer.WriteVariantInt32(13);
+            writer.Write7BitEncodedInt32(13);
             CompactBufferAutoGen.Tests_TypeStruct_Serializer.Write(writer, in ___a);
             m_Sender.Send(writer, 255);
         }
@@ -132,7 +132,7 @@ namespace ProtocolAutoGen
         void Tests.IServerApi.CallTypeStructRef(ref Tests.TypeStruct ___a)
         {
             var writer = m_Sender.GetStreamWriter(0);
-            writer.WriteVariantInt32(14);
+            writer.Write7BitEncodedInt32(14);
             CompactBufferAutoGen.Tests_TypeStruct_Serializer.Write(writer, in ___a);
             m_Sender.Send(writer, 255);
         }
@@ -140,7 +140,7 @@ namespace ProtocolAutoGen
         void Tests.IServerApi.CallIntSpan(System.Span<int> ___span)
         {
             var writer = m_Sender.GetStreamWriter(0);
-            writer.WriteVariantInt32(15);
+            writer.Write7BitEncodedInt32(15);
             CompactBuffer.Internal.SpanSerializer<int>.Write(writer, in ___span);
             m_Sender.Send(writer, 255);
         }
@@ -148,7 +148,7 @@ namespace ProtocolAutoGen
         void Tests.IServerApi.CallIntReadOnlySpan(System.ReadOnlySpan<int> ___span)
         {
             var writer = m_Sender.GetStreamWriter(0);
-            writer.WriteVariantInt32(16);
+            writer.Write7BitEncodedInt32(16);
             CompactBuffer.Internal.ReadOnlySpanSerializer<int>.Write(writer, in ___span);
             m_Sender.Send(writer, 255);
         }
@@ -156,7 +156,7 @@ namespace ProtocolAutoGen
         void Tests.IServerApi.CallReadOnlySpan(System.ReadOnlySpan<byte> ___aaaaaaaa)
         {
             var writer = m_Sender.GetStreamWriter(0);
-            writer.WriteVariantInt32(17);
+            writer.Write7BitEncodedInt32(17);
             CompactBuffer.Internal.ReadOnlySpanSerializer<byte>.Write(writer, in ___aaaaaaaa);
             m_Sender.Send(writer, 255);
         }
@@ -176,7 +176,7 @@ namespace ProtocolAutoGen
 
         void Dispatch(CompactBuffer.BufferReader reader)
         {
-            var index = reader.ReadVariantInt32();
+            var index = reader.Read7BitEncodedInt32();
             if (index == 0)
             {
                 m_Target?.Call();
@@ -203,12 +203,12 @@ namespace ProtocolAutoGen
             }
             if (index == 4)
             {
-                var ___v1 = reader.ReadVariantInt32();
-                var ___v2 = reader.ReadVariantInt64();
+                var ___v1 = reader.Read7BitEncodedInt32();
+                var ___v2 = reader.Read7BitEncodedInt64();
                 var ___v3 = reader.ReadUInt32();
                 var ___v4 = reader.ReadInt32();
                 var ___v5 = reader.ReadInt32();
-                m_Target?.CallVariant(___v1, ___v2, ___v3, ___v4, ___v5);
+                m_Target?.Call7BitEncoded(___v1, ___v2, ___v3, ___v4, ___v5);
                 return;
             }
             if (index == 5)
@@ -219,7 +219,7 @@ namespace ProtocolAutoGen
             }
             if (index == 6)
             {
-                var ____enum = (Tests.EnumTypes)reader.ReadVariantInt32();
+                var ____enum = (Tests.EnumTypes)reader.Read7BitEncodedInt32();
                 m_Target?.CallEnum(____enum);
                 return;
             }

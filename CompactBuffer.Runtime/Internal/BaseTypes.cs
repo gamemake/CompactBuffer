@@ -451,13 +451,13 @@ namespace CompactBuffer.Internal
     {
         public static void Read(BufferReader reader, ref ReadOnlySpan<byte> target)
         {
-            var length = reader.ReadVariantInt32();
+            var length = reader.Read7BitEncodedInt32();
             target = reader.ReadBytes(length);
         }
 
         public static void Write(BufferWriter writer, in ReadOnlySpan<byte> target)
         {
-            writer.WriteVariantInt32(target.Length);
+            writer.Write7BitEncodedInt32(target.Length);
             writer.Write(target);
         }
 
