@@ -37,7 +37,7 @@ namespace CompactBuffer
     {
     }
 
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Field | AttributeTargets.Parameter)]
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Parameter)]
     public class CustomSerializerAttribute : Attribute
     {
         public readonly Type SerializerType;

@@ -1,9 +1,24 @@
 
+using System;
 using System.IO;
+using System.Reflection;
 using System.Diagnostics;
 using Tests;
 
 namespace CompactBuffer.Tests;
+
+public class ParentAttribute : Attribute
+{
+}
+
+public class ChildAttribute : ParentAttribute
+{
+}
+
+[Child]
+public class TestAttribute
+{
+}
 
 public class TestGenerator
 {
@@ -44,5 +59,13 @@ public class TestGenerator
 
         var resultSerializer = serializerGenerator.GenCode();
         File.WriteAllText(Path.Join(GetDirName(), "CompactBuffer.Tests", "CodeGen.CompactBuffer.cs"), resultSerializer);
+    }
+
+    [Fact]
+    public void GetChildAttribute()
+    {
+        var parent = typeof(TestAttribute).GetCustomAttribute<ParentAttribute>(true);
+        Assert.NotNull(parent);
+        Assert.Equal(typeof(ChildAttribute), parent.GetType());
     }
 }
