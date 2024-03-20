@@ -64,11 +64,11 @@ namespace CompactBuffer
             {
                 if (method.IsGenericMethod)
                 {
-                    throw new CompactBufferExeption($"{type.FullName}.{method.Name} cannot Generic Method");
+                    throw new CompactBufferException($"{type.FullName}.{method.Name} cannot Generic Method");
                 }
                 if (method.ReturnType != typeof(void))
                 {
-                    throw new CompactBufferExeption($"{type.FullName}.{method.Name} must return void");
+                    throw new CompactBufferException($"{type.FullName}.{method.Name} must return void");
                 }
 
                 foreach (var p in method.GetParameters())
@@ -81,7 +81,7 @@ namespace CompactBuffer
 
                     if (!m_AddAdditionType.AddAdditionType(p.ParameterType))
                     {
-                        throw new CompactBufferExeption($"{type.FullName}.{method.Name} parameter {p.Name} unsupport type {GetTypeName(p.ParameterType)}");
+                        throw new CompactBufferException($"{type.FullName}.{method.Name} parameter {p.Name} unsupport type {GetTypeName(p.ParameterType)}");
                     }
                 }
 

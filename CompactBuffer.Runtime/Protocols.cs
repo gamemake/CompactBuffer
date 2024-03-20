@@ -51,7 +51,7 @@ namespace CompactBuffer
         {
             if (!m_ProxyTypes.TryGetValue(typeof(T), out var type))
             {
-                throw new CompactBufferExeption("proxy not found");
+                throw new CompactBufferException("proxy not found");
             }
             else
             {
@@ -65,7 +65,7 @@ namespace CompactBuffer
         {
             if (!m_StubTypes.TryGetValue(typeof(T), out var type))
             {
-                throw new CompactBufferExeption("stub not found");
+                throw new CompactBufferException("stub not found");
             }
             else
             {

@@ -299,7 +299,7 @@ namespace ProtocolAutoGen
                 m_Target?.CallReadOnlySpan(___aaaaaaaa);
                 return;
             }
-            throw new CompactBuffer.CompactBufferExeption("Tests.IServerApi invalid method index" + index);
+            throw new CompactBuffer.CompactBufferException("Tests.IServerApi invalid method index" + index);
         }
 
         void CompactBuffer.IProtocolStub.Dispatch(CompactBuffer.BufferReader reader)

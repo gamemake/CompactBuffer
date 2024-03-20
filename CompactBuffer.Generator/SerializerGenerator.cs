@@ -101,7 +101,7 @@ namespace CompactBuffer
 
                 if (!AddAdditionType(field.FieldType))
                 {
-                    throw new CompactBufferExeption($"{type.FullName}.{field.Name} unsupport type {GetTypeName(field.FieldType)}");
+                    throw new CompactBufferException($"{type.FullName}.{field.Name} unsupport type {GetTypeName(field.FieldType)}");
 
                 }
                 fields.Add(field);

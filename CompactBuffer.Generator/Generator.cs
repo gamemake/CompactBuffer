@@ -118,7 +118,7 @@ namespace CompactBuffer
             {
                 return $"CompactBuffer.Internal.DictionarySerializer<{args}>";
             }
-            throw new CompactBufferExeption($"{GetTypeName(originType)} unsupport generic type");
+            throw new CompactBufferException($"{GetTypeName(originType)} unsupport generic type");
         }
     }
 }

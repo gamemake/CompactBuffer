@@ -3,9 +3,9 @@ using System;
 
 namespace CompactBuffer
 {
-    public class CompactBufferExeption : Exception
+    public class CompactBufferException : Exception
     {
-        public CompactBufferExeption(string message) : base(message)
+        public CompactBufferException(string message) : base(message)
         {
         }
     }

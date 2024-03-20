@@ -49,7 +49,7 @@ namespace CompactBufferAutoGen
         {
             var length = reader.Read7BitEncodedInt32();
             if (length == 0) { target = null; return; }
-            if (length != 26) { throw new CompactBuffer.CompactBufferExeption("data version not match"); }
+            if (length != 26) { throw new CompactBuffer.CompactBufferException("data version not match"); }
             if (target == null) { target = new Tests.AAA(); }
             target._sbyte = reader.ReadSByte();
             target._short = reader.ReadInt16();
@@ -167,7 +167,7 @@ namespace CompactBufferAutoGen
         {
             var length = reader.Read7BitEncodedInt32();
             if (length == 0) { target = null; return; }
-            if (length != 2) { throw new CompactBuffer.CompactBufferExeption("data version not match"); }
+            if (length != 2) { throw new CompactBuffer.CompactBufferException("data version not match"); }
             if (target == null) { target = new Tests.BBB(); }
             target.i = reader.ReadInt32();
         }
@@ -250,7 +250,7 @@ namespace CompactBufferAutoGen
         {
             var length = reader.Read7BitEncodedInt32();
             if (length == 0) { target = null; return; }
-            if (length != 5) { throw new CompactBuffer.CompactBufferExeption("data version not match"); }
+            if (length != 5) { throw new CompactBuffer.CompactBufferException("data version not match"); }
             if (target == null) { target = new Tests.TypeClass(); }
             target.kkk = reader.ReadInt32();
             CompactBuffer.Internal.ListSerializer<int>.Read(reader, ref target.list);
